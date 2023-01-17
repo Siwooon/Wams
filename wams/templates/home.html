@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- <script src="app.js"></script> -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+
+    <script>
+        $(document).ready(function() {
+    $('.update-button').click(function() {
+      var QuestionId = $(this).data('id');
+      $.ajax({
+        type: 'GET',
+        url: '/update/' + QuestionId,
+        success: function(data) {
+          $('input[name="Label"]').val(data.Label);
+          $('input[name="Etiquette"]').val(data.Etiquette);
+          $('input[name="Question"]').val(data.Question);
+          $('input[name="Réponse1"]').val(data.Réponse1);
+          $('input[name="Réponse2"]').val(data.Réponse2);
+          $('input[name="Réponse3"]').val(data.Réponse3);
+          $('input[name="Réponse4"]').val(data.Réponse4);
+          
+        }
+      });
+    });
+  });
+
+  $(document).ready(function() {
+    $('.update-button2').click(function() {
+      var QuestionId = $(this).data('id');
+      $.ajax({
+        type: 'GET',
+        url: '/update2/' + QuestionId,
+        success: function(data) {
+          $('input[name="Label"]').val(data.Label);
+          $('input[name="Etiquette"]').val(data.Etiquette);
+          $('input[name="Question"]').val(data.Question);
+          $('input[name="Réponse1"]').val(data.Réponse1);
+          $('input[name="Réponse2"]').val(data.Réponse2);
+          $('input[name="Réponse3"]').val(data.Réponse3);
+          $('input[name="Réponse4"]').val(data.Réponse4);
+          
+        }
+      });
+    });
+  });
+
+    </script>
+
+    <form method="POST">
+        {{ form.hidden_tag()}}
+    
+        <br>
+        <br>
+    
+        {{form.Label.label()}}
+        {{form.Label()}}
+    
+        <br>
+        <br>
+    
+        {{form.Etiquette.label()}}
+        {{form.Etiquette()}}
+    
+        
+        <br>
+        <br>
+    
+        {{form.Question.label()}}
+        {{form.Question()}}
+    
+        <br>
+        <br>
+        
+    
+        {{form.Réponse1.label()}}
+        {{form.Réponse1()}}
+    
+        <br>
+        <br>
+        
+    
+        {{form.Réponse2.label()}}
+        {{form.Réponse2()}}
+    
+        <br>
+        <br>
+        
+    
+        {{form.Réponse3.label()}}
+        {{form.Réponse3()}}
+    
+        <br>
+        <br>
+        
+    
+        {{form.Réponse4.label()}}
+        {{form.Réponse4()}}
+    
+        <br>
+        <br>
+        
+    
+        {{form.submit()}}
+
+        <button data-id="{{ question.id }}" class="update-button2">{{ question.Label }}</button>
+    
+        <br>
+        <br>
+        
+    
+    </form>
+    
+    <div>
+        {% for question in question %}
+            <button data-id="{{ question.id }}" class="update-button">{{ question.Label }}</button>
+        {% endfor %}
+        </div>
+    
+</body>
+</html>
+
