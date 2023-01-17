@@ -1,0 +1,25 @@
+    {% block title %}
+    Inscription
+    {% endblock %}
+
+{% block content %}
+
+<form method="post" class="inscription">
+    {{ form.hidden_tag() }}
+    <h1>Creez votre compte</h1>
+    {{ form.username.label() }}
+    {{ form.username(placeholder="Username") }}
+
+    {{ form.mail.label() }}
+    {{ form.mail(placeholder="Adresse mail") }}
+
+    {{ form.password1.label() }}
+    {{ form.password1(placeholder="Mot de passe") }}
+
+    {{ form.password2.label() }}
+    {{ form.password2(placeholder="Confirmer mot de passe") }}
+
+    {{ form.submit() }}
+</form>
+
+{% endblock  %}
