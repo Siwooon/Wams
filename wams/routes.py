@@ -8,21 +8,40 @@ from wams.db import db
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
-    Question = question.query.all()
+    AllQuestion = question.query.all()
     form = Form()
     if form.validate_on_submit():
         
-        questionToAdd = question(Label=form.Label.data,
-                                Etiquette=form.Etiquette.data,
-                                Question=form.Question.data,
-                                Réponse1=form.Réponse1.data,
-                                Réponse2=form.Réponse2.data,
-                                Réponse3=form.Réponse3.data,
-                                Réponse4=form.Réponse4.data)
-        db.session.add(questionToAdd)
+
+        Label = form.Label.data
+        Etiquette = form.Etiquette.data
+        Questiondata = form.Question.data
+        Réponse1 = form.Réponse1.data
+        Réponse2 = form.Réponse2.data
+        Réponse3 =form.Réponse3.data
+        Réponse4 = form.Réponse4.data
+
+        if not Label.strip() or not Etiquette.strip() or not Questiondata.strip() or not Réponse1.strip() or not Réponse2.strip() or not Réponse3.strip() or not Réponse4.strip():
+            raise ValueError("Les champs ne peuvent pas être vides ou remplis d'espaces uniquement.")
+
+        Questionfilter = question.query.filter_by(Label=Label).first()
+
+        if Questionfilter:
+            Questionfilter.Etiquette = Etiquette
+            Questionfilter.Question = Questiondata
+            Questionfilter.Réponse1 = Réponse1
+            Questionfilter.Réponse2 = Réponse2
+            Questionfilter.Réponse3 = Réponse3
+            Questionfilter.Réponse4 = Réponse4
+        else:
+            QuestionToAdd = question(Label=Label, Etiquette=Etiquette, Question=Questiondata, Réponse1=Réponse1, Réponse2=Réponse2, Réponse3=Réponse3, Réponse4=Réponse4)
+            db.session.add(QuestionToAdd)
+            db.session.commit()
+            return redirect(url_for('home'))
         db.session.commit()
-        return redirect(url_for('test'))
-    return render_template('home.html', form = form, question = Question)
+    
+    
+    return render_template('home.html', form = form, question = AllQuestion)
 
 
 @app.route('/update/<int:id>', methods=['GET'])
