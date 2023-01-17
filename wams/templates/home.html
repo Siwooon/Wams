@@ -30,6 +30,11 @@
       });
     });
 
+    
+    $('[name="Label"]').on("input", function(){
+        $("#text-display").text($(this).val());
+    });
+
     $("#reset-button").click(function(){
     $('[name="Label"]').val("");
     $('[name="Etiquette"]').val("");
@@ -39,29 +44,10 @@
     $('[name="Réponse3"]').val("");
     $('[name="Réponse4"]').val("");
 });
+
+
   });
 
-  // $(document).ready(function() {
-  //   $('.update-button2').click(function() {
-  //     var QuestionId = $(this).data('id');
-  //     $.ajax({
-  //       type: 'GET',
-  //       url: '/update2/' + QuestionId,
-  //       success: function(data) {
-  //         $('input[name="Label"]').val(data.Label);
-  //         $('input[name="Etiquette"]').val(data.Etiquette);
-  //         $('input[name="Question"]').val(data.Question);
-  //         $('input[name="Réponse1"]').val(data.Réponse1);
-  //         $('input[name="Réponse2"]').val(data.Réponse2);
-  //         $('input[name="Réponse3"]').val(data.Réponse3);
-  //         $('input[name="Réponse4"]').val(data.Réponse4);
-          
-  //       }
-  //     });
-  //   });
-  // });
-
-  
 
     </script>
 
@@ -136,7 +122,7 @@
     
     </form>
     
-    
+    <div id="text-display"></div>
     
 </body>
 </html>
