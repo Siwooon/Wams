@@ -1,11 +1,6 @@
+
 $(document).ready(function() {
-
-  var md = window.markdownit();  
-  $('[name="Question"]').on("input", function(){
-    var html = md.render($(this).val());
-    $("#a").html(html);
-  });
-
+  
 
   $('.update-button').click(function() {
     var QuestionId = $(this).data('id');
@@ -38,6 +33,7 @@ $(document).ready(function() {
   $('[name="Réponse2"]').val("");
   $('[name="Réponse3"]').val("");
   $('[name="Réponse4"]').val("");
+  $('#a').empty()
 });
 
         

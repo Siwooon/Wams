@@ -6,21 +6,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     
-    <!-- <script src="https://cdn.jsdelivr.net/npm/showdown@1.9.1/dist/showdown.min.js"></script> -->
-    <!-- <script src="https://cdn.jsdelivr.net/npm/showdown-latex@0.3.2/dist/showdown-latex.min.js"></script> -->
     <script src="https://cdn.jsdelivr.net/npm/markdown-it@11.0.0/dist/markdown-it.min.js"></script>
-    <!-- <script src="https://unpkg.com/markdown-it-texmath"></script> -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_CHTML"> </script> -->
-    
-
     
 </head>
 <body>
 
-    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <script>
+        MathJax = {
+          tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']]
+          },
+          svg: {
+            fontCache: 'global'
+          }
+        };
+    </script>
+    
+    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 
+    <script>        
+
+
+        $(document).ready(function() {
+            // const myPackage = require('<package-name>');
+
+
+            const md = window.markdownit({
+    html: true,
+    typographer: true,
+    linkify: true,
+    breaks: true
+  });
+  
+        
+
+  $('[name="Question"]').on("input", function() {
+    var markdown = $(this).val();
+    var html = md.render(markdown);
+    $("#a").html(html);
+    MathJax.typeset();
+});
+
+        
+});
+    </script>
     <div>
       {% for question in question %}
           <button data-id="{{ question.id }}" class="update-button">{{ question.Label }}</button>
