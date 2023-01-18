@@ -1,9 +1,8 @@
 from wams import app
-from flask import render_template, redirect, url_for, request, jsonify
+from flask import render_template, redirect, url_for, jsonify
 from wams.db import question
 from wams.forms import Form
 from wams.db import db
-
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -11,7 +10,6 @@ def home():
     AllQuestion = question.query.all()
     form = Form()
     if form.validate_on_submit():
-        
 
         Label = form.Label.data
         Etiquette = form.Etiquette.data
@@ -56,67 +54,4 @@ def update(id):
                    Réponse4=Question.Réponse4)
 
 
-@app.route('/update2', methods=['POST'])
-def update2():
-    Label = request.form['Label']
-    Etiquette = request.form['Etiquette']
-    Question = request.form['Question']
-    Réponse1 = request.form['Réponse1']
-    Réponse2 = request.form['Réponse2']
-    Réponse3 = request.form['Réponse3']
-    Réponse4 = request.form['Réponse4']
-
-    question = Question.query.filter_by(Label=Label).first()
-
-    if question:
-        question.Etiquette = Etiquette
-        question.Question = Question
-        question.Réponse1 = Réponse1
-        question.Réponse2 = Réponse2
-        question.Réponse3 = Réponse3
-        question.Réponse4 = Réponse4
-    else:
-        question = Question(Label=Label, Etiquette=Etiquette, Question=Question, Réponse1=Réponse1, Réponse2=Réponse2, Réponse3=Réponse3, Réponse4=Réponse4)
-        db.session.add(question)
-
-    db.session.commit()
-
-
-
-
-
-
-
-
-
-# @app.route('/update/<int:id>', methods=['POST'])
-# def update_user(id):
-#     Question = question.query.get(id)
-#     Question.Label = request.form['Label']
-#     Question.Etiquette = request.form['Etiquette']
-#     Question.Question = request.form['Question']
-#     Question.Réponse1= request.form['Réponse1']
-#     Question.Réponse2= request.form['Réponse2']
-#     Question.Réponse3= request.form['Réponse3']
-#     Question.Réponse4= request.form['Réponse4']
-#     db.session.commit()
-#     return redirect('/')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-@app.route('/test')
-def test():
-    return 'Hello World'
 
