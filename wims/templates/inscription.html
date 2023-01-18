@@ -1,6 +1,7 @@
-    {% block title %}
-    Inscription
-    {% endblock %}
+{% extends 'base.html' %}
+{% block title %}
+Inscription
+{% endblock %}
 
 {% block content %}
 
@@ -20,6 +21,11 @@
     {{ form.password2(placeholder="Confirmer mot de passe") }}
 
     {{ form.submit() }}
+
+    <br>
+
+    <h4><a href="{{ url_for('connexion') }}">Compte déjà créé</a></h6>
+
 </form>
 
 {% endblock  %}
