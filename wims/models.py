@@ -1,13 +1,13 @@
 from wims import db, login_manager
 from wims import bcrypt
-from flask_login import UserMixin
+from flask_login import UserMixin   
 
 @login_manager.user_loader
-def load_user(user_id_user):
-    return user_info.query.get(int(user_id_user))
+def load_user(id):
+    return user_info.query.get(int(id))
 
 class user_info(db.Model, UserMixin):
-    id_user = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     login_user = db.Column(db.String(100), nullable=False)
     mail_user = db.Column(db.String(100), nullable=False)
     password_user = db.Column(db.String(100), nullable=False)

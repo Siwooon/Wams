@@ -28,7 +28,7 @@ def connexion():
         passed_user = user_info.query.filter_by(login_user=form.username.data).first()
         if passed_user and passed_user.check_password_correction(passed_password = form.password.data):
             login_user(passed_user)
-            flash(f"Connection réussie sous l'username {passed_user.username}", category='success')
+            flash(f"Connection réussie sous l'username {passed_user.login_user}", category='success')
             return redirect(url_for('connexion'))
         else:
             flash(f"Erreur, le nom d'utilisateur ne correspond pas au mot de passe !", category='danger')
