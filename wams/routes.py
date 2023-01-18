@@ -1,5 +1,5 @@
 from wams import app
-from flask import render_template, redirect, url_for, jsonify, flash
+from flask import render_template, redirect, url_for, jsonify, flash, request
 from wams.db import question, user_info
 from wams.forms import Form, FormInscription, FormConnexion
 from wams.db import db
@@ -20,6 +20,7 @@ def home():
         Réponse2 = form.Réponse2.data
         Réponse3 =form.Réponse3.data
         Réponse4 = form.Réponse4.data
+        bonne_reponse = form.bonne_reponse.data
 
         if not Label.strip() or not Etiquette.strip() or not Questiondata.strip() or not Réponse1.strip() or not Réponse2.strip() or not Réponse3.strip() or not Réponse4.strip():
             raise ValueError("Les champs ne peuvent pas être vides ou remplis d'espaces uniquement.")
@@ -33,8 +34,9 @@ def home():
             Questionfilter.Réponse2 = Réponse2
             Questionfilter.Réponse3 = Réponse3
             Questionfilter.Réponse4 = Réponse4
+            Questionfilter.bonne_reponse = bonne_reponse
         else:
-            QuestionToAdd = question(Label=Label, Etiquette=Etiquette, Question=Questiondata, Réponse1=Réponse1, Réponse2=Réponse2, Réponse3=Réponse3, Réponse4=Réponse4)
+            QuestionToAdd = question(Label=Label, Etiquette=Etiquette, Question=Questiondata, Réponse1=Réponse1, Réponse2=Réponse2, Réponse3=Réponse3, Réponse4=Réponse4, bonne_reponse=bonne_reponse)
             db.session.add(QuestionToAdd)
             db.session.commit()
             return redirect(url_for('home'))
@@ -48,6 +50,24 @@ def home():
 def update(id):
     Question = question.query.get(id)
     return jsonify(Label=Question.Label, 
+                   Etiquette=Question.Etiquette, 
+                   Question=Question.Question, 
+                   Réponse1=Question.Réponse1,
+                   Réponse2=Question.Réponse2,
+                   Réponse3=Question.Réponse3,
+                   Réponse4=Question.Réponse4,)
+
+@app.route('/quest/<int:id>', methods=['POST', 'GET'])
+def quest(id):
+    Question = question.query.get(id)
+    bonnesReps = question.query.with_entities(question.bonne_reponse)
+    bonneRep = str(bonnesReps[id]).strip("()',")
+    reponse = request.form.get('reponses')
+    if reponse == bonneRep:
+        flash("Bonne réponse !", category='success')
+    else:
+        flash("Mauvaise réponse !", category='danger')
+    return render_template('question.html', Label=Question.Label, 
                    Etiquette=Question.Etiquette, 
                    Question=Question.Question, 
                    Réponse1=Question.Réponse1,

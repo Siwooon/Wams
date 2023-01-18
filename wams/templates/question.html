@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}
+    Question
+{% endblock %}
+
+{% block content %}
+<p>{{ Etiquette }}</p>
+<h1>{{ Question }}</h1>
+
+<form method="post">
+    <input type="radio" name="reponses" id="reponse1" value="reponse1"> {{ Réponse1 }} </input><br>
+    <input type="radio" name="reponses" id="reponse2" value="reponse2"> {{ Réponse2 }} </input><br>
+    <input type="radio" name="reponses" id="reponse3" value="reponse3"> {{ Réponse3 }} </input><br>
+    <input type="radio" name="reponses" id="reponse4" value="reponse4"> {{ Réponse4 }} </input><br>
+
+    <p><input type=submit value=Valider></p>
+
+</form>
+
+
+{% endblock  %}

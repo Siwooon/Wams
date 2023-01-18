@@ -11,6 +11,7 @@ class Form(FlaskForm):
     Réponse2 = StringField(label='Réponse 2')
     Réponse3 = StringField(label='Réponse 3')
     Réponse4 = StringField(label='Réponse 4')
+    bonne_reponse = StringField(label='bonne_reponse')
 
     submit = SubmitField(label='Envoyer')
 
@@ -22,8 +23,12 @@ class FormInscription(FlaskForm):
             raise ValidationError("Le nom d'utilisateur est déjà utilisé !")
     def validate_mail(self, mail_to_check):
         mail = user_info.query.filter_by(mail_user=mail_to_check.data).first()
+        terminaison = str(mail_to_check).split("value=")[1].split('@')[1]
+        if "etu" not in terminaison and "umontpellier.fr" in terminaison:
+            print("mail de prof")
         if mail:
             raise ValidationError("Le mail est déjà utilisé !")
+        
 
     username = StringField(label="Username:", validators=[DataRequired()])
     mail = StringField(label="Adresse mail:", validators=[Email(), DataRequired()])

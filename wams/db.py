@@ -11,6 +11,7 @@ class question(db.Model):
     Réponse2 = db.Column(db.String(), nullable =False)
     Réponse3 = db.Column(db.String(), nullable =False)
     Réponse4 = db.Column(db.String(), nullable =False)
+    bonne_reponse = db.Column(db.String())
 
     def __repr__(self):
         return f'Question {self.Label}'
@@ -24,6 +25,7 @@ class user_info(db.Model, UserMixin):
     login_user = db.Column(db.String(100), nullable=False)
     mail_user = db.Column(db.String(100), nullable=False)
     password_user = db.Column(db.String(100), nullable=False)
+    prof_user = db.Column(db.Integer)
 
     @property
     def password(self):
