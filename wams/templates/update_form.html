@@ -1,0 +1,15 @@
+<form method="post" action="{{ url_for('update_user_data', id=question.id) }}">
+    <label for="username">Label:</label>
+    <input type="text" name="username" value="{{ question.Label }}">
+    <label for="email">Etiquette:</label>
+    <input type="text" name="email" value="{{ question.Etiquette }}">
+    <label for="username">Question:</label>
+    <input type="text" name="username" value="{{ question.Question }}">
+    <label for="email">Réponse1:</label>
+    <input type="text" name="email" value="{{ question.Réponse1 }}">
+
+
+
+
+    <input type="submit" value="Update">
+  </form>
