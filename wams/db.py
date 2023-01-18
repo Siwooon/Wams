@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 from wams import db, login_manager
 from wams import bcrypt
 from flask_login import UserMixin   
@@ -38,20 +37,3 @@ class user_info(db.Model, UserMixin):
     
     def check_password_correction(self, passed_password):
         return bcrypt.check_password_hash(self.password_user, passed_password)
-=======
-from wams import db
-
-
-class question(db.Model): 
-    id = db.Column(db.Integer(), primary_key=True)
-    Label = db.Column(db.String(), nullable =False)
-    Etiquette = db.Column(db.String(), nullable =False)
-    Question = db.Column(db.String(), nullable =False)
-    Réponse1 = db.Column(db.String(), nullable =False)
-    Réponse2 = db.Column(db.String(), nullable =False)
-    Réponse3 = db.Column(db.String(), nullable =False)
-    Réponse4 = db.Column(db.String(), nullable =False)
-
-    def __repr__(self):
-        return f'Question {self.Label}'
->>>>>>> 9d00a04 (MathJax added)
