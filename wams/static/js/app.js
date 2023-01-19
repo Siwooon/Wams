@@ -1,11 +1,32 @@
+
+
 $(document).ready(function() {
 
-  var md = window.markdownit();  
-  $('[name="Question"]').on("input", function(){
-    var html = md.render($(this).val());
-    $("#a").html(html);
+  $("[name='Réponse1']").on("input", function() {
+    Réponse1Button = document.getElementById("R1")
+    Réponse1Button.innerHTML = $(this).val();
+    
+});
+  $("[name='Réponse2']").on("input", function() {
+    Réponse2Button = document.getElementById("R2")
+    Réponse2Button.innerHTML = $(this).val();
+    
   });
 
+  $("[name='Réponse3']").on("input", function() {
+    Réponse3Button = document.getElementById("R3")
+    Réponse3Button.innerHTML = $(this).val();
+    
+  });
+
+  
+
+  $("[name='Réponse4']").on("input", function() {
+    Réponse4Button = document.getElementById("R4")
+    Réponse4Button.innerHTML = $(this).val();
+    
+  });
+  
 
   $('.update-button').click(function() {
     var QuestionId = $(this).data('id');
@@ -15,7 +36,8 @@ $(document).ready(function() {
       success: function(data) {
         $('input[name="Label"]').val(data.Label);
         $('input[name="Etiquette"]').val(data.Etiquette);
-        $('input[name="Question"]').val(data.Question);
+        $('[name="Question"]').val(data.Question);
+        //$("[name='editor']").val(data.Question);
         $('input[name="Réponse1"]').val(data.Réponse1);
         $('input[name="Réponse2"]').val(data.Réponse2);
         $('input[name="Réponse3"]').val(data.Réponse3);
@@ -25,19 +47,25 @@ $(document).ready(function() {
     });
   });
 
+  // $('[name="editor"]').on("input", function(){
+  //   $('[name="Question"]').val($(this).val())
+  // })
+
   
-  $('[name="Label"]').on("input", function(){
-      $("#text-display").text($(this).val());
-  });
+  // $('[name="Label"]').on("input", function(){
+  //     $("#text-display").text($(this).val());
+  // });
 
   $("#reset-button").click(function(){
   $('[name="Label"]').val("");
   $('[name="Etiquette"]').val("");
   $('[name="Question"]').val("");
+  //$('[name="editor"]').val("");
   $('[name="Réponse1"]').val("");
   $('[name="Réponse2"]').val("");
   $('[name="Réponse3"]').val("");
   $('[name="Réponse4"]').val("");
+  $('#a').empty()
 });
 
         

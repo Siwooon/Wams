@@ -1,12 +1,12 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
+from wtforms import StringField, PasswordField, SubmitField, TextAreaField
 from wtforms.validators import Length, EqualTo, Email, DataRequired, ValidationError
 from wams.db import user_info
 
 class Form(FlaskForm):
     Label = StringField(label='Label')
     Etiquette = StringField(label='Etiquette')
-    Question = StringField(label='Question ')
+    Question = TextAreaField(label='Question')
     Réponse1 = StringField(label='Réponse 1')
     Réponse2 = StringField(label='Réponse 2')
     Réponse3 = StringField(label='Réponse 3')
