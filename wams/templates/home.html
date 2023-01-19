@@ -9,7 +9,9 @@
     <script src="https://cdn.jsdelivr.net/npm/markdown-it@11.0.0/dist/markdown-it.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+
     
+
 </head>
 <body>
 
@@ -34,23 +36,30 @@
 
 
             const md = window.markdownit({
-    html: true,
-    typographer: true,
-    linkify: true,
-    breaks: true
-  });
+              html: true,
+              typographer: true,
+              linkify: true,
+              breaks: true
+            });
   
-        
+            
+            $("input[name='Question']").hide();
 
-  $('[name="Question"]').on("input", function() {
-    var markdown = $(this).val();
-    var html = md.render(markdown);
-    $("#a").html(html);
-    MathJax.typeset();
-});
+
+            $('[name="editor"]').on("input", function() {
+              
+              var markdown = $(this).val();
+              var mk = md.render(markdown);
+  
+              $("#a").html(mk);
+              MathJax.typeset();
+          });
 
         
-});
+        });
+
+      
+
     </script>
     <div>
       {% for question in question %}
@@ -58,6 +67,10 @@
       {% endfor %}
     </div>
 
+    <textarea name="editor" id="editor-id" cols="30" rows="10"></textarea>
+
+    
+    
     <form method="POST" id="myForm">
         {{ form.hidden_tag()}}
         <br><br>
@@ -67,9 +80,7 @@
         {{form.Etiquette.label()}}
         {{form.Etiquette()}}
         <br><br>
-        {{form.Question.label()}}
         {{form.Question()}}
-        <br><br>
         {{form.Réponse1.label()}}
         {{form.Réponse1()}}
         <br><br>
@@ -92,6 +103,7 @@
         
     
     </form>
+  
     
     <p id="a"></p>
     
