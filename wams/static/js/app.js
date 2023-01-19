@@ -11,8 +11,8 @@ $(document).ready(function() {
       success: function(data) {
         $('input[name="Label"]').val(data.Label);
         $('input[name="Etiquette"]').val(data.Etiquette);
-        $('input[name="Question"]').val(data.Question);
-        $("[name='editor']").val(data.Question);
+        $('[name="Question"]').val(data.Question);
+        //$("[name='editor']").val(data.Question);
         $('input[name="Réponse1"]').val(data.Réponse1);
         $('input[name="Réponse2"]').val(data.Réponse2);
         $('input[name="Réponse3"]').val(data.Réponse3);
@@ -22,9 +22,9 @@ $(document).ready(function() {
     });
   });
 
-  $('[name="editor"]').on("input", function(){
-    $('[name="Question"]').val($(this).val())
-  })
+  // $('[name="editor"]').on("input", function(){
+  //   $('[name="Question"]').val($(this).val())
+  // })
 
   
   $('[name="Label"]').on("input", function(){
@@ -35,6 +35,7 @@ $(document).ready(function() {
   $('[name="Label"]').val("");
   $('[name="Etiquette"]').val("");
   $('[name="Question"]').val("");
+  //$('[name="editor"]').val("");
   $('[name="Réponse1"]').val("");
   $('[name="Réponse2"]').val("");
   $('[name="Réponse3"]').val("");
