@@ -9,54 +9,48 @@
     <script src="https://cdn.jsdelivr.net/npm/markdown-it@11.0.0/dist/markdown-it.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ url_for('static', filename='js/app.js') }}"></script>
-
-    
+    <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
 
 </head>
 <body>
 
-    <script>
-        MathJax = {
-          tex: {
-            inlineMath: [['$', '$'], ['\\(', '\\)']]
-          },
-          svg: {
-            fontCache: 'global'
-          }
-        };
-    </script>
-    
-    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
-
-    <script>        
-
-
-        $(document).ready(function() {
-            // const myPackage = require('<package-name>');
-
-
-            const md = window.markdownit({
-              html: true,
-              typographer: true,
-              linkify: true,
-              breaks: true
-            });
   
-            
-            //$("[name='Question']").hide();
 
+  <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        svg: {
+          fontCache: 'global'
+        }
+      };
+  </script>
 
-            $("[name='Question']").on("input", function() {
-              
-              var markdown = $(this).val();
-              var mk = md.render(markdown);
-  
-              $("#a").html(mk);
-              MathJax.typeset();
+  <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+  <script>        
+
+      $(document).ready(function() {
+
+          const md = window.markdownit({
+            html: true,
+            typographer: true,
+            linkify: true,
+            breaks: true
           });
 
-        
+          $("[name='Question']").on("input", function() {
+            
+            var markdown = $(this).val();
+            var mk = md.render(markdown);
+
+            $("#a").html(mk);
+            MathJax.typeset();
         });
+
+      
+      });
 
       
 
@@ -102,12 +96,30 @@
 
         <br>
         <br>
+
+
         
     
     </form>
+
+    <code class="prettyprint">
+
+      <p id="a"></p>
+
+    </code>
   
+
+    <button id="R1"></button>
+    <br>
+    <button id="R2"></button>
+    <br>
+    <button id="R3"></button>
+    <br>
+    <button id="R4"></button>
+    <br>
     
-    <p id="a"></p>
+
+  
     
 </body>
 </html>
