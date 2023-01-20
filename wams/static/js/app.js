@@ -50,7 +50,14 @@ $(document).ready(function() {
         $('input[name="Réponse2"]').val(data.Réponse2);
         $('input[name="Réponse3"]').val(data.Réponse3);
         $('input[name="Réponse4"]').val(data.Réponse4);
-        
+        Réponse1Button = document.getElementById("R1")
+        Réponse1Button.innerHTML = $('input[name="Réponse1"]').val();
+        Réponse2Button = document.getElementById("R2")
+        Réponse2Button.innerHTML = $('input[name="Réponse2"]').val();
+        Réponse3Button = document.getElementById("R3")
+        Réponse3Button.innerHTML = $('input[name="Réponse3"]').val();
+        Réponse4Button = document.getElementById("R4")
+        Réponse4Button.innerHTML = $('input[name="Réponse4"]').val();
         
       }
     });
