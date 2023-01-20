@@ -3,7 +3,7 @@ from flask import render_template, redirect, url_for, jsonify, flash, request
 from wams.db import question, user_info
 from wams.forms import Form, FormInscription, FormConnexion
 from wams.db import db
-from flask_login import login_user
+from flask_login import login_user, logout_user
 
 
 
@@ -98,7 +98,13 @@ def connexion():
         if passed_user and passed_user.check_password_correction(passed_password = form.password.data):
             login_user(passed_user)
             flash(f"Connection réussie sous l'username {passed_user.login_user}", category='success')
-            return redirect(url_for('connexion'))
+            return redirect(url_for('home'))
         else:
             flash(f"Erreur, le nom d'utilisateur ne correspond pas au mot de passe !", category='danger')
     return render_template('connexion.html', form=form)
+
+@app.route('/deconnexion', methods=['GET', 'POST'])
+def deconnexion():
+    logout_user()
+    flash("Deconnexion réussie !", category='info')
+    return redirect(url_for('home'))
