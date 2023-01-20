@@ -55,6 +55,8 @@
       
 
     </script>
+    
+    {% if current_user.is_authenticated %}
     <div>
       {% for question in question %}
           <button data-id="{{ question.id }}" class="update-button">{{ question.Label }}</button>
@@ -118,8 +120,13 @@
     <button id="R4"></button>
     <br>
     
+    <a href="{{url_for('deconnexion')}}">Déconnexion</a>
 
+    {% else %}
+    <p>Il faut être connecté pour accéder au créateur de questions !</p>
+    <a href="{{url_for('connexion')}}">Connexion</a>
   
+    {% endif %}
     
 </body>
 </html>
