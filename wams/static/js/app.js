@@ -2,6 +2,8 @@
 
 $(document).ready(function() {
 
+
+
   $("[name='Réponse1']").on("input", function() {
     Réponse1Button = document.getElementById("R1")
     Réponse1Button.innerHTML = $(this).val();
@@ -26,9 +28,15 @@ $(document).ready(function() {
     Réponse4Button.innerHTML = $(this).val();
     
   });
+
+  
   
 
   $('.update-button').click(function() {
+    var clonedButton = $(this).clone().removeClass('update-button').addClass('pageQuestionButton');
+    $('#pageQuestions').append(clonedButton);
+    $('#pageQuestions').append("<br>");
+
     var QuestionId = $(this).data('id');
     $.ajax({
       type: 'GET',
@@ -43,18 +51,10 @@ $(document).ready(function() {
         $('input[name="Réponse3"]').val(data.Réponse3);
         $('input[name="Réponse4"]').val(data.Réponse4);
         
+        
       }
     });
   });
-
-  // $('[name="editor"]').on("input", function(){
-  //   $('[name="Question"]').val($(this).val())
-  // })
-
-  
-  // $('[name="Label"]').on("input", function(){
-  //     $("#text-display").text($(this).val());
-  // });
 
   $("#reset-button").click(function(){
   $('[name="Label"]').val("");
@@ -66,6 +66,10 @@ $(document).ready(function() {
   $('[name="Réponse3"]').val("");
   $('[name="Réponse4"]').val("");
   $('#a').empty()
+});
+
+$(document).on('click', '.pageQuestionButton', function() {
+  $(this).remove();
 });
 
         
