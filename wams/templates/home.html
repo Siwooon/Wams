@@ -14,9 +14,35 @@
 </head>
 <body>
 
+  <script src="https://unpkg.com/mermaid@8.14.0/dist/mermaid.min.js"></script>
+  
+  <textarea id="mermaidText"></textarea>
+<div id="mermaidDiagram"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@8.5.0/dist/mermaid.min.js"></script>
+<script>
+  var mermaidText = document.getElementById("mermaidText");
+  var mermaidDiagram = document.getElementById("mermaidDiagram");
+  
+  mermaid.initialize({
+    startOnLoad: false
+  });
+  
+  mermaidText.addEventListener("input", function() {
+    mermaid.render('mermaidDiagram', mermaidText.value, function(svgCode) {
+      mermaidDiagram.innerHTML = svgCode;
+    });
+  });
+</script>
+
+  
+
   
 
   <script>
+
+    
+
       MathJax = {
         tex: {
           inlineMath: [['$', '$'], ['\\(', '\\)']]
@@ -102,11 +128,9 @@
     
     </form>
 
-    <code class="prettyprint">
 
+   
       <p id="a"></p>
-
-    </code>
   
 
     <button id="R1"></button>
@@ -120,7 +144,10 @@
     
 
   
-    
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@9/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: false });
+    </script>
 </body>
 </html>
 
