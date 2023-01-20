@@ -67,6 +67,8 @@
     <form method="POST" id="myForm">
         {{ form.hidden_tag()}}
         <br><br>
+
+        {{form.bonne_reponse}}
         {{form.Label.label()}}
         {{form.Label()}}
         <br><br>
@@ -88,7 +90,9 @@
         {{form.Réponse4.label()}}
         {{form.Réponse4()}}
         <br><br>
-        {{form.submit()}}    
+        {{form.submit()}}   
+        
+
 
         <button type="button" id="reset-button">Tout Effacer</button>
 

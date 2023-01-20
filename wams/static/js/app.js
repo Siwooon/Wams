@@ -63,6 +63,10 @@ $(document).ready(function() {
     });
   });
 
+  $(document).on('click', '.pageQuestionButton', function() {
+    $(this).remove();
+  });
+
   $("#reset-button").click(function(){
   $('[name="Label"]').val("");
   $('[name="Etiquette"]').val("");
@@ -75,9 +79,14 @@ $(document).ready(function() {
   $('#a').empty()
 });
 
-$(document).on('click', '.pageQuestionButton', function() {
-  $(this).remove();
-});
+$('#BonneRéponse1').change(function(){
+  
+
+
+
+})
+
+
 
         
 
