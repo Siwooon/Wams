@@ -14,9 +14,35 @@
 </head>
 <body>
 
+  <script src="https://unpkg.com/mermaid@8.14.0/dist/mermaid.min.js"></script>
+  
+  <textarea id="mermaidText"></textarea>
+<div id="mermaidDiagram"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@8.5.0/dist/mermaid.min.js"></script>
+<script>
+  var mermaidText = document.getElementById("mermaidText");
+  var mermaidDiagram = document.getElementById("mermaidDiagram");
+  
+  mermaid.initialize({
+    startOnLoad: false
+  });
+  
+  mermaidText.addEventListener("input", function() {
+    mermaid.render('mermaidDiagram', mermaidText.value, function(svgCode) {
+      mermaidDiagram.innerHTML = svgCode;
+    });
+  });
+</script>
+
+  
+
   
 
   <script>
+
+    
+
       MathJax = {
         tex: {
           inlineMath: [['$', '$'], ['\\(', '\\)']]
@@ -104,11 +130,9 @@
     
     </form>
 
-    <code class="prettyprint">
 
+   
       <p id="a"></p>
-
-    </code>
   
 
     <button id="R1"></button>
@@ -126,8 +150,164 @@
     <p>Il faut être connecté pour accéder au créateur de questions !</p>
     <a href="{{url_for('connexion')}}">Connexion</a>
   
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@9/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: false });
     {% endif %}
+    </script>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
     
+    <script src="https://cdn.jsdelivr.net/npm/markdown-it@11.0.0/dist/markdown-it.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+
+</head>
+<body>
+
+  <script src="https://unpkg.com/mermaid@8.14.0/dist/mermaid.min.js"></script>
+  
+  <textarea id="mermaidText"></textarea>
+<div id="mermaidDiagram"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@8.5.0/dist/mermaid.min.js"></script>
+<script>
+  var mermaidText = document.getElementById("mermaidText");
+  var mermaidDiagram = document.getElementById("mermaidDiagram");
+  
+  mermaid.initialize({
+    startOnLoad: false
+  });
+  
+  mermaidText.addEventListener("input", function() {
+    mermaid.render('mermaidDiagram', mermaidText.value, function(svgCode) {
+      mermaidDiagram.innerHTML = svgCode;
+    });
+  });
+</script>
+
+  
+
+  
+
+  <script>
+
+    
+
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        svg: {
+          fontCache: 'global'
+        }
+      };
+  </script>
+
+  <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+  <script>        
+
+      $(document).ready(function() {
+
+          const md = window.markdownit({
+            html: true,
+            typographer: true,
+            linkify: true,
+            breaks: true
+          });
+
+          $("[name='Question']").on("input", function() {
+            
+            var markdown = $(this).val();
+            var mk = md.render(markdown);
+
+            $("#a").html(mk);
+            MathJax.typeset();
+        });
+
+      
+      });
+
+      
+
+    </script>
+    <div>
+      {% for question in question %}
+          <button data-id="{{ question.id }}" class="update-button">{{ question.Label }}</button>
+      {% endfor %}
+    </div>
+
+    <!--<textarea name="editor" id="editor-id" cols="30" rows="10"></textarea>-->
+
+    
+    
+    <form method="POST" id="myForm">
+        {{ form.hidden_tag()}}
+        <br><br>
+        {{form.Label.label()}}
+        {{form.Label()}}
+        <br><br>
+        {{form.Etiquette.label()}}
+        {{form.Etiquette()}}
+        <br><br>
+        {{form.Question.label}}
+        {{form.Question()}}
+        <br><br>
+        {{form.Réponse1.label()}}
+        {{form.Réponse1()}}
+        <br><br>
+        {{form.Réponse2.label()}}
+        {{form.Réponse2()}}
+        <br><br>
+        {{form.Réponse3.label()}}
+        {{form.Réponse3()}}
+        <br><br>
+        {{form.Réponse4.label()}}
+        {{form.Réponse4()}}
+        <br><br>
+        {{form.submit()}}    
+
+        <button type="button" id="reset-button">Tout Effacer</button>
+
+
+        <br>
+        <br>
+
+
+        
+    
+    </form>
+
+
+   
+      <p id="a"></p>
+  
+
+    <button id="R1"></button>
+    <br>
+    <button id="R2"></button>
+    <br>
+    <button id="R3"></button>
+    <br>
+    <button id="R4"></button>
+    <br>
+    
+
+  
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@9/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: false });
+    </script>
 </body>
 </html>
 
