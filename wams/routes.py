@@ -5,7 +5,7 @@ from wams.forms import Form, FormInscription, FormConnexion
 from wams.db import db
 from flask_login import login_user, logout_user
 
-globalTags=["Web", "Java", "Arithmétique", "Graphes", "a", "b", "c", "d", "e", "f", "g"]
+globalTags=["Web", "Java", "Arithmétique", "Graphes", "PAS A", "b", "c", "d", "e", "f", "g"]
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
