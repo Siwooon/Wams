@@ -5,7 +5,7 @@ from wams.db import user_info
 
 class Form(FlaskForm):
     Label = StringField(label='Label')
-    Etiquette = StringField(label='Etiquette')
+    Etiquette = StringField(label='Etiquette') #, render_kw={'readonly': True, 'placeholder' : 'Sélectionnez des étiquettes'}
     Question = TextAreaField(label='Question')
     Réponse1 = StringField(label='Réponse 1')
     Réponse2 = StringField(label='Réponse 2')
