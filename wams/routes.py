@@ -1,5 +1,5 @@
 from wams import app
-from flask import render_template, redirect, url_for, jsonify, flash, request
+from flask import render_template, redirect, url_for, jsonify, flash, request, json
 from wams.db import question, questionnaire, user_info
 from wams.forms import Form, FormInscription, FormConnexion
 from wams.db import db
@@ -64,14 +64,15 @@ def update(id):
                    Réponse4=Question.Réponse4,
                    bonne_reponse=Question.bonne_reponse)
 
-@app.route('/update/add/<int:id>', methods=['POST'])
+@app.route('/add', methods=['POST'])
 def addQuestion():
-    listeQuestions = request.json['listeQuestions']
+    listeQuestions = request.json(listeQuestions)
     while len(listeQuestions) != len(questionnaire.c):
         x = 5
         new_column = Column('Q' + x, String)
         questionnaire.add_column(new_column)
         metadata.create_all(engine)
+    
 
 
 

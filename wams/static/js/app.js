@@ -181,10 +181,10 @@ $('#BonneRéponse4').change(function(){
 $("#envoyerPageQuestions").click(function() {
   $.ajax({
     type: "POST",
-    url: '/update/add/' + QuestionId,
+    url: "/add",
     data: {'listeQuestions': listeQuestions},
     success: function() {
-      console.log("Question ajoutée !")
+      console.log("Questionnaire ajouté !")
     }
 
   })
