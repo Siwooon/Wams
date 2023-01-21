@@ -38,7 +38,7 @@ $(document).ready(function() {
     }
     }
 
-  $(".ajoutTag").click(function(){
+  $(".tagButton").click(function(){
     ajouterTag(this.id)});
 
   $(".plus").click(function(){
