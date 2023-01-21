@@ -67,7 +67,7 @@ def update(id):
 @app.route('/add', methods=['POST'])
 def addQuestion():
     listeQuestions = request.json(listeQuestions)
-    while len(listeQuestions) != len(questionnaire.c):
+    while len(listeQuestions) != len(questionnaire.c)-1:
         x = 5
         new_column = Column('Q' + x, String)
         questionnaire.add_column(new_column)

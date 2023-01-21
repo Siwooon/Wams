@@ -182,7 +182,7 @@ $("#envoyerPageQuestions").click(function() {
   $.ajax({
     type: "POST",
     url: "/add",
-    data: {'listeQuestions': listeQuestions},
+    data: listeQuestions,
     success: function() {
       console.log("Questionnaire ajouté !")
     }
