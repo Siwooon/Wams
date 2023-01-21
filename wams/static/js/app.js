@@ -70,13 +70,28 @@ $(document).ready(function() {
     document.getElementById("addTags").value = "";
   });
   
-
+  var listeQuestions= [];
   $('.update-button').click(function() {
+    var sto = $(this).text();
+    listeQuestions.push(sto);
+    console.log(listeQuestions);
+
     var clonedButton = $(this).clone().removeClass('update-button').addClass('pageQuestionButton');
     $('#pageQuestions').append(clonedButton);
     $('#pageQuestions').append("<br>");
 
     var QuestionId = $(this).data('id');
+
+    
+
+    Réponse1Button = document.getElementById("R1")
+
+    Réponse2Button = document.getElementById("R2")
+
+    Réponse3Button = document.getElementById("R3")
+
+    Réponse4Button = document.getElementById("R4")
+
     $.ajax({
       type: 'GET',
       url: '/update/' + QuestionId,
@@ -89,13 +104,9 @@ $(document).ready(function() {
         $('[name="Réponse3"]').val(data.Réponse3);
         $('[name="Réponse4"]').val(data.Réponse4);
         $('[name="bonne_reponse"]').val(data.bonne_reponse);
-        Réponse1Button = document.getElementById("R1")
         Réponse1Button.innerHTML = $('[name="Réponse1"]').val();
-        Réponse2Button = document.getElementById("R2")
         Réponse2Button.innerHTML = $('[name="Réponse2"]').val();
-        Réponse3Button = document.getElementById("R3")
         Réponse3Button.innerHTML = $('[name="Réponse3"]').val();
-        Réponse4Button = document.getElementById("R4")
         Réponse4Button.innerHTML = $('[name="Réponse4"]').val();
 
         if ($('[name="bonne_reponse"]').val()==$('[name="Réponse1"]').val()) {
@@ -119,6 +130,11 @@ $(document).ready(function() {
 
   $(document).on('click', '.pageQuestionButton', function() {
     $(this).remove();
+    var sto = $(this).text();
+    var index = listeQuestions.indexOf(sto);
+    listeQuestions.splice(index, 1);
+    
+    console.log(listeQuestions);
   });
 
   $("#reset-button").click(function(){
@@ -133,13 +149,13 @@ $(document).ready(function() {
   $('#a').empty()
 
   radiobtn1 = document.getElementById("BonneRéponse1");
-  radiobtn.checked = false;
+  radiobtn1.checked = false;
   radiobtn2 = document.getElementById("BonneRéponse2");
-  radiobtn.checked = false;
+  radiobtn2.checked = false;
   radiobtn3 = document.getElementById("BonneRéponse3");
-  radiobtn.checked = false;
+  radiobtn3.checked = false;
   radiobtn4 = document.getElementById("BonneRéponse4");
-  radiobtn.checked = false;
+  radiobtn4.checked = false;
   Réponse1Button.innerHTML = null
   Réponse2Button.innerHTML = null
   Réponse3Button.innerHTML = null
@@ -160,6 +176,21 @@ $('#BonneRéponse3').change(function(){
 
 $('#BonneRéponse4').change(function(){
   $('[name="bonne_reponse"]').val($('[name="Réponse4"]').val());
+})
+
+$("#envoyerPageQuestions").click(function() {
+  $.ajax({
+    type: "POST",
+    url: '/update/add/' + QuestionId,
+    data: {'listeQuestions': listeQuestions},
+    success: function() {
+      console.log("Question ajoutée !")
+    }
+
+  })
+
+
+
 })
 
 

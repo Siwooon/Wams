@@ -16,6 +16,17 @@ class question(db.Model):
     def __repr__(self):
         return f'Question {self.Label}'
 
+
+class questionnaire(db.Model):
+    id = db.Column(db.Integer(), primary_key=True)
+    Label = db.Column(db.String(), nullable =False)
+    Q1 = db.Column(db.String(), nullable =False)
+    Q2 = db.Column(db.String(), nullable =True)
+    Q3 = db.Column(db.String(), nullable =True)
+    Q4 = db.Column(db.String(), nullable =True)
+    Q5 = db.Column(db.String(), nullable =True)
+
+
 @login_manager.user_loader
 def load_user(id):
     return user_info.query.get(int(id))

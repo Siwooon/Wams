@@ -1,11 +1,22 @@
 from wams import app
 from flask import render_template, redirect, url_for, jsonify, flash, request
-from wams.db import question, user_info
+from wams.db import question, questionnaire, user_info
 from wams.forms import Form, FormInscription, FormConnexion
 from wams.db import db
 from flask_login import login_user, logout_user
 
-globalTags=["Web", "Java", "Arithmétique", "Graphes", "PAS A", "b", "c", "d", "e", "f", "g"]
+
+
+
+
+
+
+
+
+
+
+globalTags=["Web", "Java", "Arithmétique", "Graphes"]
+
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
@@ -57,6 +68,17 @@ def update(id):
                    Réponse3=Question.Réponse3,
                    Réponse4=Question.Réponse4,
                    bonne_reponse=Question.bonne_reponse)
+
+@app.route('/update/add/<int:id>', methods=['POST'])
+def addQuestion():
+    listeQuestions = request.json['listeQuestions']
+    while len(listeQuestions) != len(questionnaire.c):
+        x = 5
+        new_column = Column('Q' + x, String)
+        questionnaire.add_column(new_column)
+        metadata.create_all(engine)
+
+
 
 @app.route('/quest/<int:id>', methods=['POST', 'GET'])
 def quest(id):
