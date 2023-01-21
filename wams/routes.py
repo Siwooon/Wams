@@ -5,18 +5,13 @@ from wams.forms import Form, FormInscription, FormConnexion
 from wams.db import db
 from flask_login import login_user, logout_user
 
+globalTags=["Web", "Java", "Arithmétique", "Graphes", "PAS A", "b", "c", "d", "e", "f", "g"]
 
-
-
-
-
-
-
-
-
-
+from sqlalchemy import Column, String, create_engine, MetaData
 globalTags=["Web", "Java", "Arithmétique", "Graphes"]
-
+engine = create_engine('sqlite:///wams.db')
+connection = engine.connect()
+metadata = MetaData()
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
