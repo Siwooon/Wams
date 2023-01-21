@@ -81,6 +81,20 @@ $(document).ready(function() {
         Réponse4Button = document.getElementById("R4")
         Réponse4Button.innerHTML = $('input[name="Réponse4"]').val();
 
+        if ($('input[name="bonne_reponse"]').val()==$('input[name="Réponse1"]').val()) {
+          radiobtn = document.getElementById("BonneRéponse1");
+          radiobtn.checked = true;
+        } else if ($('input[name="bonne_reponse"]').val()==$('input[name="Réponse2"]').val()) {
+          radiobtn = document.getElementById("BonneRéponse2");
+          radiobtn.checked = true;
+        } else if ($('input[name="bonne_reponse"]').val()==$('input[name="Réponse3"]').val()) {
+          radiobtn = document.getElementById("BonneRéponse3");
+          radiobtn.checked = true;
+        } else if ($('input[name="bonne_reponse"]').val()==$('input[name="Réponse4"]').val()) {
+          radiobtn = document.getElementById("BonneRéponse4");
+          radiobtn.checked = true;
+        } 
+
         
       }
     });
@@ -100,6 +114,16 @@ $(document).ready(function() {
   $('[name="Réponse3"]').val("");
   $('[name="Réponse4"]').val("");
   $('#a').empty()
+
+  radiobtn1 = document.getElementById("BonneRéponse1");
+  radiobtn.checked = false;
+  radiobtn2 = document.getElementById("BonneRéponse2");
+  radiobtn.checked = false;
+  radiobtn3 = document.getElementById("BonneRéponse3");
+  radiobtn.checked = false;
+  radiobtn4 = document.getElementById("BonneRéponse4");
+  radiobtn.checked = false;
+  Réponse1Button.innerHTML = null
 });
 
 $('#BonneRéponse1').change(function(){

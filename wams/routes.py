@@ -56,7 +56,8 @@ def update(id):
                    Réponse1=Question.Réponse1,
                    Réponse2=Question.Réponse2,
                    Réponse3=Question.Réponse3,
-                   Réponse4=Question.Réponse4,)
+                   Réponse4=Question.Réponse4,
+                   bonne_reponse=Question.bonne_reponse)
 
 @app.route('/quest/<int:id>', methods=['POST', 'GET'])
 def quest(id):
