@@ -5,8 +5,7 @@ from wams.forms import Form, FormInscription, FormConnexion
 from wams.db import db
 from flask_login import login_user, logout_user
 
-globalTags=["Web", "Java", "Arithmétique", "Graphes"]
-
+globalTags=["Web", "Java", "Arithmétique", "Graphes", "a", "b", "c", "d", "e", "f", "g"]
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
@@ -44,7 +43,7 @@ def home():
         db.session.commit()
     
     
-    return render_template('home.html', form = form, question = AllQuestion, globalTags=globalTags, len=len(globalTags))
+    return render_template('home.html', form = form, question = AllQuestion, globalTags=globalTags, len=len(globalTags), len9 = len(globalTags) if len(globalTags)<9 else 9)
 
 
 @app.route('/update/<int:id>', methods=['GET'])
