@@ -14,6 +14,7 @@
 </head>
 <body>
 
+
   <script>
 
     
@@ -53,7 +54,6 @@
       
       });
 
-      $("input[name='Etiquette']").hide();
 
     </script>
     
@@ -63,17 +63,36 @@
           <button data-id="{{ question.id }}" class="update-button">{{ question.Label }}</button>
       {% endfor %}
     </div>
+
+    <!--<textarea name="editor" id="editor-id" cols="30" rows="10"></textarea>-->
+
+    <!-- <input type="text" value = "azfazfa"></input>
+
+    <script> //Une fonction qui sert à ajouter des tags comme son nom l'indique
+    
+    function ajoutTag(tagAttr, tag){
+      if(tagAttr == ""){
+        return tag;
+      }else{
+        tagAttr += ", " + tag
+      }
+    }
+
+    </script> -->
     
     <form method="POST" id="myForm">
         {{ form.hidden_tag()}}
         <br><br>
-
-        {{form.bonne_reponse}}
         {{form.Label.label()}}
         {{form.Label()}}
         <br><br>
         {{form.Etiquette.label()}}
         {{form.Etiquette()}}
+        <!-- {% for tag in range(0, len) %}
+          <button id = "{{ globalTags[tag] }}" onclick="ajoutTag(form.Etiquette, globalTags[tag])">{{ globalTags[tag] }}</button>
+          
+        {% endfor %}
+        <button id = "+">+</button> -->
         <br><br>
         {{form.Question.label}}
         {{form.Question()}}
@@ -90,9 +109,7 @@
         {{form.Réponse4.label()}}
         {{form.Réponse4()}}
         <br><br>
-        {{form.submit()}}   
-        
-
+        {{form.submit()}}    
 
         <button type="button" id="reset-button">Tout Effacer</button>
 
@@ -100,6 +117,8 @@
         <br>
         <br>
 
+
+        
     
     </form>
 
@@ -108,16 +127,15 @@
       <p id="a"></p>
   
 
-    <button id="R1"></button>   <input type="checkbox" id="BonneRéponse1">
+    <button id="R1"></button>
     <br>
-    <button id="R2"></button>   <input type="checkbox" id="BonneRéponse2">
+    <button id="R2"></button>
     <br>
-    <button id="R3"></button>   <input type="checkbox" id="BonneRéponse3">
+    <button id="R3"></button>
     <br>
-    <button id="R4"></button>   <input type="checkbox" id="BonneRéponse4">
-    <br><br>
-
-
+    <button id="R4"></button>
+    <br>
+    
     <div id="pageQuestions">
 
     </div>
@@ -125,16 +143,11 @@
     <button id="envoyerPageQuestions">Créer une nouvelle page de questions</button>
     <br><br>
 
-
-    
     <a href="{{url_for('deconnexion')}}">Déconnexion</a>
 
     {% else %}
     <p>Il faut être connecté pour accéder au créateur de questions !</p>
     <a href="{{url_for('connexion')}}">Connexion</a>
     {% endif %}
-
-
-
 </body>
 </html>
