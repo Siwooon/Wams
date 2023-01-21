@@ -5,7 +5,7 @@ from wams.forms import Form, FormInscription, FormConnexion
 from wams.db import db
 from flask_login import login_user, logout_user
 
-#globalTags=["Web", "Java", "Arithmétique", "Graphes"]
+globalTags=["Web", "Java", "Arithmétique", "Graphes"]
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -44,7 +44,7 @@ def home():
         db.session.commit()
     
     
-    return render_template('home.html', form = form, question = AllQuestion) #globalTags=globalTags, len=len(globalTags)
+    return render_template('home.html', form = form, question = AllQuestion, globalTags=globalTags, len=len(globalTags))
 
 
 @app.route('/update/<int:id>', methods=['GET'])
@@ -60,15 +60,14 @@ def update(id):
 
 @app.route('/quest/<int:id>', methods=['POST', 'GET'])
 def quest(id):
-    
-    # Question = question.query.get(id)
-    # bonnesReps = question.query.with_entities(question.bonne_reponse)
-    # bonneRep = str(bonnesReps[id]).strip("()',")
-    # reponse = request.form.get('reponses')
-    # if reponse == bonneRep:
-    #     flash("Bonne réponse !", category='success')
-    # else:
-    #     flash("Mauvaise réponse !", category='danger')
+    Question = question.query.get(id)
+    bonnesReps = question.query.with_entities(question.bonne_reponse)
+    bonneRep = str(bonnesReps[id]).strip("()',")
+    reponse = request.form.get('reponses')
+    if reponse == bonneRep:
+        flash("Bonne réponse !", category='success')
+    else:
+        flash("Mauvaise réponse !", category='danger')
     return render_template('question.html', Label=Question.Label, 
                    Etiquette=Question.Etiquette, 
                    Question=Question.Question, 
