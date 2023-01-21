@@ -94,7 +94,7 @@
           <button id = "{{ globalTags[tag] }}" class = "tagButton" type = "button" onclick = "ajoutTag(this.id)">{{ globalTags[tag] }}</button>
           
         {% endfor %}
-        <button id = "+">+</button> 
+        <button id = "+" type = "button">+</button> 
         <br><br>
         {{form.Question.label}}
         {{form.Question()}}
