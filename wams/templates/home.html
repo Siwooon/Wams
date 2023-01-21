@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Home</title>
     
     <script src="https://cdn.jsdelivr.net/npm/markdown-it@11.0.0/dist/markdown-it.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -13,7 +13,6 @@
 
 </head>
 <body>
-
 
   <script>
 
@@ -50,10 +49,8 @@
             $("#a").html(mk);
             MathJax.typeset();
         });
-
       
       });
-
 
     </script>
     
@@ -63,10 +60,6 @@
           <button data-id="{{ question.id }}" class="update-button">{{ question.Label }}</button>
       {% endfor %}
     </div>
-
-    <!--<textarea name="editor" id="editor-id" cols="30" rows="10"></textarea>-->
-
-     <input type="text" value = "azfazfa" readonly></input>
 
     <script> //Une fonction qui sert à ajouter des tags comme son nom l'indique
     
@@ -94,7 +87,7 @@
           <button id = "{{ globalTags[tag] }}" class = "tagButton" type = "button" onclick = "ajoutTag(this.id)">{{ globalTags[tag] }}</button>
           
         {% endfor %}
-        <button id = "+" type = "button">+</button> 
+        <button id = "+">+</button> 
         <br><br>
         {{form.Question.label}}
         {{form.Question()}}
@@ -115,30 +108,26 @@
 
         <button type="button" id="reset-button">Tout Effacer</button>
 
-
         <br>
         <br>
 
-
-        
-    
     </form>
-
-
    
       <p id="a"></p>
   
-
-    <button id="R1"></button>
+    <button id="R1"></button> <input type="radio" id="BonneRéponse1" name="choisirReponse">
     <br>
-    <button id="R2"></button>
+    <button id="R2"></button> <input type="radio" id="BonneRéponse2" name="choisirReponse">
     <br>
-    <button id="R3"></button>
+    <button id="R3"></button> <input type="radio" id="BonneRéponse3" name="choisirReponse">
     <br>
-    <button id="R4"></button>
+    <button id="R4"></button> <input type="radio" id="BonneRéponse4" name="choisirReponse">
+    <br>
     <br>
     
     <div id="pageQuestions">
+      <br>
+    <br>
 
     </div>
     <br><br>
@@ -151,5 +140,8 @@
     <p>Il faut être connecté pour accéder au créateur de questions !</p>
     <a href="{{url_for('connexion')}}">Connexion</a>
     {% endif %}
+
+
+    
 </body>
 </html>

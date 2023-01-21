@@ -1,8 +1,7 @@
 
 
 $(document).ready(function() {
-
-
+  // $('input[name="bonne_reponse"]').hide();
 
   $("[name='Réponse1']").on("input", function() {
     Réponse1Button = document.getElementById("R1")
@@ -45,11 +44,11 @@ $(document).ready(function() {
         $('input[name="Label"]').val(data.Label);
         $('input[name="Etiquette"]').val(data.Etiquette);
         $('[name="Question"]').val(data.Question);
-        //$("[name='editor']").val(data.Question);
         $('input[name="Réponse1"]').val(data.Réponse1);
         $('input[name="Réponse2"]').val(data.Réponse2);
         $('input[name="Réponse3"]').val(data.Réponse3);
         $('input[name="Réponse4"]').val(data.Réponse4);
+        $('input[name="bonne_reponse"]').val(data.bonne_reponse);
         Réponse1Button = document.getElementById("R1")
         Réponse1Button.innerHTML = $('input[name="Réponse1"]').val();
         Réponse2Button = document.getElementById("R2")
@@ -58,6 +57,7 @@ $(document).ready(function() {
         Réponse3Button.innerHTML = $('input[name="Réponse3"]').val();
         Réponse4Button = document.getElementById("R4")
         Réponse4Button.innerHTML = $('input[name="Réponse4"]').val();
+
         
       }
     });
@@ -80,10 +80,19 @@ $(document).ready(function() {
 });
 
 $('#BonneRéponse1').change(function(){
-  
+  $('input[name="bonne_reponse"]').val($('input[name="Réponse1"]').val());
+})
 
+$('#BonneRéponse2').change(function(){
+  $('input[name="bonne_reponse"]').val($('input[name="Réponse2"]').val());
+})
 
+$('#BonneRéponse3').change(function(){
+  $('input[name="bonne_reponse"]').val($('input[name="Réponse3"]').val());
+})
 
+$('#BonneRéponse4').change(function(){
+  $('input[name="bonne_reponse"]').val($('input[name="Réponse4"]').val());
 })
 
 
