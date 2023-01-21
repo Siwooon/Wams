@@ -73,7 +73,7 @@
         {{form.Etiquette.label()}}
         {{form.Etiquette}}
         {% for tag in range(0, len) %}
-          <button id = "{{ globalTags[tag] }}" class = "tagButton" type = "button" onclick = "ajoutTag(this.id)">{{ globalTags[tag] }}</button>
+          <button id = "{{ globalTags[tag] }}" class = "tagButton" type = "button">{{ globalTags[tag] }}</button>
           
         {% endfor %}
         <button id = "+" type = "button" class = "plus">+</button> 
