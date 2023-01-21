@@ -42,13 +42,13 @@
           });
 
           $("[name='Question']").on("input", function() {
-            
+
             var markdown = $(this).val();
             var mk = md.render(markdown);
 
-            $("#a").html(mk);
+            $("#a").html(PR.prettyPrintOne(mk));
             MathJax.typeset();
-        });
+          });
       
       });
 
@@ -60,20 +60,6 @@
           <button data-id="{{ question.id }}" class="update-button">{{ question.Label }}</button>
       {% endfor %}
     </div>
-
-    <script> //Une fonction qui sert à ajouter des tags comme son nom l'indique
-    
-    function ajoutTag(idTag){
-    if(document.getElementById("Etiquette").value == ""){
-      document.getElementById("Etiquette").value += idTag;
-    }else{
-      if (!document.getElementById("Etiquette").value.includes(idTag)){
-      document.getElementById("Etiquette").value += ", " + idTag;
-      }
-    }
-    }
-
-    </script> 
     
     <form method="POST" id="myForm">
         {{ form.hidden_tag()}}
@@ -90,7 +76,9 @@
           <button id = "{{ globalTags[tag] }}" class = "tagButton" type = "button" onclick = "ajoutTag(this.id)">{{ globalTags[tag] }}</button>
           
         {% endfor %}
-        <button id = "+">+</button> 
+        <button id = "+" type = "button" class = "plus">+</button> 
+        <input type="text" id = "addTags" class = "addTags" onkeydown="return (event.keyCode!=13);" style = 'visibility: hidden';/>
+        <button type = "button" id = "submitCustomTags" class = "submitCustomTags" style = 'visibility: hidden;'>Ajouter l'étiquette</button> 
         <br><br>
         {{form.Question.label}}
         {{form.Question()}}
