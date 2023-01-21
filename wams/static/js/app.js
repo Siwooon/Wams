@@ -67,30 +67,30 @@ $(document).ready(function() {
         $('input[name="Label"]').val(data.Label);
         $('input[name="Etiquette"]').val(data.Etiquette);
         $('[name="Question"]').val(data.Question);
-        $('input[name="Réponse1"]').val(data.Réponse1);
-        $('input[name="Réponse2"]').val(data.Réponse2);
-        $('input[name="Réponse3"]').val(data.Réponse3);
-        $('input[name="Réponse4"]').val(data.Réponse4);
-        $('input[name="bonne_reponse"]').val(data.bonne_reponse);
+        $('[name="Réponse1"]').val(data.Réponse1);
+        $('[name="Réponse2"]').val(data.Réponse2);
+        $('[name="Réponse3"]').val(data.Réponse3);
+        $('[name="Réponse4"]').val(data.Réponse4);
+        $('[name="bonne_reponse"]').val(data.bonne_reponse);
         Réponse1Button = document.getElementById("R1")
-        Réponse1Button.innerHTML = $('input[name="Réponse1"]').val();
+        Réponse1Button.innerHTML = $('[name="Réponse1"]').val();
         Réponse2Button = document.getElementById("R2")
-        Réponse2Button.innerHTML = $('input[name="Réponse2"]').val();
+        Réponse2Button.innerHTML = $('[name="Réponse2"]').val();
         Réponse3Button = document.getElementById("R3")
-        Réponse3Button.innerHTML = $('input[name="Réponse3"]').val();
+        Réponse3Button.innerHTML = $('[name="Réponse3"]').val();
         Réponse4Button = document.getElementById("R4")
-        Réponse4Button.innerHTML = $('input[name="Réponse4"]').val();
+        Réponse4Button.innerHTML = $('[name="Réponse4"]').val();
 
-        if ($('input[name="bonne_reponse"]').val()==$('input[name="Réponse1"]').val()) {
+        if ($('[name="bonne_reponse"]').val()==$('[name="Réponse1"]').val()) {
           radiobtn = document.getElementById("BonneRéponse1");
           radiobtn.checked = true;
-        } else if ($('input[name="bonne_reponse"]').val()==$('input[name="Réponse2"]').val()) {
+        } else if ($('[name="bonne_reponse"]').val()==$('[name="Réponse2"]').val()) {
           radiobtn = document.getElementById("BonneRéponse2");
           radiobtn.checked = true;
-        } else if ($('input[name="bonne_reponse"]').val()==$('input[name="Réponse3"]').val()) {
+        } else if ($('[name="bonne_reponse"]').val()==$('[name="Réponse3"]').val()) {
           radiobtn = document.getElementById("BonneRéponse3");
           radiobtn.checked = true;
-        } else if ($('input[name="bonne_reponse"]').val()==$('input[name="Réponse4"]').val()) {
+        } else if ($('[name="bonne_reponse"]').val()==$('[name="Réponse4"]').val()) {
           radiobtn = document.getElementById("BonneRéponse4");
           radiobtn.checked = true;
         } 
@@ -127,19 +127,19 @@ $(document).ready(function() {
 });
 
 $('#BonneRéponse1').change(function(){
-  $('input[name="bonne_reponse"]').val($('input[name="Réponse1"]').val());
+  $('[name="bonne_reponse"]').val($('[name="Réponse1"]').val());
 })
 
 $('#BonneRéponse2').change(function(){
-  $('input[name="bonne_reponse"]').val($('input[name="Réponse2"]').val());
+  $('[name="bonne_reponse"]').val($('[name="Réponse2"]').val());
 })
 
 $('#BonneRéponse3').change(function(){
-  $('input[name="bonne_reponse"]').val($('input[name="Réponse3"]').val());
+  $('[name="bonne_reponse"]').val($('[name="Réponse3"]').val());
 })
 
 $('#BonneRéponse4').change(function(){
-  $('input[name="bonne_reponse"]').val($('input[name="Réponse4"]').val());
+  $('[name="bonne_reponse"]').val($('[name="Réponse4"]').val());
 })
 
 
