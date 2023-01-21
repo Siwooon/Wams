@@ -76,9 +76,11 @@
           <button id = "{{ globalTags[tag] }}" class = "tagButton" type = "button">{{ globalTags[tag] }}</button>
           
         {% endfor %}
+
         <button id = "+" type = "button" class = "plus">+</button> 
         <input type="text" id = "addTags" class = "addTags" onkeydown="return (event.keyCode!=13);" style = 'visibility: hidden';/>
         <button type = "button" id = "submitCustomTags" class = "submitCustomTags" style = 'visibility: hidden;'>Ajouter l'étiquette</button> 
+        
         <br><br>
         {{form.Question.label}}
         {{form.Question()}}

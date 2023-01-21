@@ -108,11 +108,11 @@ $(document).ready(function() {
   $('[name="Label"]').val("");
   $('[name="Etiquette"]').val("");
   $('[name="Question"]').val("");
-  //$('[name="editor"]').val("");
   $('[name="Réponse1"]').val("");
   $('[name="Réponse2"]').val("");
   $('[name="Réponse3"]').val("");
   $('[name="Réponse4"]').val("");
+  $('[name="bonne_reponse"]').val("");
   $('#a').empty()
 
   radiobtn1 = document.getElementById("BonneRéponse1");
@@ -124,6 +124,9 @@ $(document).ready(function() {
   radiobtn4 = document.getElementById("BonneRéponse4");
   radiobtn.checked = false;
   Réponse1Button.innerHTML = null
+  Réponse2Button.innerHTML = null
+  Réponse3Button.innerHTML = null
+  Réponse4Button.innerHTML = null
 });
 
 $('#BonneRéponse1').change(function(){
@@ -141,6 +144,8 @@ $('#BonneRéponse3').change(function(){
 $('#BonneRéponse4').change(function(){
   $('[name="bonne_reponse"]').val($('[name="Réponse4"]').val());
 })
+
+
 
 
 
