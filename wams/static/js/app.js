@@ -28,7 +28,30 @@ $(document).ready(function() {
     
   });
 
-  
+  function ajouterTag(newTag){
+    if(document.getElementById("Etiquette").value == ""){
+      document.getElementById("Etiquette").value += newTag;
+    }else{
+      if (!document.getElementById("Etiquette").value.includes(newTag)){
+      document.getElementById("Etiquette").value += ", " + newTag;
+      }
+    }
+    }
+
+  $(".ajoutTag").click(function(){
+    ajouterTag(this.id)});
+
+  $(".plus").click(function(){
+    document.getElementById("submitCustomTags").style.visibility = 'visible';
+    document.getElementById("addTags").style.visibility = 'visible';
+  });
+
+  $(".submitCustomTags").click(function(){
+    document.getElementById("addTags").style.visibility = 'hidden';
+    document.getElementById("submitCustomTags").style.visibility = 'hidden';
+    ajouterTag(document.getElementById("addTags").value);
+    document.getElementById("addTags").value = "";
+  });
   
 
   $('.update-button').click(function() {
