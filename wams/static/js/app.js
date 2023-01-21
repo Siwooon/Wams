@@ -42,13 +42,30 @@ $(document).ready(function() {
     ajouterTag(this.id)});
 
   $(".plus").click(function(){
-    document.getElementById("submitCustomTags").style.visibility = 'visible';
-    document.getElementById("addTags").style.visibility = 'visible';
+    tagListPlus = document.getElementsByClassName("tagButtonPlus");
+    document.getElementById("submitCustomTags").style.display = 'block';
+    document.getElementById("addTags").style.display = 'block';
+    for (var i = 0 ; i < tagListPlus.length ; i++){
+      tagListPlus[i].style.display='block';
+    }
+    this.style.display = 'none';
+    document.getElementById("moins").style.display = 'block';
+  });
+  
+  $(".moins").click(function(){
+    tagListPlus = document.getElementsByClassName("tagButtonPlus");
+    document.getElementById("submitCustomTags").style.display = 'none';
+    document.getElementById("addTags").style.display = 'none';
+    for (var i = 0 ; i < tagListPlus.length ; i++){
+      tagListPlus[i].style.display='none';
+    }
+    this.style.display = 'none';
+    document.getElementById("plus").style.display = 'block';
   });
 
   $(".submitCustomTags").click(function(){
-    document.getElementById("addTags").style.visibility = 'hidden';
-    document.getElementById("submitCustomTags").style.visibility = 'hidden';
+    document.getElementById("addTags").style.display = 'none';
+    document.getElementById("submitCustomTags").style.display = 'none';
     ajouterTag(document.getElementById("addTags").value);
     document.getElementById("addTags").value = "";
   });
