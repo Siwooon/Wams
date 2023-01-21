@@ -7,11 +7,11 @@ class Form(FlaskForm):
     Label = StringField(label='Label')
     Etiquette = StringField(label='Etiquette') #, render_kw={'readonly': True, 'placeholder' : 'Sélectionnez des étiquettes'}
     Question = TextAreaField(label='Question')
-    Réponse1 = StringField(label='Réponse 1')
-    Réponse2 = StringField(label='Réponse 2')
-    Réponse3 = StringField(label='Réponse 3')
-    Réponse4 = StringField(label='Réponse 4')
-    bonne_reponse = StringField(label='bonne_reponse')
+    Réponse1 = TextAreaField(label='Réponse 1')
+    Réponse2 = TextAreaField(label='Réponse 2')
+    Réponse3 = TextAreaField(label='Réponse 3')
+    Réponse4 = TextAreaField(label='Réponse 4')
+    bonne_reponse = TextAreaField(label='bonne_reponse')
 
     submit = SubmitField(label='Envoyer')
 
