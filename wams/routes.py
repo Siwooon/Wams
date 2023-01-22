@@ -27,6 +27,11 @@ def home():
         Réponse3 =form.Réponse3.data
         Réponse4 = form.Réponse4.data
         bonne_reponse = form.bonne_reponse.data
+        
+         listNewTags = Etiquette.split(",")
+        for i in range(len(listNewTags)) :
+            if not(listNewTags[i] in globalTags) :
+                globalTags.append(listNewTags[i])
 
         if not Label.strip() or not Etiquette.strip() or not Questiondata.strip() or not Réponse1.strip() or not Réponse2.strip() or not Réponse3.strip() or not Réponse4.strip():
             raise ValueError("Les champs ne peuvent pas être vides ou remplis d'espaces uniquement.")
