@@ -5,7 +5,7 @@ from wams.forms import Form, FormInscription, FormConnexion
 from wams.db import db
 from flask_login import login_user, logout_user
 
-globalTags=["Web", "Java", "Arithmétique", "Graphes", "PAS A", "b", "c", "d", "e", "f", "g"]
+globalTags=[]
 
 from sqlalchemy import Column, String, create_engine, MetaData
 globalTags=["Web", "Java", "Arithmétique", "Graphes"]
@@ -23,6 +23,9 @@ def pagesQuestion():
 
 @app.route('/editeur', methods=['GET', 'POST'])
 def editeur():
+    for tag in Etiquettes.query.all():
+        if not(tag.id in globalTags): #Initialise les étiquettes de base
+            globalTags.append(tag.id)
     AllQuestion = question.query.all()
     form = Form()
     if form.validate_on_submit():
@@ -38,8 +41,14 @@ def editeur():
         
         listNewTags = Etiquette.split(",")
         for i in range(len(listNewTags)) :
-            if not(listNewTags[i] in globalTags) :
-                globalTags.append(listNewTags[i])
+            if not bool(Etiquettes.query.filter_by(id=listNewTags[i]).first()): #Ajout des étiquettes submit à la db sans doublon
+                newTag = Etiquettes(id=listNewTags[i])
+                db.session.add(newTag)
+                db.session.commit()
+                
+        for tag in Etiquettes.query.all():
+            if not bool(Etiquettes.query.filter_by(id=tag.id).first()): #Ajout des nouvelles étiquettes de la db dans une liste envoyée au html
+                globalTags.append(tag.id)
 
         if not Label.strip() or not Etiquette.strip() or not Questiondata.strip() or not Réponse1.strip() or not Réponse2.strip() or not Réponse3.strip() or not Réponse4.strip():
             raise ValueError("Les champs ne peuvent pas être vides ou remplis d'espaces uniquement.")
