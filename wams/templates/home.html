@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block title %}
+    Home
+{% endblock %}
+
+{% block content %}
+    <a href="{{url_for('editeur')}}">Acceder à l'éditeur</a>
+    <a href="{{url_for('pagesQuestion')}}">Acceder aux pages</a>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}
+    Connexion
+{% endblock %}
+
+{% block content %}
+
+<form method="post" class="connexion">
+    {{ form.hidden_tag() }}
+    <h1>Connectez vous</h1>
+    {{ form.username.label() }}
+    {{ form.username(placeholder="Username") }}
+
+    {{ form.password.label() }}
+    {{ form.password(placeholder="Mot de passe") }}
+    {{ form.submit() }}
+
+    <br>
+
+    <h4><a href="{{ url_for('inscription') }}">Créer un compte</a></h6>
+</form>
+
+{% endblock  %}
