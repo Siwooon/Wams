@@ -188,10 +188,12 @@ $('#BonneRéponse4').change(function(){
 })
 
 $("#envoyerPageQuestions").click(function() {
+  var listeQ = JSON.stringify(listeQuestions);
+  
   $.ajax({
     type: "POST",
     url: "/add",
-    data: listeQuestions,
+    data: listeQ,
     success: function() {
       console.log("Questionnaire ajouté !")
     }
