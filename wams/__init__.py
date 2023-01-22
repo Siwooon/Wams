@@ -7,7 +7,7 @@ from flask_login import LoginManager
 
 app = Flask(__name__, static_folder='static')
 
-app.config ['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///wams.db'
+app.config ['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///wams.db?check_same_thread=False'
 app.config['SECRET_KEY'] = '34d5960ea9a2224236324903'
 Markdown(app)
 db = SQLAlchemy(app)

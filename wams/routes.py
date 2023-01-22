@@ -1,17 +1,20 @@
 from wams import app
 from flask import render_template, redirect, url_for, jsonify, flash, request, json
-from wams.db import question, questionnaire, user_info
-from wams.forms import Form, FormInscription, FormConnexion
 from wams.db import db
+from wams.db import question, user_info
+from wams.forms import Form, FormInscription, FormConnexion
+
 from flask_login import login_user, logout_user
 
 globalTags=[]
 
-from sqlalchemy import Column, String, create_engine, MetaData
+from sqlalchemy import Column, String, create_engine, MetaData, Table
 globalTags=["Web", "Java", "Arithmétique", "Graphes"]
-engine = create_engine('sqlite:///wams.db')
+engine = create_engine('sqlite:///instance/wams.db?check_same_thread=False')
 connection = engine.connect()
+print(engine.table_names())
 metadata = MetaData()
+questionnaireTable = Table("questionnaire", metadata, autoload=True, autoload_with=engine)
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
@@ -88,14 +91,28 @@ def update(id):
 
 @app.route('/add', methods=['POST'])
 def addQuestion():
-    listeQuestions = request.json(listeQuestions)
-    while len(listeQuestions) != len(questionnaire.c)-1:
-        x = 5
-        new_column = Column('Q' + x, String)
-        questionnaire.add_column(new_column)
-        metadata.create_all(engine)
+    listeQuestions = request.get_json()['listeQuestions']
+    x = len(questionnaireTable.columns)-2
+    print(listeQuestions)
+    print(len(listeQuestions))
+    nbcolonnes = len(questionnaireTable.columns) - 2
+    print(nbcolonnes)
     
+    while len(listeQuestions) > nbcolonnes:
+        x +=1
+        Column_name = f'Q{x}'
 
+        print(Column_name)
+        query = f'ALTER TABLE questionnaire ADD {Column_name};'
+        connection.execute(query)
+        nbcolonnes +=1
+    
+    name_columns = [col.name for col in questionnaireTable.columns]
+    for i, element in enumerate(listeQuestions, start=2):
+        print(element)
+        db.session.execute(questionnaireTable.update().values({name_columns[i]: element}))
+    db.session.commit()
+    return redirect(url_for('editeur'))
 
 
 @app.route('/quest/<int:id>', methods=['POST', 'GET'])
