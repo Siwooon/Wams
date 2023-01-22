@@ -2,6 +2,9 @@ from wams import db, login_manager
 from wams import bcrypt
 from flask_login import UserMixin   
 
+class Etiquettes(db.Model):
+    id = db.Column(db.String(), primary_key=True)
+
 class question(db.Model): 
     id = db.Column(db.Integer(), primary_key=True)
     Label = db.Column(db.String(), nullable =False)
