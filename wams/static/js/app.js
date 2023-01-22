@@ -28,14 +28,14 @@ $(document).ready(function() {
     
   });
 
-  function ajouterTag(newTag){
+  function ajouterTag(newTag){ //Fonction permettant d'ajouter à l'input "Etiquette" le tag en paramètre
     if(document.getElementById("Etiquette").value == ""){
       document.getElementById("Etiquette").value += newTag;
     }else{
       if (!document.getElementById("Etiquette").value.includes(newTag)){
       document.getElementById("Etiquette").value += "," + newTag;
       }
-      else{
+      else{ //Suppression des tags cliqués une deuxième fois
         if(document.getElementById("Etiquette").value == newTag){
           document.getElementById("Etiquette").value = "";
         }else if(document.getElementById("Etiquette").value.startsWith(newTag+",")){
@@ -50,7 +50,7 @@ $(document).ready(function() {
   $(".tagButton").click(function(){
     ajouterTag(this.id)});
 
-  $(".plus").click(function(){
+  $(".plus").click(function(){ //fonction pour afficher plus d'éléments dans le html
     tagListPlus = document.getElementsByClassName("tagButtonPlus");
     document.getElementById("submitCustomTags").style.display = 'block';
     document.getElementById("addTags").style.display = 'block';
@@ -61,7 +61,7 @@ $(document).ready(function() {
     document.getElementById("moins").style.display = 'block';
   });
   
-  $(".moins").click(function(){
+  $(".moins").click(function(){ //À l'inverse, affiche moins d'éléments
     tagListPlus = document.getElementsByClassName("tagButtonPlus");
     document.getElementById("submitCustomTags").style.display = 'none';
     document.getElementById("addTags").style.display = 'none';
@@ -72,7 +72,7 @@ $(document).ready(function() {
     document.getElementById("plus").style.display = 'block';
   });
 
-  $(".submitCustomTags").click(function(){
+  $(".submitCustomTags").click(function(){ //Ajout des tags personnalisés
     document.getElementById("addTags").style.display = 'none';
     document.getElementById("submitCustomTags").style.display = 'none';
     ajouterTag(document.getElementById("addTags").value);
