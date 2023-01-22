@@ -33,7 +33,7 @@ $(document).ready(function() {
       document.getElementById("Etiquette").value += newTag;
     }else{
       if (!document.getElementById("Etiquette").value.includes(newTag)){
-      document.getElementById("Etiquette").value += ", " + newTag;
+      document.getElementById("Etiquette").value += "," + newTag;
       }
     }
     }
