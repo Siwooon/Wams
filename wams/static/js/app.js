@@ -35,6 +35,15 @@ $(document).ready(function() {
       if (!document.getElementById("Etiquette").value.includes(newTag)){
       document.getElementById("Etiquette").value += "," + newTag;
       }
+      else{
+        if(document.getElementById("Etiquette").value == newTag){
+          document.getElementById("Etiquette").value = "";
+        }else if(document.getElementById("Etiquette").value.startsWith(newTag+",")){
+          document.getElementById("Etiquette").value = document.getElementById("Etiquette").value.replace(newTag+",", "");
+        }else if(document.getElementById("Etiquette").value.startsWith(","+newTag, document.getElementById("Etiquette").length - newTag.length)){
+          document.getElementById("Etiquette").value = document.getElementById("Etiquette").value.replace(","+newTag, "");
+        }else document.getElementById("Etiquette").value = document.getElementById("Etiquette").value.replace(","+newTag, "");
+      }
     }
     }
 
