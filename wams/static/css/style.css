@@ -1,5 +1,5 @@
 body {
-    background-color: #37474F;
+    background-color: #F8F5FA;
 }
 #div_connexion {
 
@@ -126,3 +126,7 @@ textarea {
     color: black;
 }
 
+
+.alert.alet-danger {
+    color: white;
+}

@@ -4,11 +4,14 @@
 {% endblock %}
 
 {% block lienQuestions %}
-
+<div style="background-color: rgba(0, 0, 0, 0.37); width: 500px; height: 450px;padding: 40px;position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%); border-radius: 40px;">
 {% for i in range (idQuestions | length) %}
-
-    <a href="/quest/{{idQuestions[i]}}">{{labelQuestions[i]}}</a>
+    <div class="linkQuestion">
+        <a href="/quest/{{idQuestions[i]}}" class="linkQuestion">{{labelQuestions[i]}}</a>
+    </div>
+    <br><br>
+    
  
 {% endfor %}
-
+</div>
 {% endblock %}

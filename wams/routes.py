@@ -152,7 +152,19 @@ def q(id):
 def quest(id):
     Question = question.query.get(id)
     bonnesReps = question.query.with_entities(question.bonne_reponse)
+    bonneRep = str(bonnesReps[id-1]).strip("()',").replace("\\n", "\n").replace("\\r", "")
+    print(bonneRep)
+
     reponse = request.form.get('reponses')
+    print(reponse)
+    if reponse == bonneRep:
+        flash("Bonne réponse !", category='success')
+    elif (request.form.get('reponses') == None) :
+        # flash("Veuillez répondre à la question", category='danger')
+        None
+
+    else:
+        flash("Mauvaise réponse !", category='danger')
     return render_template('question.html', Label=Question.Label, 
                    Etiquette=Question.Etiquette, 
                    Question=Question.Question, 
@@ -160,7 +172,6 @@ def quest(id):
                    Réponse2=Question.Réponse2,
                    Réponse3=Question.Réponse3,
                    Réponse4=Question.Réponse4)
-
 @app.route('/inscription', methods=['GET', 'POST'])
 def inscription():
     form = FormInscription()
@@ -183,7 +194,7 @@ def connexion():
         passed_user = user_info.query.filter_by(login_user=form.username.data).first()
         if passed_user and passed_user.check_password_correction(passed_password = form.password.data):
             login_user(passed_user)
-            flash(f"Connection réussie sous l'username {passed_user.login_user}", category='success')
+            # flash(f"Connection réussie sous l'username {passed_user.login_user}", category='success')
             return redirect(url_for('editeur'))
         else:
             flash(f"Erreur, le nom d'utilisateur ne correspond pas au mot de passe !", category='danger')
