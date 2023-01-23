@@ -1,0 +1,21 @@
+"https://cdn.jsdelivr.net/npm/markdown-it@11.0.0/dist/markdown-it.min.js"
+
+"https://code.jquery.com/jquery-3.6.0.min.js"
+
+"https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js
+
+//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css
+
+//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js
+
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from flaskext.markdown import Markdown
+from flask_bcrypt import Bcrypt
+from flask_login import LoginManager
+from flask_login import UserMixin   
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, SubmitField, TextAreaField
+from wtforms.validators import Length, EqualTo, Email, DataRequired, ValidationError
+from flask import render_template, redirect, url_for, jsonify, flash, request, json
+
