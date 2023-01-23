@@ -1,0 +1,5 @@
+Mermaid n'a pas réussi à être appliqué
+Ergonomie à revoir
+Enoncés seulement visible par le créateur
+questionnaire imprimable
+filtrer par étiqutte pour conception de la page
