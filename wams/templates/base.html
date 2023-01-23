@@ -10,6 +10,8 @@
     <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css">
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    {% block title %}
+    {% endblock %}
 </head>
 <body>
     {% with messages = get_flashed_messages(with_categories=true) %}
@@ -27,6 +29,9 @@
     {% endwith %}
 
     {% block content %}
+    {% endblock %}
+
+    {% block lienQuestions %}
     {% endblock %}
 </body>
 </html>

@@ -137,19 +137,21 @@ def q(id):
     questionsRows = db.session.query(question).filter(question.Label.in_(labels)).all()
 
     idQuestions = []
+    labelQuestions = []
     for questionRow in questionsRows:
         idQuestions.append(questionRow.id)
+        labelQuestions.append(questionRow.Label)
     print(idQuestions)
+    
 
 
-    return render_template(questionnaire.html, idQuestions = idQuestions)
+    return render_template('questionnaire.html', idQuestions = idQuestions, labelQuestions= labelQuestions)
 
 
 @app.route('/quest/<int:id>', methods=['POST', 'GET'])
 def quest(id):
     Question = question.query.get(id)
     bonnesReps = question.query.with_entities(question.bonne_reponse)
-    bonneRep = str(bonnesReps[id]).strip("()',")
     reponse = request.form.get('reponses')
     if reponse == bonneRep:
         flash("Bonne réponse !", category='success')

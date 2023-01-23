@@ -1,1 +1,14 @@
 {% extends 'base.html' %}
+{% block title %}
+<title>Questionnaire</title>
+{% endblock %}
+
+{% block lienQuestions %}
+
+{% for i in range (idQuestions | length) %}
+
+    <a href="/quest/{{idQuestions[i]}}">{{labelQuestions[i]}}</a>
+ 
+{% endfor %}
+
+{% endblock %}
