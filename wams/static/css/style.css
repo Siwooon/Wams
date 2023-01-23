@@ -1,0 +1,128 @@
+body {
+    background-color: #37474F;
+}
+#div_connexion {
+
+    background-color: rgba(0, 0, 0, 0.37); 
+    width: 500px; 
+    height: 450px;
+    padding: 40px;
+    display: flex; /* Active les propriétés flex */
+    align-items: center; /* Centre les éléments horizontaux */
+    justify-content: center; /* Centre les éléments verticaux */
+
+
+
+    
+}
+
+#div_texte_Connexion {
+    text-align: center;
+}
+
+#boutonInscription {
+    color: white;
+}
+
+#bienvenue {
+    font-size: 60px;
+}
+
+#submit {
+    border-radius: 5px;
+    border: none;
+    background-color: blue; 
+    color: white; 
+    padding: 10px 20px;
+    transition: background-color 0.5s ease;
+
+    
+}
+
+#submit:hover {
+    background-color: green;
+}
+
+input {
+    border-radius: 5px; 
+    border: none;
+    background-color: #f2f2f2; 
+    color: black; 
+
+}
+
+.container {
+    width: 50%; /* Largeur de la div */
+    margin: 0 auto;
+    
+}
+
+button {
+    border-radius: 5px;
+    border: none;
+    background-color: blue; 
+    color: white; 
+    padding: 10px;
+    transition: background-color 0.5s ease;
+
+}
+
+#div_Inscription {
+    background-color: rgba(0, 0, 0, 0.37); 
+
+    padding: 40px;
+    display: flex; /* Active les propriétés flex */
+    align-items: center; /* Centre les éléments horizontaux */
+    justify-content: center; /* Centre les éléments verticaux */
+
+}
+
+#texte_Inscription {
+    font-size: 60px;
+}
+
+#WAMS {
+    height: 100px;
+  line-height: 100px;
+  text-align: center;
+  font-size: 100px;
+}
+
+#divGauche {
+    float: left; /* flotte à gauche */
+    width: 50%;
+}
+
+#divDroite {
+    text-align: center;
+
+    float: right; /* flotte à droite */
+    width: 50%;
+}
+
+#labelQuestionnaire {
+    width: 200px;
+}
+
+textarea {
+    border-radius: 5px; 
+    border: 1px solid gray; 
+    font-family: 'Montserrat', sans-serif;
+}
+
+#Question {
+    width: 800px;
+    height: 300px;
+    
+}
+
+#visu {
+    margin-top: 35px;
+    text-align: center;
+    width: 800px;
+    height: 300px;
+    background-color: white;
+    border-radius: 5px;
+    color: black;
+}
+

@@ -46,8 +46,10 @@
       });
 
     </script>
-    
-    {% if current_user.is_authenticated %}
+
+    <div id="divGauche">
+
+      {% if current_user.is_authenticated %}
     <div>
       {% for question in question %}
           <button data-id="{{ question.id }}" class="update-button">{{ question.Label }}</button>
@@ -59,7 +61,13 @@
 
         {{form.bonne_reponse()}}
 
+        
+        
+        <div></div>
+        {{form.Question()}}
+        
         <br><br>
+
         {{form.Label.label()}}
         {{form.Label()}}
         <br><br>
@@ -77,9 +85,6 @@
         <input type="text" id = "addTags" class = "addTags" onkeydown="return (event.keyCode!=13);" placeholder="Séparer par ',' pour plusieurs tags" style = 'display: none';/>
         <button type = "button" id = "submitCustomTags" class = "submitCustomTags" style = 'display: none;'>Ajouter l'étiquette</button> 
         <br><br>
-        {{form.Question.label}}
-        {{form.Question()}}
-        <br><br>
         {{form.Réponse1.label()}}
         {{form.Réponse1()}}
         <br><br>
@@ -96,12 +101,36 @@
 
         <button type="button" id="reset-button">Tout Effacer</button>
 
-        <br>
-        <br>
+
+  
 
     </form>
-   
+
+    
+
+    <div id="pageQuestions" >
+
+
+
+
+    </div>
+        
+      
+      <br><br>
+      <input type="text" id="labelQuestionnaire" placeholder="Nom du Questionnaire">
+      <br><br>
+  
+      <button id="envoyerPageQuestions">Créer une nouvelle page de questions</button>
+      <br><br>
+
+      <a href="{{url_for('deconnexion')}}">Déconnexion</a>
+    </div>
+    
+
+  <div id="divDroite" style="position: relative; top: 50%;">
+    <div id="visu">
       <p id="a"></p>
+    </div>
   
     <button id="R1"></button> <input type="radio" id="BonneRéponse1" name="choisirReponse" class="radioReponse">
     <br>
@@ -113,19 +142,9 @@
     <br>
     <br>
     
-    <div id="pageQuestions">
-      <br>
-    <br>
+    
 
-    </div>
-    <br><br>
-    <input type="text" id="labelQuestionnaire">
-    <br><br>
-
-    <button id="envoyerPageQuestions">Créer une nouvelle page de questions</button>
-    <br><br>
-
-    <a href="{{url_for('deconnexion')}}">Déconnexion</a>
+    
 
     {% else %}
     <p>Il faut être connecté pour accéder au créateur de questions !</p>

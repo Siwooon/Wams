@@ -1,23 +1,30 @@
 {% extends 'base.html' %}
 {% block title %}
-    Connexion
+<title>Connexion</title>
 {% endblock %}
 
 {% block content %}
+<h1 id="WAMS">W A M S </h1>
 
+<div id="div_connexion" style="border-radius: 40px;" class="container">
 <form method="post" class="connexion">
     {{ form.hidden_tag() }}
-    <h1>Connectez vous</h1>
+    <div id="div_texteConnexion">
+        <h1 id="bienvenue">B I E N V E N U E</h1>
+        <h1>Connectez vous</h1>
+    </div>
     {{ form.username.label() }}
-    {{ form.username(placeholder="Username") }}
-
-    {{ form.password.label() }}
-    {{ form.password(placeholder="Mot de passe") }}
+    {{ form.username(placeholder="Username") }} <br>
+    <br> <br>
+    {{ form.password.label() }} 
+    {{ form.password(placeholder="Mot de passe") }} <br><br>
+    <br>
     {{ form.submit() }}
 
     <br>
 
-    <h4><a href="{{ url_for('inscription') }}">Créer un compte</a></h6>
-</form>
+    <h4><a href="{{ url_for('inscription') }}" id="boutonInscription">Créer un compte</a></h6>
 
+</form>
+</div>
 {% endblock  %}
