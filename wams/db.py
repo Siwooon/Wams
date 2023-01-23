@@ -23,12 +23,12 @@ class question(db.Model):
 class questionnaire(db.Model): 
     __tablename__ = 'questionnaire'
     id = db.Column(db.Integer(), primary_key=True)
-    Label = db.Column(db.String(), nullable =False)
-    Q1 = db.Column(db.String(), nullable =False)
-    Q2 = db.Column(db.String(), nullable =False)
-    Q3 = db.Column(db.String(), nullable =False)
-    Q4 = db.Column(db.String(), nullable =False)
-    Q5 = db.Column(db.String(), nullable =False)
+    Label = db.Column(db.String())
+    Q1 = db.Column(db.String())
+    Q2 = db.Column(db.String())
+    Q3 = db.Column(db.String())
+    Q4 = db.Column(db.String())
+    Q5 = db.Column(db.String())
     def __repr__(self):
         return f'Questionnaire {self.Label}'
 

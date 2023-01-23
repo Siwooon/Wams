@@ -1,7 +1,7 @@
 
 
 $(document).ready(function() {
-  // $('input[name="bonne_reponse"]').hide();
+  $('[name="bonne_reponse"]').hide();
 
   $("[name='Réponse1']").on("input", function() {
     Réponse1Button = document.getElementById("R1")
@@ -188,7 +188,9 @@ $('#BonneRéponse4').change(function(){
 })
 
 $("#envoyerPageQuestions").click(function() {
-  
+  label = $("#labelQuestionnaire").val();
+  listeQuestions.unshift(label)
+  console.log(listeQuestions)
   
   $.ajax({
     type: "POST",

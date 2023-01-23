@@ -1,19 +1,23 @@
 from wams import app
 from flask import render_template, redirect, url_for, jsonify, flash, request, json
 from wams.db import db
-from wams.db import question, user_info
+from wams.db import question, user_info, Etiquettes, questionnaire
 from wams.forms import Form, FormInscription, FormConnexion
 
 from flask_login import login_user, logout_user
 
 globalTags=[]
 
-from sqlalchemy import Column, String, create_engine, MetaData, Table
+from sqlalchemy import create_engine, MetaData, Table
+from sqlalchemy.orm import sessionmaker
+
 globalTags=["Web", "Java", "Arithmétique", "Graphes"]
 engine = create_engine('sqlite:///instance/wams.db?check_same_thread=False')
 connection = engine.connect()
 print(engine.table_names())
 metadata = MetaData()
+Session = sessionmaker(bind=engine)
+session = Session()
 questionnaireTable = Table("questionnaire", metadata, autoload=True, autoload_with=engine)
 
 @app.route('/', methods=['GET', 'POST'])
@@ -107,12 +111,38 @@ def addQuestion():
         connection.execute(query)
         nbcolonnes +=1
     
-    name_columns = [col.name for col in questionnaireTable.columns]
-    for i, element in enumerate(listeQuestions, start=2):
-        print(element)
-        db.session.execute(questionnaireTable.update().values({name_columns[i]: element}))
+    # name_columns = [col.name for col in questionnaireTable.columns]
+    new_questionnaire = questionnaire(Label=listeQuestions[0])
+    listeQuestions.pop(0)
+    for i in range(len(listeQuestions)):
+        setattr(new_questionnaire, f"Q{str(i+1)}", listeQuestions[i])
+    db.session.add(new_questionnaire)
     db.session.commit()
     return redirect(url_for('editeur'))
+
+@app.route('/q/<id>', methods=['POST', 'GET'])
+def q(id):
+    allQuestionnaire = questionnaire.query.all()
+    
+    ligne_selectionnée = db.session.query(questionnaire).filter_by(Label=id).first()
+    print(ligne_selectionnée)
+    labels = []
+    sto = len(ligne_selectionnée.__table__.columns)
+    print(sto)
+    for i in range(1, len(ligne_selectionnée.__table__.columns)-2):
+        column = f"Q{i}"
+        value = getattr(ligne_selectionnée, column)
+        if value:
+            labels.append(value)
+    questionsRows = db.session.query(question).filter(question.Label.in_(labels)).all()
+
+    idQuestions = []
+    for questionRow in questionsRows:
+        idQuestions.append(questionRow.id)
+    print(idQuestions)
+
+
+    return render_template(questionnaire.html, idQuestions = idQuestions)
 
 
 @app.route('/quest/<int:id>', methods=['POST', 'GET'])
