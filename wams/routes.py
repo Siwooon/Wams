@@ -54,8 +54,9 @@ def editeur():
                 db.session.commit()
                 
         for tag in Etiquettes.query.all():
-            if not bool(Etiquettes.query.filter_by(id=tag.id).first()): #Ajout des nouvelles étiquettes de la db dans une liste envoyée au html
-                globalTags.append(tag.id)
+            if not bool(Etiquettes.query.filter_by(id=tag.id).first()):
+                if not (tag.id == ""): #Ajout des nouvelles étiquettes de la db dans une liste envoyée au html
+                    globalTags.append(tag.id)
 
         if not Label.strip() or not Etiquette.strip() or not Questiondata.strip() or not Réponse1.strip() or not Réponse2.strip() or not Réponse3.strip() or not Réponse4.strip():
             raise ValueError("Les champs ne peuvent pas être vides ou remplis d'espaces uniquement.")
