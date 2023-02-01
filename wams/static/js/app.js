@@ -79,6 +79,20 @@ $(document).ready(function() {
     document.getElementById("addTags").value = "";
   });
   
+  $(".submitRechercheTags").click(function(){ //Pour pagesQuestion.html
+    listeTags = document.getElementById("Etiquette").value.split()
+    $.ajax({
+      type: "POST",
+      url: "/pagesQuestion",
+      data: JSON.stringify({"listeTags": listeTags}),
+      contentType: "application/json; charset=utf-8",
+      dataType: "json",
+      success: function() {
+        console.log("hegqdegetdfd")
+      }
+    })
+  });
+  
   var listeQuestions= [];
   $('.update-button').click(function() {
     var sto = $(this).text();
