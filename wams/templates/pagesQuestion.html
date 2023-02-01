@@ -1,6 +1,39 @@
 {% extends 'base.html' %}
 {% block title %}
     Page des Questions
+    <br/>
+{% endblock %}
+
+{% block listageQuestions %}
+    <input id = "Etiquette" placeholder="Rechercher par étiquette"></input>
+    <br/>
+    {% for tag in range(0, len9) %}
+        <button id = "{{ globalTags[tag] }}" class = "tagButton" type = "button">{{ globalTags[tag] }}</button>
+    {% endfor %}
+    {% for tag in range(len9+1, len) %}
+        <button id = "{{ globalTags[tag] }}" class = "tagButton tagButtonPlus" type = "button" style = 'display: none;'>{{ globalTags[tag] }}</button>
+    {% endfor %}
+    <button id = "plus" type = "button" class = "plus" style = 'display: block;'>+</button>
+    <button id = "moins" type = "button" class = "moins" style = 'display: none;'>-</button>
+    <input type="text" id = "addTags" class = "addTags" onkeydown="return (event.keyCode!=13);" placeholder="Séparer par ',' pour plusieurs tags" style = 'display: none';/>
+    <button type = "button" id = "submitCustomTags" class = "submitCustomTags" style = 'display: none;'>Ajouter l'étiquette</button>
+    <br/>
+    <button id = "submitRechercheTags" class="submitRechercheTags">Recherche par étiquette</button>
+
+    <!-- {% if lenTags == 0 %} -->
+        {% for q in questions %}
+            <br/>
+            <a href = "/quest/{{q.id}}">{{q.Label}}</a>
+            <br/>
+        {% endfor %}
+    <!-- {% endif %} -->
+    <!-- {% for q in questions %}
+        { if all(tag in q.Etiquette for tag in listeTags) %}
+                <br/>
+                <a href = "/quest/{{q.id}}">{{q.Label}}</a>
+                <br/>
+        { endif %}
+    {% endfor %} -->
 {% endblock %}
 
 {% block content %}
