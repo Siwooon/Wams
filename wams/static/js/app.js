@@ -83,7 +83,7 @@ $(document).ready(function() {
     listeTags = document.getElementById("Etiquette").value.split()
     $.ajax({
       type: "POST",
-      url: "/pagesQuestion",
+      url: "/pagesQuestionWaitingRoom",
       data: JSON.stringify({"listeTags": listeTags}),
       contentType: "application/json; charset=utf-8",
       dataType: "json",
