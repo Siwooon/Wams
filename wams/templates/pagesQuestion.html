@@ -20,20 +20,27 @@
     <br/>
     <button id = "submitRechercheTags" class="submitRechercheTags">Recherche par étiquette</button>
 
-    <!-- {% if lenTags == 0 %} -->
+    {% if lenTags == 0 %}
         {% for q in questions %}
             <br/>
             <a href = "/quest/{{q.id}}">{{q.Label}}</a>
             <br/>
         {% endfor %}
-    <!-- {% endif %} -->
-    <!-- {% for q in questions %}
-        { if all(tag in q.Etiquette for tag in listeTags) %}
+    {% endif %}
+    {% for q in questions %}
+        {% set all = [] %}
+        {% for e in listeTags %}
+            {% if not(e in q.Etiquette) %}
+                {% set piouTemp = all.append(False) %}
+                <p>{{all}}</p>
+            {% endif %}
+        {% endfor %}
+        {% if all|length == 0 %}
                 <br/>
                 <a href = "/quest/{{q.id}}">{{q.Label}}</a>
                 <br/>
-        { endif %}
-    {% endfor %} -->
+        {% endif %}
+    {% endfor %}
 {% endblock %}
 
 {% block content %}
