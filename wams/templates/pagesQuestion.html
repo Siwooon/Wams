@@ -5,42 +5,47 @@
 {% endblock %}
 
 {% block listageQuestions %}
-    <input id = "Etiquette" placeholder="Rechercher par étiquette"></input>
-    <br/>
-    {% for tag in range(0, len9) %}
-        <button id = "{{ globalTags[tag] }}" class = "tagButton" type = "button">{{ globalTags[tag] }}</button>
-    {% endfor %}
-    {% for tag in range(len9+1, len) %}
-        <button id = "{{ globalTags[tag] }}" class = "tagButton tagButtonPlus" type = "button" style = 'display: none;'>{{ globalTags[tag] }}</button>
-    {% endfor %}
-    <button id = "plus" type = "button" class = "plus" style = 'display: block;'>+</button>
-    <button id = "moins" type = "button" class = "moins" style = 'display: none;'>-</button>
-    <input type="text" id = "addTags" class = "addTags" onkeydown="return (event.keyCode!=13);" placeholder="Séparer par ',' pour plusieurs tags" style = 'display: none';/>
-    <button type = "button" id = "submitCustomTags" class = "submitCustomTags" style = 'display: none;'>Ajouter l'étiquette</button>
-    <br/>
-    <button id = "submitRechercheTags" class="submitRechercheTags">Recherche par étiquette</button>
+    
+    <form method="post">
+        <input id = "Etiquette" placeholder="Rechercher par étiquette"></input>
+        <br/>
+        {% for tag in range(0, len9) %}
+            <button id = "{{ globalTags[tag] }}" class = "tagButton" type = "button">{{ globalTags[tag] }}</button>
+        {% endfor %}
+        {% for tag in range(len9+1, len) %}
+            <button id = "{{ globalTags[tag] }}" class = "tagButton tagButtonPlus" type = "button" style = 'display: none;'>{{ globalTags[tag] }}</button>
+        {% endfor %}
+        <button id = "plus" type = "button" class = "plus" style = 'display: block;'>+</button>
+        <button id = "moins" type = "button" class = "moins" style = 'display: none;'>-</button>
+        <input type="text" id = "addTags" class = "addTags" onkeydown="return (event.keyCode!=13);" placeholder="Séparer par ',' pour plusieurs tags" style = 'display: none';/>
+        <button type = "button" id = "submitCustomTags" class = "submitCustomTags" style = 'display: none;'>Ajouter l'étiquette</button>
+        <br/>
+        <button id = "submitRechercheTags" type = "button" class="submitRechercheTags">Recherche par étiquette</button>
+    </form>
 
-    {% if lenTags == 0 %}
-        {% for q in questions %}
+
+    {% if lenTags == 0 %} <!--Si aucun tag n'est sélectionné-->
+        {% for q in questions %} <!--Parcourt toutes les questions de la db-->
             <br/>
-            <a href = "/quest/{{q.id}}">{{q.Label}}</a>
+            <a href = "/quest/{{q.id}}">{{q.Label}}</a> <!--affiche les liens vers chaque question-->
             <br/>
         {% endfor %}
-    {% endif %}
-    {% for q in questions %}
-        {% set all = [] %}
-        {% for e in listeTags %}
-            {% if not(e in q.Etiquette) %}
-                {% set piouTemp = all.append(False) %}
-                <p>{{all}}</p>
+    {% else %}
+        {% for q in questions %} <!--Sinon, si des tags sont sélectionnés, parcourt les questions de la db-->
+            {% set all = [] %} <!--Déclaration d'une variable qui sert à savoir si un tag n'est pas dans une question-->
+                               <!--la variable est censée se réinitialiser à chaque boucle-->
+            {% for e in listeTags %} <!--Parcourt les tags sélectionnés-->
+                {% if not(e in q.Etiquette) %}
+                    {% set temp = all.append(False) %}
+                {% endif %}
+            {% endfor %}
+            {% if all|length == 0 %} <!--Regarde si la liste est vide pour savoir si tous les tags sont dans la question-->
+                    <br/>
+                    <a href = "/quest/{{q.id}}">{{q.Label}}</a>
+                    <br/>
             {% endif %}
         {% endfor %}
-        {% if all|length == 0 %}
-                <br/>
-                <a href = "/quest/{{q.id}}">{{q.Label}}</a>
-                <br/>
-        {% endif %}
-    {% endfor %}
+    {% endif %}
 {% endblock %}
 
 {% block content %}
