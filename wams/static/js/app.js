@@ -77,18 +77,25 @@ $(document).ready(function() {
     document.getElementById("submitCustomTags").style.display = 'none';
     ajouterTag(document.getElementById("addTags").value);
     document.getElementById("addTags").value = "";
+    document.getElementById("moins").style.display='none';
+    document.getElementById("plus").style.display='block';
   });
-  
+
   $(".submitRechercheTags").click(function(){ //Pour pagesQuestion.html
-    listeTags = document.getElementById("Etiquette").value.split()
+    listeTags = document.getElementById("Etiquette").value.split(",")
+    console.log(listeTags)
     $.ajax({
       type: "POST",
       url: "/pagesQuestionWaitingRoom",
       data: JSON.stringify({"listeTags": listeTags}),
       contentType: "application/json; charset=utf-8",
-      dataType: "json",
-      success: function() {
-        console.log("hegqdegetdfd")
+      dataType: "html",
+      success: function(response) {
+        document.documentElement.innerHTML = response;
+        console.log("C'EST CENSE ÊTRE BON LÀ")
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        console.error("Erreur : " + textStatus, errorThrown);
       }
     })
   });
