@@ -47,10 +47,10 @@ $(document).ready(function() {
     }
     }
 
-  $(".tagButton").click(function(){
+  $(document).on('click', ".tagButton", function(){
     ajouterTag(this.id)});
 
-  $(".plus").click(function(){ //fonction pour afficher plus d'éléments dans le html
+  $(document).on('click', ".plus", function(){ //fonction pour afficher plus d'éléments dans le html
     tagListPlus = document.getElementsByClassName("tagButtonPlus");
     document.getElementById("submitCustomTags").style.display = 'block';
     document.getElementById("addTags").style.display = 'block';
@@ -61,7 +61,7 @@ $(document).ready(function() {
     document.getElementById("moins").style.display = 'block';
   });
   
-  $(".moins").click(function(){ //À l'inverse, affiche moins d'éléments
+  $(document).on('click', ".moins", function(){ //À l'inverse, affiche moins d'éléments
     tagListPlus = document.getElementsByClassName("tagButtonPlus");
     document.getElementById("submitCustomTags").style.display = 'none';
     document.getElementById("addTags").style.display = 'none';
@@ -72,7 +72,7 @@ $(document).ready(function() {
     document.getElementById("plus").style.display = 'block';
   });
 
-  $(".submitCustomTags").click(function(){ //Ajout des tags personnalisés
+  $(document).on('click', ".submitCustomTags", function(){ //Ajout des tags personnalisés
     document.getElementById("addTags").style.display = 'none';
     document.getElementById("submitCustomTags").style.display = 'none';
     ajouterTag(document.getElementById("addTags").value);
@@ -81,13 +81,13 @@ $(document).ready(function() {
     document.getElementById("plus").style.display='block';
   });
 
-  $(".submitRechercheTags").click(function(){ //Pour pagesQuestion.html
+  $(document).on('click', ".submitRechercheTags", function(){ //Pour pagesQuestion.html
     listeTags = document.getElementById("Etiquette").value.split(",")
     console.log(listeTags)
     $.ajax({
       type: "POST",
       url: "/pagesQuestionWaitingRoom",
-      data: JSON.stringify({"listeTags": listeTags}),
+      data: JSON.stringify({"listeTags": listeTags, "strTags": document.getElementById("Etiquette").value}),
       contentType: "application/json; charset=utf-8",
       dataType: "html",
       success: function(response) {
