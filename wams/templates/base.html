@@ -14,8 +14,14 @@
 
     {% block title %}
     {% endblock %}
+    <div id="navbar">
+        <a href="{{url_for('editeur')}}">Acceder à l'éditeur</a>
+        <a href="{{url_for('pagesQuestion')}}">Acceder aux pages</a>
+        <a href=""></a>
+    </div>
 </head>
 <body>
+    
 
     {% with messages = get_flashed_messages(with_categories=true) %}
 
