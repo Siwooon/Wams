@@ -54,10 +54,11 @@ def editeur():
         
         listNewTags = Etiquette.split(",")
         for i in range(len(listNewTags)) :
-            if not bool(Etiquettes.query.filter_by(id=listNewTags[i]).first()): #Ajout des étiquettes submit à la db sans doublon
-                newTag = Etiquettes(id=listNewTags[i])
-                db.session.add(newTag)
-                db.session.commit()
+            if not bool(Etiquettes.query.filter_by(id=listNewTags[i]).first()):
+                if not (listNewTags[i] == ""): #Ajout des étiquettes submit à la db sans doublon
+                    newTag = Etiquettes(id=listNewTags[i])
+                    db.session.add(newTag)
+                    db.session.commit()
                 
         for tag in Etiquettes.query.all():
             if not bool(Etiquettes.query.filter_by(id=tag.id).first()):
