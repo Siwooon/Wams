@@ -110,6 +110,27 @@ $(document).ready(function() {
       document.getElementById("boutonsDivDroite").style.display = 'block'
       document.getElementById("QCM").style.display = 'block';
     }
+
+    $.ajax({
+      type: 'GET',
+      url : '/oneAnswer',
+      success : function() {
+        console.log("OUISTITI")
+      }
+    })
+  });
+
+  $(document).on("click", "#submit", function(){
+    console.log('fyguhbinjo,k;l')
+    $.ajax({
+      type: 'GET',
+      url: '/editeur',
+      data: JSON.stringify({'isChecked':document.getElementById("BoutonValNum").is(':checked')}),
+      dataType: 'json',
+      success: function(str){
+        console.log(str);
+      }
+    });
   });
   
   var listeQuestions= [];
@@ -133,7 +154,6 @@ $(document).ready(function() {
     Réponse3Button = document.getElementById("R3")
 
     Réponse4Button = document.getElementById("R4")
-
     $.ajax({
       type: 'GET',
       url: '/update/' + QuestionId,
@@ -240,6 +260,8 @@ $("#envoyerPageQuestions").click(function() {
 
 
 })
+
+
 
 
 

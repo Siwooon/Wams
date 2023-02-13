@@ -34,6 +34,15 @@ def pagesQuestionWaitingRoom():
     strTags = json.loads(request.data)["strTags"]
     return render_template("pagesQuestion.html", questions=question.query.all(), globalTags=globalTags, len=len(globalTags), len9=len(globalTags) if len(globalTags)<9 else 9, listeTags=listeTags, strTags=strTags)
 
+isChecked = False
+
+@app.route('/oneAnswer', methods=['GET', 'POST'])
+def oneAnswer():
+    global isChecked
+    isChecked = not(isChecked)
+    return redirect(url_for('editeur'))
+
+
 @app.route('/editeur', methods=['GET', 'POST'])
 def editeur():
     for tag in Etiquettes.query.all():
@@ -42,7 +51,6 @@ def editeur():
     AllQuestion = question.query.all()
     form = Form()
     if form.validate_on_submit():
-
         Label = form.Label.data
         Etiquette = form.Etiquette.data
         Questiondata = form.Question.data
@@ -64,9 +72,11 @@ def editeur():
             if not bool(Etiquettes.query.filter_by(id=tag.id).first()):
                 if not (tag.id == ""): #Ajout des nouvelles étiquettes de la db dans une liste envoyée au html
                     globalTags.append(tag.id)
-
-        if not Label.strip() or not Etiquette.strip() or not Questiondata.strip() or not Réponse1.strip() or not Réponse2.strip() or not Réponse3.strip() or not Réponse4.strip():
-            raise ValueError("Les champs ne peuvent pas être vides ou remplis d'espaces uniquement.")
+        print("PIOUPIOU", isChecked)
+        
+        if not(isChecked):
+            if not Label.strip() or not Etiquette.strip() or not Questiondata.strip() or not Réponse1.strip() or not Réponse2.strip() or not Réponse3.strip() or not Réponse4.strip():
+                raise ValueError("Les champs ne peuvent pas être vides ou remplis d'espaces uniquement.")
 
         Questionfilter = question.query.filter_by(Label=Label).first()
 
@@ -92,6 +102,7 @@ def editeur():
 @app.route('/update/<int:id>', methods=['GET'])
 def update(id):
     Question = question.query.get(id)
+    isChecked = json.loads(request.data)['isChecked']
     return jsonify(Label=Question.Label, 
                    Etiquette=Question.Etiquette, 
                    Question=Question.Question, 
@@ -213,3 +224,5 @@ def deconnexion():
     logout_user()
     flash("Deconnexion réussie !", category='info')
     return redirect(url_for('editeur'))
+
+
