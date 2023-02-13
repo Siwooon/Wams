@@ -3,8 +3,6 @@
 $(document).ready(function() {
   $('[name="bonne_reponse"]').hide();
 
- document.getElementById("inputValNum").style.display = 'none';
-
   $("[name='Réponse1']").on("input", function() {
     Réponse1Button = document.getElementById("R1")
     Réponse1Button.innerHTML = $(this).val();
@@ -105,11 +103,11 @@ $(document).ready(function() {
   $(document).on("click", "#BoutonValNum", function(){
     var checked = $(this).is(":checked");
     if(checked){
-      document.getElementById("valNum").style.display = 'block';
+      document.getElementById("boutonsDivDroite").style.display = 'none'
       document.getElementById("QCM").style.display = 'none';
     }
     else{
-      document.getElementById("valNum").style.display = 'none';
+      document.getElementById("boutonsDivDroite").style.display = 'block'
       document.getElementById("QCM").style.display = 'block';
     }
   });

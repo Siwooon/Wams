@@ -11,9 +11,9 @@ class question(db.Model):
     Etiquette = db.Column(db.String(), nullable =False)
     Question = db.Column(db.String(), nullable =False)
     Réponse1 = db.Column(db.String(), nullable =False)
-    Réponse2 = db.Column(db.String(), nullable =False)
-    Réponse3 = db.Column(db.String(), nullable =False)
-    Réponse4 = db.Column(db.String(), nullable =False)
+    Réponse2 = db.Column(db.String(), nullable =True)
+    Réponse3 = db.Column(db.String(), nullable =True)
+    Réponse4 = db.Column(db.String(), nullable =True)
     bonne_reponse = db.Column(db.String())
 
     def __repr__(self):
