@@ -3,7 +3,7 @@
 $(document).ready(function() {
   $('[name="bonne_reponse"]').hide();
 
-  document.getElementById("valNum").style.display = 'none';
+ document.getElementById("inputValNum").style.display = 'none';
 
   $("[name='Réponse1']").on("input", function() {
     Réponse1Button = document.getElementById("R1")
