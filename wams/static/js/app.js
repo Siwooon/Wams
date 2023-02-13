@@ -6,6 +6,7 @@ $(document).ready(function() {
   $("[name='Réponse1']").on("input", function() {
     Réponse1Button = document.getElementById("R1")
     Réponse1Button.innerHTML = $(this).val();
+    $('[name="bonne_reponse"]').val($(this).val());
     
 });
   $("[name='Réponse2']").on("input", function() {
@@ -100,8 +101,8 @@ $(document).ready(function() {
     })
   });
 
-  $(document).on("click", "#BoutonValNum", function(){
-    var checked = $(this).is(":checked");
+ function afficheBoutons(){
+  var checked = $("#BoutonValNum").is(":checked");
     if(checked){
       document.getElementById("boutonsDivDroite").style.display = 'none'
       document.getElementById("QCM").style.display = 'none';
@@ -110,7 +111,10 @@ $(document).ready(function() {
       document.getElementById("boutonsDivDroite").style.display = 'block'
       document.getElementById("QCM").style.display = 'block';
     }
+ }
 
+  $(document).on("click", "#BoutonValNum", function(){
+    afficheBoutons();
     $.ajax({
       type: 'GET',
       url : '/oneAnswer',
@@ -118,19 +122,8 @@ $(document).ready(function() {
         console.log("OUISTITI")
       }
     })
-  });
 
-  $(document).on("click", "#submit", function(){
-    console.log('fyguhbinjo,k;l')
-    $.ajax({
-      type: 'GET',
-      url: '/editeur',
-      data: JSON.stringify({'isChecked':document.getElementById("BoutonValNum").is(':checked')}),
-      dataType: 'json',
-      success: function(str){
-        console.log(str);
-      }
-    });
+
   });
   
   var listeQuestions= [];
@@ -162,28 +155,37 @@ $(document).ready(function() {
         $('input[name="Etiquette"]').val(data.Etiquette);
         $('[name="Question"]').val(data.Question);
         $('[name="Réponse1"]').val(data.Réponse1);
-        $('[name="Réponse2"]').val(data.Réponse2);
-        $('[name="Réponse3"]').val(data.Réponse3);
-        $('[name="Réponse4"]').val(data.Réponse4);
-        $('[name="bonne_reponse"]').val(data.bonne_reponse);
-        Réponse1Button.innerHTML = $('[name="Réponse1"]').val();
-        Réponse2Button.innerHTML = $('[name="Réponse2"]').val();
-        Réponse3Button.innerHTML = $('[name="Réponse3"]').val();
-        Réponse4Button.innerHTML = $('[name="Réponse4"]').val();
+        if(!(data.Réponse2 == "")){
+          $('[name="Réponse2"]').val(data.Réponse2);
+          $('[name="Réponse3"]').val(data.Réponse3);
+          $('[name="Réponse4"]').val(data.Réponse4);
+          $('[name="bonne_reponse"]').val(data.bonne_reponse);
+          Réponse1Button.innerHTML = $('[name="Réponse1"]').val();
+          Réponse2Button.innerHTML = $('[name="Réponse2"]').val();
+          Réponse3Button.innerHTML = $('[name="Réponse3"]').val();
+          Réponse4Button.innerHTML = $('[name="Réponse4"]').val();
+          document.getElementById("BoutonValNum").checked = false;
+          afficheBoutons();
+        }else{
+          document.getElementById("BoutonValNum").checked = true;
+          afficheBoutons();
+        }
+        if(!(data.Réponse2 == "")){
 
-        if ($('[name="bonne_reponse"]').val()==$('[name="Réponse1"]').val()) {
-          radiobtn = document.getElementById("BonneRéponse1");
-          radiobtn.checked = true;
-        } else if ($('[name="bonne_reponse"]').val()==$('[name="Réponse2"]').val()) {
-          radiobtn = document.getElementById("BonneRéponse2");
-          radiobtn.checked = true;
-        } else if ($('[name="bonne_reponse"]').val()==$('[name="Réponse3"]').val()) {
-          radiobtn = document.getElementById("BonneRéponse3");
-          radiobtn.checked = true;
-        } else if ($('[name="bonne_reponse"]').val()==$('[name="Réponse4"]').val()) {
-          radiobtn = document.getElementById("BonneRéponse4");
-          radiobtn.checked = true;
-        } 
+          if ($('[name="bonne_reponse"]').val()==$('[name="Réponse1"]').val()) {
+            radiobtn = document.getElementById("BonneRéponse1");
+            radiobtn.checked = true;
+          } else if ($('[name="bonne_reponse"]').val()==$('[name="Réponse2"]').val()) {
+            radiobtn = document.getElementById("BonneRéponse2");
+            radiobtn.checked = true;
+          } else if ($('[name="bonne_reponse"]').val()==$('[name="Réponse3"]').val()) {
+            radiobtn = document.getElementById("BonneRéponse3");
+            radiobtn.checked = true;
+          } else if ($('[name="bonne_reponse"]').val()==$('[name="Réponse4"]').val()) {
+            radiobtn = document.getElementById("BonneRéponse4");
+            radiobtn.checked = true;
+          } 
+        }
 
         
       }

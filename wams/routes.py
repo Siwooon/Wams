@@ -75,6 +75,7 @@ def editeur():
         print("PIOUPIOU", isChecked)
         
         if not(isChecked):
+            print("erreur", isChecked)
             if not Label.strip() or not Etiquette.strip() or not Questiondata.strip() or not Réponse1.strip() or not Réponse2.strip() or not Réponse3.strip() or not Réponse4.strip():
                 raise ValueError("Les champs ne peuvent pas être vides ou remplis d'espaces uniquement.")
 
@@ -102,7 +103,6 @@ def editeur():
 @app.route('/update/<int:id>', methods=['GET'])
 def update(id):
     Question = question.query.get(id)
-    isChecked = json.loads(request.data)['isChecked']
     return jsonify(Label=Question.Label, 
                    Etiquette=Question.Etiquette, 
                    Question=Question.Question, 
