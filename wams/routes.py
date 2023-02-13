@@ -26,13 +26,21 @@ def home():
 
 @app.route('/pagesQuestion', methods=['GET', 'POST'])
 def pagesQuestion():
-    return render_template('pagesQuestion.html', questions=question.query.all(), globalTags=globalTags, len=len(globalTags), len9 = len(globalTags) if len(globalTags)<9 else 9)# listeTags = listeTags, lenTags = len(listeTags))
 
-@app.route('/pagesQuestionWaitingRoom', methods=['GET', 'POST'])
-def pagesQuestionWaitingRoom():
-    listeTags = json.loads(request.data)["listeTags"]
-    strTags = json.loads(request.data)["strTags"]
-    return render_template("pagesQuestion.html", questions=question.query.all(), globalTags=globalTags, len=len(globalTags), len9=len(globalTags) if len(globalTags)<9 else 9, listeTags=listeTags, strTags=strTags)
+
+
+
+
+
+
+
+
+
+    
+    print("pioupiou", (json.loads(request.data))['listeTags'][0], "pioupiou")
+    #listeTags = json.loads(request.data["listeTags"])
+    #print(listeTags)
+    return render_template('pagesQuestion.html', questions=question.query.all(), globalTags=globalTags, len=len(globalTags), len9 = len(globalTags) if len(globalTags)<9 else 9)#, listeTags = listeTags, lenTags = len(listeTags))
 
 @app.route('/editeur', methods=['GET', 'POST'])
 def editeur():

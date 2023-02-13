@@ -83,9 +83,16 @@ $(document).ready(function() {
     document.getElementById("plus").style.display='block';
   });
 
-  $(document).on('click', ".submitRechercheTags", function(){ //Pour pagesQuestion.html
-    listeTags = document.getElementById("Etiquette").value.split(",")
-    console.log(listeTags)
+
+
+
+
+
+
+  
+  
+  $(".submitRechercheTags").click(function(){ //Pour pagesQuestion.html
+    listeTags = document.getElementById("Etiquette").value.split()
     $.ajax({
       type: "POST",
       url: "/pagesQuestionWaitingRoom",
