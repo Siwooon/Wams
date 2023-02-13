@@ -84,12 +84,10 @@ $(document).ready(function() {
   });
 
 
+  $(document).on('click', ".submitRechercheTags", function(){ //Pour pagesQuestion.html
+    listeTags = document.getElementById("Etiquette").value.split(",")
+    console.log(listeTags)}); 
 
-
-
-
-
-  
   
   $(".submitRechercheTags").click(function(){ //Pour pagesQuestion.html
     listeTags = document.getElementById("Etiquette").value.split()
