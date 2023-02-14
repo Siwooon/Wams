@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}
+<title>Créer les comptes</title>
+{% endblock %}
+
+{% block content %}
+
+<div>
+    <p class="lead">Envoyez le fichier contenant nom | prenom | num_etudiant pour créer les comptes :</p>
+    <form method="POST" enctype="multipart/form-data">
+        <input type="file" id="myFile" name="filename" accept=".csv">
+        <input type="submit">
+    </form>
+</div>
+
+<div>
+    {{ data }}
+</div>
+
+{% endblock %}

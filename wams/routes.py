@@ -3,6 +3,8 @@ from flask import render_template, redirect, url_for, jsonify, flash, request, j
 from wams.db import db
 from wams.db import question, user_info, Etiquettes, questionnaire
 from wams.forms import Form, FormInscription, FormConnexion
+import os
+import csv
 
 from flask_login import login_user, logout_user
 
@@ -225,4 +227,23 @@ def deconnexion():
     flash("Deconnexion réussie !", category='info')
     return redirect(url_for('editeur'))
 
+@app.route('/creerAllComptes', methods=["GET", "POST"])
+def creerAllComptes():
+    form = FormInscription()
+    if request.method == 'POST':
+        if request.files:
+            uploaded_file = request.files['filename'] # This line uses the same variable and worked fine
+            filepath = os.path.join(app.config['FILE_UPLOADS'], uploaded_file.filename)
+            uploaded_file.save(filepath)
+            with open(filepath) as file:
+                csv_file = csv.reader(file)
+                for data in csv_file:
+                    print(data)
+                    user_to_create = user_info(login_user=f"{data[0]}{data[1]}",
+                                                mail_user = "",
+                                                password = data[2])
+                    db.session.add(user_to_create)
+                    db.session.commit()
+    return render_template('creerAllComptes.html')
 
+app.config['FILE_UPLOADS'] = "C:\\Users\\user\\Desktop\\Travail\\L2_info_FDS\\Semestre 4\\perso\\projProg\\wams\\uploads"
