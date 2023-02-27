@@ -109,14 +109,21 @@ def waitingRoom():
 
 @app.route('/diffusionQ/<codeRoom>', methods=['GET', 'POST'])
 def diffusionQ(codeRoom):
-    return render_template('diffusionQuestion.html', codeRoom=codeRoom)
+    return render_template('diffusionQuestion.html', codeRoom=codeRoom, roomOuvertes=roomOuvertes)
 
 @app.route('/updateDiffusionQuestion', methods=['GET', 'POST'])
 def updateDiffusionQuestion():
     codeRoomA = ''.join(random.choices(string.ascii_letters + string.digits, k=8))
     codeRoom = codeRoomA if codeRoomA not in roomOuvertes else updateDiffusionQuestion()
     roomOuvertes.append(codeRoom)
+    print(roomOuvertes)
     return redirect(url_for('diffusionQ', codeRoom=codeRoom))
+
+@app.route('/deleteDiffusion', methods=['GET', 'POST'])
+def deleteDiffusion():
+    codeRoom = request.get_json()['codeRoom']
+    roomOuvertes.remove(codeRoom)
+    return redirect(url_for("pagesQuestion"))
 
 @app.route('/update/<int:id>', methods=['GET'])
 def update(id):
