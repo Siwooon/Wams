@@ -266,7 +266,10 @@ $("#envoyerPageQuestions").click(function() {
 
 
 
-
+$(document).on('click', '#boutonRoomKey', function(){
+  window.location.href = "/diffusionQ/".concat(document.getElementById("roomKey").value)
+  // Peut-être un ajax ici pour envoyer la valeur au serv pour savoir si la room existe
+})
 
 
         
