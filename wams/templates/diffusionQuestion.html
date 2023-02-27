@@ -4,5 +4,10 @@
 {% endblock %}
 
 {% block content %}
-<h2>Code de la question : {{codeRoom}}</h2>
+    {% if (codeRoom in roomOuvertes) %}
+        <h2>Code de la question : {{codeRoom}}</h2>
+        <button id="deleteRoom">Supprimer la diffusion</button>
+    {% else %}
+        <h2>Cette diffusion n'existe pas</h2>
+    {% endif %}
 {% endblock %}
