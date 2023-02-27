@@ -271,8 +271,27 @@ $(document).on('click', '#boutonRoomKey', function(){
   // Peut-être un ajax ici pour envoyer la valeur au serv pour savoir si la room existe
 })
 
-
+$(document).on('click', '#deleteRoom', function(){
+  url = document.location.href.split("/")
+  console.log(url[url.length-1])
+  $.ajax({
+    type: "POST",
+    url: "/deleteDiffusion",
+    data: JSON.stringify({codeRoom : url[url.length-1]}),
+    contentType: "application/json; charset=utf-8",
+    success: function() {
+      console.log("C'EST CENSE MARCHER")
+      window.location.href="/"
+    },
+    error: function(){
+      console.log("CA MARCHE PAS")
+    }
+  })
+})
         
+
+
+
 
 
 });
