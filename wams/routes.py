@@ -5,10 +5,12 @@ from wams.db import question, user_info, Etiquettes, questionnaire
 from wams.forms import Form, FormInscription, FormConnexion
 import os
 import csv
+import random, string
 
 from flask_login import login_user, logout_user
 
 globalTags=[]
+roomOuvertes=[]
 
 from sqlalchemy import create_engine, MetaData, Table
 from sqlalchemy.orm import sessionmaker
@@ -101,6 +103,20 @@ def editeur():
     
     return render_template('editeur.html', form = form, question = AllQuestion, globalTags=globalTags, len=len(globalTags), len9 = len(globalTags) if len(globalTags)<9 else 9)
 
+@app.route('/waitingRoom', methods=['GET', 'POST'])
+def waitingRoom():
+    return render_template('waitingRoom.html')
+
+@app.route('/diffusionQ/<codeRoom>', methods=['GET', 'POST'])
+def diffusionQ(codeRoom):
+    return render_template('diffusionQuestion.html', codeRoom=codeRoom)
+
+@app.route('/updateDiffusionQuestion', methods=['GET', 'POST'])
+def updateDiffusionQuestion():
+    codeRoomA = ''.join(random.choices(string.ascii_letters + string.digits, k=8))
+    codeRoom = codeRoomA if codeRoomA not in roomOuvertes else updateDiffusionQuestion()
+    roomOuvertes.append(codeRoom)
+    return redirect(url_for('diffusionQ', codeRoom=codeRoom))
 
 @app.route('/update/<int:id>', methods=['GET'])
 def update(id):
