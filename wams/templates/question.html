@@ -11,11 +11,11 @@
             text-align:center;
             height: 100px;
             font-weight: 700;
-            font-size: 36px;"><p><span>{{ Label }}</span></p></div>
+            font-size: 36px;"><p><span id="labelQuestion">{{ Label }}</span></p></div>
 
             <hr>
 
-<div style="color: white;"><h1><p class="one" style="text-align: center;">{{ Question }}</p></h1></div>
+<div style="color: white;"><h1><p class="one" style="text-align: center;" id="énoncéQuestion">{{ Question }}</p></h1></div>
 
 <form method="post">
     <div style="color: white;"><h3><dt>Entrez votre réponse </h3></div>
@@ -31,6 +31,7 @@
 
 </div>
 
-<a href="/updateDiffusionQuestion">Diffuser la question</a>
+<div id="dataQuestion" data-infos-question='{"Label": "{{ Label }}", "Etiquette": "{{ Etiquette }}", "Question": "{{ Question }}", "Reponse1": "{{ Réponse1 }}", "Reponse2": "{{ Réponse2 }}", "Reponse3": "{{ Réponse3 }}", "Reponse4": "{{ Réponse4 }}" }'></div>
+<button id="diffusionQuestion">Diffuser la question</button>
 
 {% endblock  %}
