@@ -6,6 +6,7 @@ from wams.forms import Form, FormInscription, FormConnexion
 import os
 import csv
 import random, string
+import base64
 
 from flask_login import login_user, logout_user
 
@@ -109,15 +110,24 @@ def waitingRoom():
 
 @app.route('/diffusionQ/<codeRoom>', methods=['GET', 'POST'])
 def diffusionQ(codeRoom):
-    return render_template('diffusionQuestion.html', codeRoom=codeRoom, roomOuvertes=roomOuvertes)
+    infosQuestion = request.args.get('infosQuestion')
+    if infosQuestion is not None:
+        infosQuestion = json.loads(request.args.get('infosQuestion'))
+        print(infosQuestion)
+    print(roomOuvertes)
+    return render_template('diffusionQuestion.html', codeRoom=codeRoom, roomOuvertes=roomOuvertes, infosQuestion=infosQuestion)
 
-@app.route('/updateDiffusionQuestion', methods=['GET', 'POST'])
+
+@app.route('/updateDiffusionQuestion', methods=['POST'])
 def updateDiffusionQuestion():
+    print("Bah oui c'est appelé")
     codeRoomA = ''.join(random.choices(string.ascii_letters + string.digits, k=8))
     codeRoom = codeRoomA if codeRoomA not in roomOuvertes else updateDiffusionQuestion()
     roomOuvertes.append(codeRoom)
-    print(roomOuvertes)
-    return redirect(url_for('diffusionQ', codeRoom=codeRoom))
+    infosQuestion = request.json
+    params = {'infosQuestion': json.dumps(infosQuestion)}
+    return codeRoom
+
 
 @app.route('/deleteDiffusion', methods=['GET', 'POST'])
 def deleteDiffusion():
