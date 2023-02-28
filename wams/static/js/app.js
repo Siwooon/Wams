@@ -272,7 +272,7 @@ $(document).on('click', '#boutonRoomKey', function(){
 })
 
 $(document).on('click', '#deleteRoom', function(){
-  url = document.location.href.split("/")
+  url = document.location.href.split("?")[0].split("/")
   console.log(url[url.length-1])
   $.ajax({
     type: "POST",
@@ -289,7 +289,22 @@ $(document).on('click', '#deleteRoom', function(){
   })
 })
         
-
+$(document).on('click', '#diffusionQuestion', function(){
+  var infosQuestion = JSON.parse(document.getElementById('dataQuestion').dataset.infosQuestion);
+  console.log(infosQuestion)
+  $.ajax({
+    type: "POST",
+    url: "/updateDiffusionQuestion",
+    data: JSON.stringify(infosQuestion),
+    contentType: "application/json; charset=utf-8",
+    success: function(response) {
+      window.location.href = '/diffusionQ/' + response + '?infosQuestion=' + encodeURIComponent(JSON.stringify(infosQuestion));
+    },
+    error: function(){
+      console.log("ça marche pas")
+    }
+  })
+})
 
 
 
