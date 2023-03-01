@@ -11,7 +11,7 @@ import base64
 from flask_login import login_user, logout_user
 
 globalTags=[]
-roomOuvertes=[]
+roomOuvertes={}
 
 from sqlalchemy import create_engine, MetaData, Table
 from sqlalchemy.orm import sessionmaker
@@ -108,6 +108,13 @@ def editeur():
 def waitingRoom():
     return render_template('waitingRoom.html')
 
+@app.route('/joinRoomQ', methods=['GET', 'POST'])
+def joinRoomQ():
+    print(roomOuvertes)
+    codeRoom = request.json
+    infosQuestion = roomOuvertes[codeRoom]
+    return {"codeRoom" : codeRoom, "infosQuestion" : infosQuestion}
+
 @app.route('/diffusionQ/<codeRoom>', methods=['GET', 'POST'])
 def diffusionQ(codeRoom):
     infosQuestion = request.args.get('infosQuestion')
@@ -122,10 +129,9 @@ def diffusionQ(codeRoom):
 def updateDiffusionQuestion():
     print("Bah oui c'est appelé")
     codeRoomA = ''.join(random.choices(string.ascii_letters + string.digits, k=8))
-    codeRoom = codeRoomA if codeRoomA not in roomOuvertes else updateDiffusionQuestion()
-    roomOuvertes.append(codeRoom)
+    codeRoom = codeRoomA if codeRoomA not in roomOuvertes.keys() else updateDiffusionQuestion()
     infosQuestion = request.json
-    params = {'infosQuestion': json.dumps(infosQuestion)}
+    roomOuvertes[codeRoom] = infosQuestion
     return codeRoom
 
 
