@@ -267,8 +267,18 @@ $("#envoyerPageQuestions").click(function() {
 
 
 $(document).on('click', '#boutonRoomKey', function(){
-  window.location.href = "/diffusionQ/".concat(document.getElementById("roomKey").value)
-  // Peut-être un ajax ici pour envoyer la valeur au serv pour savoir si la room existe
+  $.ajax({
+    type: "POST",
+    url: "/joinRoomQ",
+    data: JSON.stringify(document.getElementById("roomKey").value),
+    contentType: "application/json; charset=utf-8",
+    success: function(response) {
+      window.location.href = '/diffusionQ/' + response.codeRoom + '?infosQuestion=' + encodeURIComponent(JSON.stringify(response.infosQuestion));
+    },
+    error: function(){
+      console.log("CA MARCHE PAS")
+    }
+  })
 })
 
 $(document).on('click', '#deleteRoom', function(){
