@@ -156,7 +156,7 @@ def addQuestion():
     nbcolonnes = len(questionnaireTable.columns) - 2
     print(nbcolonnes)
     
-    while len(listeQuestions) > nbcolonnes:
+    while len(listeQuestions) >= nbcolonnes:
         x +=1
         Column_name = f'Q{x}'
 
