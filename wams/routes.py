@@ -6,9 +6,8 @@ from wams.forms import Form, FormInscription, FormConnexion
 import os
 import csv
 import random, string
-import base64
 
-from flask_login import login_user, logout_user
+from flask_login import login_user, logout_user, current_user, login_required
 
 globalTags=[]
 roomOuvertes={}
@@ -27,6 +26,7 @@ questionnaireTable = Table("questionnaire", metadata, autoload=True, autoload_wi
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
+    print(current_user.prof_user)
     return render_template('home.html')
 
 @app.route('/pagesQuestion', methods=['GET', 'POST'])
@@ -79,7 +79,6 @@ def editeur():
             if not bool(Etiquettes.query.filter_by(id=tag.id).first()):
                 if not (tag.id == ""): #Ajout des nouvelles étiquettes de la db dans une liste envoyée au html
                     globalTags.append(tag.id)
-        print("PIOUPIOU", isChecked)
         
         if not(isChecked):
             print("erreur", isChecked)
@@ -112,7 +111,6 @@ def waitingRoom():
 
 @app.route('/joinRoomQ', methods=['GET', 'POST'])
 def joinRoomQ():
-    print(roomOuvertes)
     codeRoom = request.json
     infosQuestion = roomOuvertes[codeRoom]
     return {"codeRoom" : codeRoom, "infosQuestion" : infosQuestion}
@@ -122,17 +120,16 @@ def diffusionQ(codeRoom):
     infosQuestion = request.args.get('infosQuestion')
     if infosQuestion is not None:
         infosQuestion = json.loads(request.args.get('infosQuestion'))
-        print(infosQuestion)
-    print(roomOuvertes)
-    print("######################")
-    print(roomOuvertes[codeRoom]['Label'])
-    return render_template('diffusionQuestion.html', codeRoom=codeRoom, roomOuvertes=roomOuvertes, infosQuestion=infosQuestion, Label=roomOuvertes[codeRoom]['Label'], 
+    if codeRoom in roomOuvertes:
+        return render_template('diffusionQuestion.html', existsRoom = codeRoom in roomOuvertes, codeRoom=codeRoom, roomOuvertes=roomOuvertes, infosQuestion=infosQuestion, Label=roomOuvertes[codeRoom]['Label'], 
                    Etiquette=roomOuvertes[codeRoom]['Etiquette'], 
                    Question=roomOuvertes[codeRoom]['Question'], 
                    Réponse1=roomOuvertes[codeRoom]['Reponse1'],
                    Réponse2=roomOuvertes[codeRoom]['Reponse2'],
                    Réponse3=roomOuvertes[codeRoom]['Reponse3'],
                    Réponse4=roomOuvertes[codeRoom]['Reponse4'])
+    else:
+        return render_template('diffusionQuestion.html', existsRoom = codeRoom in roomOuvertes)
 
 
 @app.route('/updateDiffusionQuestion', methods=['POST'])
