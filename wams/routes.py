@@ -36,7 +36,9 @@ def pagesQuestion():
 @app.route('/pagesQuestionWaitingRoom', methods=['GET', 'POST'])
 def pagesQuestionWaitingRoom():
     listeTags = json.loads(request.data)["listeTags"]
+    print(listeTags)
     strTags = json.loads(request.data)["strTags"]
+    print(strTags)
     return render_template("pagesQuestion.html", questions=question.query.all(), globalTags=globalTags, len=len(globalTags), len9=len(globalTags) if len(globalTags)<9 else 9, listeTags=listeTags, strTags=strTags)
 
 isChecked = False
@@ -122,7 +124,15 @@ def diffusionQ(codeRoom):
         infosQuestion = json.loads(request.args.get('infosQuestion'))
         print(infosQuestion)
     print(roomOuvertes)
-    return render_template('diffusionQuestion.html', codeRoom=codeRoom, roomOuvertes=roomOuvertes, infosQuestion=infosQuestion)
+    print("######################")
+    print(roomOuvertes[codeRoom]['Label'])
+    return render_template('diffusionQuestion.html', codeRoom=codeRoom, roomOuvertes=roomOuvertes, infosQuestion=infosQuestion, Label=roomOuvertes[codeRoom]['Label'], 
+                   Etiquette=roomOuvertes[codeRoom]['Etiquette'], 
+                   Question=roomOuvertes[codeRoom]['Question'], 
+                   Réponse1=roomOuvertes[codeRoom]['Reponse1'],
+                   Réponse2=roomOuvertes[codeRoom]['Reponse2'],
+                   Réponse3=roomOuvertes[codeRoom]['Reponse3'],
+                   Réponse4=roomOuvertes[codeRoom]['Reponse4'])
 
 
 @app.route('/updateDiffusionQuestion', methods=['POST'])
@@ -131,6 +141,8 @@ def updateDiffusionQuestion():
     codeRoomA = ''.join(random.choices(string.ascii_letters + string.digits, k=8))
     codeRoom = codeRoomA if codeRoomA not in roomOuvertes.keys() else updateDiffusionQuestion()
     infosQuestion = request.json
+    print("_________________________________________")
+    print(infosQuestion)
     roomOuvertes[codeRoom] = infosQuestion
     return codeRoom
 
