@@ -141,8 +141,6 @@ def updateDiffusionQuestion():
     codeRoomA = ''.join(random.choices(string.ascii_letters + string.digits, k=8))
     codeRoom = codeRoomA if codeRoomA not in roomOuvertes.keys() else updateDiffusionQuestion()
     infosQuestion = request.json
-    print("_________________________________________")
-    print(infosQuestion)
     roomOuvertes[codeRoom] = infosQuestion
     return codeRoom
 
@@ -250,7 +248,8 @@ def inscription():
     if form.validate_on_submit():
         user_to_create = user_info(login_user=form.username.data,
                                     mail_user = form.mail.data,
-                                    password = form.password1.data)
+                                    password = form.password1.data,
+                                    prof_user = 1)
         db.session.add(user_to_create)
         db.session.commit()
         return redirect(url_for('connexion'))
@@ -297,4 +296,6 @@ def creerAllComptes():
                     db.session.commit()
     return render_template('creerAllComptes.html')
 
-app.config['FILE_UPLOADS'] = "C:\\Users\\user\\Desktop\\Travail\\L2_info_FDS\\Semestre 4\\perso\\projProg\\wams\\uploads"
+app.config['FILE_UPLOADS'] = ""
+
+
