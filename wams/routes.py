@@ -1,12 +1,12 @@
 from wams import app
 from flask import render_template, redirect, url_for, jsonify, flash, request, json
 from wams.db import db
-from wams.db import question, user_info, Etiquettes, questionnaire, Archive
+from wams.db import question, user_info, Etiquettes, questionnaire, archive
 from wams.forms import Form, FormInscription, FormConnexion
 import os
 import csv
 import random, string
-
+from datetime import date
 from flask_login import login_user, logout_user, current_user, login_required
 
 globalTags=[]
@@ -224,13 +224,20 @@ def quest(id):
 
     reponse = request.form.get('reponses')
     print(reponse)
+    
     if reponse == bonneRep:
+        login_user = current_user.login_user
+        date_actuelle = date.today()
+        archivage(login_user, reponse, date_actuelle, "question")
         flash("Bonne réponse !", category='success')
     elif (request.form.get('reponses') == None) :
         # flash("Veuillez répondre à la question", category='danger')
         None
 
     else:
+        login_user = current_user.login_user
+        date_actuelle = date.today()
+        archivage(login_user, reponse, date_actuelle, "question")
         flash("Mauvaise réponse !", category='danger')
     return render_template('question.html', Label=Question.Label, 
                    Etiquette=Question.Etiquette, 
@@ -296,7 +303,6 @@ def creerAllComptes():
 app.config['FILE_UPLOADS'] = ""
 
 def archivage(user, réponse, date, typeQuestion):
-    archive = Archive(user = user, réponse = réponse, date = date, typeQuestion = typeQuestion)
-    db.session.add(archive)
+    archivesto = archive(user = user, réponse = réponse, date = date, typeQuestion = typeQuestion)
+    db.session.add(archivesto)
     db.session.commit()
-
