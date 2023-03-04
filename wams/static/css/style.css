@@ -1,7 +1,125 @@
+* {
+    text-align: center; vertical-align: middle;
+  }
+
 body {
-    background-color: #F8F5FA;
     font-family: "Gill Sans", sans-serif;
+    background-image: repeating-linear-gradient(90deg, hsla(57,0%,42%,0.09) 0px, hsla(57,0%,42%,0.09) 1px,transparent 1px, transparent 60px),repeating-linear-gradient(0deg, hsla(57,0%,42%,0.09) 0px, hsla(57,0%,42%,0.09) 1px,transparent 1px, transparent 60px),repeating-linear-gradient(0deg, hsla(57,0%,42%,0.09) 0px, hsla(57,0%,42%,0.09) 1px,transparent 1px, transparent 10px),repeating-linear-gradient(90deg, hsla(57,0%,42%,0.09) 0px, hsla(57,0%,42%,0.09) 1px,transparent 1px, transparent 10px),linear-gradient(90deg, rgb(20,20,20),rgb(20,20,20));
 }
+
+div {
+    display: inline-block; width: auto;
+}
+
+form {
+    display: inline-block;
+    height: auto;
+}
+
+
+.left {
+    float: left;
+    width: 50%;
+}
+  
+  .right {
+    float: right;
+    width: 50%;
+}
+
+  input {
+    border-radius: 5px; 
+    border: none;
+    background-color: #202224; 
+    color: white; 
+}
+
+  #submit {
+    border-radius: 5px;
+    border: none;
+    background-color:#2d3033; 
+    color: white; 
+    padding: 10px 20px;
+    transition: background-color 0.5s ease;
+}
+
+.container {
+    width: 50%;
+    margin: 0 auto; 
+}
+
+button {
+    border-radius: 5px;
+    border: none;
+    background-color: #2d3033; 
+    color: white; 
+    padding: 10px;
+    transition: background-color 0.5s ease;
+}
+
+textarea {
+    border-radius: 5px; 
+    border: 1px solid #202224; 
+    font-family: 'Montserrat', sans-serif;
+    background-color: #202224;
+    color: white;
+}
+
+#Question {
+    width: 800px;
+    height: 300px;
+}
+
+#visu {
+    margin-top: 35px;
+    text-align: center;
+    width: 800px;
+    height: 300px;
+    background-color: #202224;
+    border-radius: 5px;
+    color: white;
+}
+
+label {
+    color: white;
+}
+
+#text {
+    color: white;
+}
+
+
+#labelQuestionnaire {
+    width: 200px;
+}
+
+.inline {
+    display: flex;
+    align-items: center;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+___________________________________
+
+
+
 #div_connexion {
 
     background-color: rgba(0, 0, 0, 0.37); 
@@ -11,62 +129,16 @@ body {
     display: flex; /* Active les propriétés flex */
     align-items: center; /* Centre les éléments horizontaux */
     justify-content: center; /* Centre les éléments verticaux */
-
-
-
-    
 }
 
 #div_texte_Connexion {
     text-align: center;
 }
 
-#boutonInscription {
-    color: white;
+#Deconnexion_button{
+    float: right;
 }
 
-#bienvenue {
-    font-size: 60px;
-}
-
-#submit {
-    border-radius: 5px;
-    border: none;
-    background-color: blue; 
-    color: white; 
-    padding: 10px 20px;
-    transition: background-color 0.5s ease;
-
-    
-}
-
-#submit:hover {
-    background-color: green;
-}
-
-input {
-    border-radius: 5px; 
-    border: none;
-    background-color: #f2f2f2; 
-    color: black; 
-
-}
-
-.container {
-    width: 50%; /* Largeur de la div */
-    margin: 0 auto;
-    
-}
-
-button {
-    border-radius: 5px;
-    border: none;
-    background-color: blue; 
-    color: white; 
-    padding: 10px;
-    transition: background-color 0.5s ease;
-
-}
 
 #div_Inscription {
     background-color: rgba(0, 0, 0, 0.37); 
@@ -78,7 +150,15 @@ button {
 
 }
 
+#boutonInscription {
+    color: white;
+}
+
 #texte_Inscription {
+    font-size: 60px;
+}
+
+#bienvenue {
     font-size: 60px;
 }
 
@@ -89,43 +169,7 @@ button {
   font-size: 100px;
 }
 
-#divGauche {
-    float: left; /* flotte à gauche */
-    width: 50%;
-}
-
-#divDroite {
-    text-align: center;
-
-    float: right; /* flotte à droite */
-    width: 50%;
-}
-
-#labelQuestionnaire {
-    width: 200px;
-}
-
-textarea {
-    border-radius: 5px; 
-    border: 1px solid gray; 
-    font-family: 'Montserrat', sans-serif;
-}
-
-#Question {
-    width: 800px;
-    height: 300px;
-    
-}
-
-#visu {
-    margin-top: 35px;
-    text-align: center;
-    width: 800px;
-    height: 300px;
-    background-color: white;
-    border-radius: 5px;
-    color: black;
-}
+______________________________________
 
 
 .alert.alet-danger {

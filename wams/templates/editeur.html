@@ -4,6 +4,7 @@
 {% endblock %}
 
 {% block content %}
+
   <script>
       MathJax = {
         tex: {
@@ -47,14 +48,18 @@
 
     </script>
 
-    <div id="divGauche">
+    <div id="divGauche" class="left">
 
       {% if current_user.is_authenticated %}
     <div>
       {% for question in question %}
           <button data-id="{{ question.id }}" class="update-button">{{ question.Label }}</button>
       {% endfor %}
+
+      
     </div>
+
+
     
     <form method="POST" id="myForm">
         {{ form.hidden_tag()}}
@@ -84,14 +89,14 @@
         <button id = "moins" type = "button" class = "moins" style = 'display: none;'>-</button>
         <input type="text" id = "addTags" class = "addTags" onkeydown="return (event.keyCode!=13);" placeholder="Séparer par ',' pour plusieurs tags" style = 'display: none';/>
         <button type = "button" id = "submitCustomTags" class = "submitCustomTags" style = 'display: none;'>Ajouter l'étiquette</button> 
-        <br><br>
-        <input type="checkbox" id = "BoutonValNum">Réponse à valeur numérique
+        <br>
+        <input type="checkbox" id = "BoutonValNum">  <label for="">Réponse à valeur numérique</label> 
         <br><br>
         <div id = "boutonValNum">
           {{form.Réponse1.label()}}
           {{form.Réponse1()}}
         </div>
-        <br>
+        <br><br>
         <div id="QCM">
           {{form.Réponse2.label()}}
           {{form.Réponse2()}}
@@ -124,21 +129,36 @@
     </div>
         
       
-      <br><br>
+      <br>
       <input type="text" id="labelQuestionnaire" placeholder="Nom du Questionnaire">
       <br><br>
   
-      <button id="envoyerPageQuestions">Créer une nouvelle page de questions</button>
+      <div class="inline">
+        <button id="envoyerPageQuestions">Créer une nouvelle page de questions</button>
+
+        <div id="Deconnexion_button_div">
+          <form action="{{ url_for('deconnexion') }}" method="POST">
+            <button type="submit" id="Deconnexion_button">Déconnexion</button>
+          </form>
+
+        </div>
+        
+
+      </div>
       <br><br>
 
-      <a href="{{url_for('deconnexion')}}">Déconnexion</a>
+
+
     </div>
     
+    
 
-  <div id="divDroite" style="position: relative; top: 50%;">
+  <div id="divDroite" class="right">
+    
     <div id="visu">
       <p id="a"></p>
     </div>
+    <br>
     <div id = boutonsDivDroite>
       <button id="R1"></button> <input type="radio" id="BonneRéponse1" name="choisirReponse" class="radioReponse">
       <br>
