@@ -98,14 +98,56 @@ label {
     align-items: center;
 }
 
+#plus {
+    position: absolute;
+}
+
+#moins {
+    position: absolute;
+}
 
 
+#BoutonValNum{
+	height: 0;
+	width: 0;
+	visibility: hidden;
+}
 
+#switchBoutonValNum {
+    cursor: pointer;
+	text-indent: -9999px;
+	width: 40px;
+	height: 20px;
+	background: #202224;
+	display: inline-block;
+	border-radius: 100px;
+	position:relative;
+}
 
+#switchBoutonValNum:after {
+	content: '';
+	position: absolute;
+	top: 5px;
+	left: 5px;
+	width: 10px;
+	height: 10px;
+	background: #fff;
+	border-radius: 90px;
+	transition: 0.3s;
+}
 
+#BoutonValNum:checked + #switchBoutonValNum {
+	background: #2b4a0f;
+}
 
+#BoutonValNum:checked + #switchBoutonValNum:after {
+	left: calc(100% - 5px);
+	transform: translateX(-100%);
+}
 
-
+#switchBoutonValNum:active:after {
+	width: 26px;
+}
 
 
 

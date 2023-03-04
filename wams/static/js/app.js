@@ -53,10 +53,10 @@ $(document).ready(function() {
 
   $(document).on('click', ".plus", function(){ //fonction pour afficher plus d'éléments dans le html
     tagListPlus = document.getElementsByClassName("tagButtonPlus");
-    document.getElementById("submitCustomTags").style.display = 'block';
-    document.getElementById("addTags").style.display = 'block';
+    document.getElementById("submitCustomTags").style.display = 'inline';
+    document.getElementById("addTags").style.display = 'inline';
     for (var i = 0 ; i < tagListPlus.length ; i++){
-      tagListPlus[i].style.display='block';
+      tagListPlus[i].style.display='inline-block';
     }
     this.style.display = 'none';
     document.getElementById("moins").style.display = 'block';
@@ -70,7 +70,7 @@ $(document).ready(function() {
       tagListPlus[i].style.display='none';
     }
     this.style.display = 'none';
-    document.getElementById("plus").style.display = 'block';
+    document.getElementById("plus").style.display = 'inline';
   });
 
   $(document).on('click', ".submitCustomTags", function(){ //Ajout des tags personnalisés

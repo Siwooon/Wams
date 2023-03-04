@@ -52,9 +52,13 @@
 
       {% if current_user.is_authenticated %}
     <div>
+
+      <br><br>
       {% for question in question %}
           <button data-id="{{ question.id }}" class="update-button">{{ question.Label }}</button>
       {% endfor %}
+      
+      <br><br>
 
       
     </div>
@@ -85,12 +89,12 @@
         {% for tag in range(len9+1, len) %}
           <button id = "{{ globalTags[tag] }}" class = "tagButton tagButtonPlus" type = "button" style = 'display: none;'>{{ globalTags[tag] }}</button>
         {% endfor %}
-        <button id = "plus" type = "button" class = "plus" style = 'display: block;'>+</button>
+        <button id = "plus" type = "button" class = "plus">+</button>
         <button id = "moins" type = "button" class = "moins" style = 'display: none;'>-</button>
-        <input type="text" id = "addTags" class = "addTags" onkeydown="return (event.keyCode!=13);" placeholder="Séparer par ',' pour plusieurs tags" style = 'display: none';/>
+        <input type="text" id = "addTags" class = "addTags" onkeydown="return (event.keyCode!=13);" placeholder="Séparer par ',' pour plusieurs tags" style = 'display: none;'/>
         <button type = "button" id = "submitCustomTags" class = "submitCustomTags" style = 'display: none;'>Ajouter l'étiquette</button> 
-        <br>
-        <input type="checkbox" id = "BoutonValNum">  <label for="">Réponse à valeur numérique</label> 
+        <br> <br>
+        <input type="checkbox" id = "BoutonValNum" class="checkbox hidden">  <label id="switchBoutonValNum" for="BoutonValNum">Réponse à valeur numérique</label> <label for="switchBoutonValNum">Réponse à valeur numérique</label>
         <br><br>
         <div id = "boutonValNum">
           {{form.Réponse1.label()}}
@@ -129,7 +133,7 @@
     </div>
         
       
-      <br>
+      <br> <br>
       <input type="text" id="labelQuestionnaire" placeholder="Nom du Questionnaire">
       <br><br>
   
@@ -154,6 +158,7 @@
     
 
   <div id="divDroite" class="right">
+    <br><br> <br>
     
     <div id="visu">
       <p id="a"></p>
