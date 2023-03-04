@@ -135,8 +135,7 @@ $(document).ready(function() {
     console.log(listeQuestions);
 
     var clonedButton = $(this).clone().removeClass('update-button').addClass('pageQuestionButton');
-    $('#pageQuestions').append(clonedButton);
-    $('#pageQuestions').append("<br>");
+    $('.button-container').append(clonedButton);
 
     var QuestionId = $(this).data('id');
 

@@ -181,7 +181,14 @@ label {
 
 }
 
-
+.button-container {
+    display: inline-block;
+}
+  
+.button-container .pageQuestionButton {
+    margin-right: 10px; 
+    margin-top: 10px;
+}
 
 
 
