@@ -5,6 +5,13 @@ from flask_login import UserMixin
 class Etiquettes(db.Model):
     id = db.Column(db.String(), primary_key=True)
 
+class Archive(db.Model):
+    id = db.Column(db.String(), primary_key=True)
+    user = db.Column(db.String(), nullable =False)
+    réponse = db.Column(db.String(), nullable =False)
+    date = db.Column(db.String(), nullable =False)
+    typeQuestion = db.Column(db.String(), nullable =False)
+    
 class question(db.Model): 
     id = db.Column(db.Integer(), primary_key=True)
     Label = db.Column(db.String(), nullable =False)

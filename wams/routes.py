@@ -1,7 +1,7 @@
 from wams import app
 from flask import render_template, redirect, url_for, jsonify, flash, request, json
 from wams.db import db
-from wams.db import question, user_info, Etiquettes, questionnaire
+from wams.db import question, user_info, Etiquettes, questionnaire, Archive
 from wams.forms import Form, FormInscription, FormConnexion
 import os
 import csv
@@ -295,4 +295,8 @@ def creerAllComptes():
 
 app.config['FILE_UPLOADS'] = ""
 
+def archivage(user, réponse, date, typeQuestion):
+    archive = Archive(user = user, réponse = réponse, date = date, typeQuestion = typeQuestion)
+    db.session.add(archive)
+    db.session.commit()
 
