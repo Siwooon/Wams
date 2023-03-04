@@ -48,31 +48,32 @@
 
     </script>
 
-    <div id="divGauche" class="left">
+{% if current_user.is_authenticated %}
 
-      {% if current_user.is_authenticated %}
-    <div>
+    <div id="divQuestions">
 
-      <br><br>
+
       {% for question in question %}
           <button data-id="{{ question.id }}" class="update-button">{{ question.Label }}</button>
       {% endfor %}
-      
-      <br><br>
+
+    </div>
+
+    <div id="divGauche" class="left">
 
       
-    </div>
+    
 
 
     
-    <form method="POST" id="myForm">
+    <form method="POST" id="myForm" style="width: 100%; height: auto;">
         {{ form.hidden_tag()}}
 
         {{form.bonne_reponse()}}
 
         
         
-        <div></div>
+        
         {{form.Question()}}
         
         <br><br>
@@ -116,49 +117,27 @@
 
         <button type="button" id="reset-button">Tout Effacer</button>
 
-
-  
-
     </form>
 
-    
-
-    
-
-    <div id="pageQuestions" >
-
-
-
-
-    </div>
+    <div id="pageQuestions"></div>
         
-      
       <br> <br>
       <input type="text" id="labelQuestionnaire" placeholder="Nom du Questionnaire">
       <br><br>
   
-      <div class="inline">
+      <div class="inline-block">
         <button id="envoyerPageQuestions">Créer une nouvelle page de questions</button>
 
         <div id="Deconnexion_button_div">
           <form action="{{ url_for('deconnexion') }}" method="POST">
             <button type="submit" id="Deconnexion_button">Déconnexion</button>
           </form>
-
         </div>
-        
-
       </div>
-      <br><br>
-
-
-
     </div>
-    
-    
 
   <div id="divDroite" class="right">
-    <br><br> <br>
+
     
     <div id="visu">
       <p id="a"></p>
@@ -176,15 +155,9 @@
       <br>
     </div>
     
-    
-
-    
-
     {% else %}
     <p>Il faut être connecté pour accéder au créateur de questions !</p>
     <a href="{{url_for('connexion')}}">Connexion</a>
     {% endif %}
-
-
     
 {% endblock %}

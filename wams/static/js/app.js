@@ -1,6 +1,8 @@
 
 
 $(document).ready(function() {
+
+
   $('[name="bonne_reponse"]').hide();
 
   $("[name='Réponse1']").on("input", function() {
