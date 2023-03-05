@@ -1,8 +1,9 @@
-
-
 $(document).ready(function() {
-
-
+  
+    $('.menu-toggle').click(function() {
+      $('.vertical-nav').toggleClass('open');
+    });
+  
   $('[name="bonne_reponse"]').hide();
 
   $("[name='Réponse1']").on("input", function() {
