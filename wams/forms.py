@@ -33,6 +33,11 @@ class FormInscription(FlaskForm):
     password2 = PasswordField(label="Confirmer mot de passe:", validators=[EqualTo('password1'), DataRequired()])
     submit = SubmitField(label="Confirmer")
   
+class FormChangerPassword(FlaskForm):   
+    password1 = PasswordField(label="Mot de passe:", validators=[Length(min=8), DataRequired()])
+    password2 = PasswordField(label="Confirmer mot de passe:", validators=[EqualTo('password1'), DataRequired()])
+    submit = SubmitField(label="Confirmer")
+
 class FormConnexion(FlaskForm):
     username = StringField(label="Username:", validators=[DataRequired()])
     password = PasswordField(label="Mot de passe:", validators=[Length(min=8), DataRequired()])

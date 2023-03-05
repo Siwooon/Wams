@@ -2,7 +2,7 @@ from wams import app
 from flask import render_template, redirect, url_for, jsonify, flash, request, json
 from wams.db import db
 from wams.db import question, user_info, Etiquettes, questionnaire, archive
-from wams.forms import Form, FormInscription, FormConnexion
+from wams.forms import Form, FormInscription, FormConnexion, FormChangerPassword
 import os
 import csv
 import random, string
@@ -262,18 +262,35 @@ def inscription():
             flash(f'Erreur : {errors}', category='danger')
     return render_template('inscription.html', form=form)
 
+@app.route('/changerPassword', methods=['GET', 'POST'])
+def changerPassword():
+    form = FormChangerPassword()
+    print("mdp user :", current_user.password_user)
+    if form.validate_on_submit():
+        user_to_create = user_info(password = form.password1.data)
+        user = user_info.query.filter_by(login_user=current_user.login_user).first()
+        user.password_user = user_to_create.password_user #This is my problem line, I guess.
+        db.session.add(user)
+        db.session.commit()
+    if form.errors != {}:
+        for errors in form.errors.values():
+            flash(f'Erreur : {errors}', category='danger')
+    return render_template('changePassword.html', form=form)
+
 @app.route('/connexion', methods=['GET', 'POST'])
 def connexion():
-    form = FormConnexion()
-    if form.validate_on_submit():
-        passed_user = user_info.query.filter_by(login_user=form.username.data).first()
-        if passed_user and passed_user.check_password_correction(passed_password = form.password.data):
-            login_user(passed_user)
-            # flash(f"Connection réussie sous l'username {passed_user.login_user}", category='success')
-            return redirect(url_for('editeur'))
-        else:
-            flash(f"Erreur, le nom d'utilisateur ne correspond pas au mot de passe !", category='danger')
-    return render_template('connexion.html', form=form)
+    if not current_user.is_authenticated:
+        form = FormConnexion()
+        if form.validate_on_submit():
+            passed_user = user_info.query.filter_by(login_user=form.username.data).first()
+            if passed_user and passed_user.check_password_correction(passed_password = form.password.data):
+                login_user(passed_user)
+                # flash(f"Connection réussie sous l'username {passed_user.login_user}", category='success')
+                return redirect(url_for('editeur'))
+            else:
+                flash(f"Erreur, le nom d'utilisateur ne correspond pas au mot de passe !", category='danger')
+        return render_template('connexion.html', form=form)
+    else: return "Vous êtes déjà connecté !"
 
 @app.route('/deconnexion', methods=['GET', 'POST'])
 def deconnexion():
@@ -283,24 +300,27 @@ def deconnexion():
 
 @app.route('/creerAllComptes', methods=["GET", "POST"])
 def creerAllComptes():
-    form = FormInscription()
-    if request.method == 'POST':
-        if request.files:
-            uploaded_file = request.files['filename'] # This line uses the same variable and worked fine
-            filepath = os.path.join(app.config['FILE_UPLOADS'], uploaded_file.filename)
-            uploaded_file.save(filepath)
-            with open(filepath) as file:
-                csv_file = csv.reader(file)
-                for data in csv_file:
-                    print(data)
-                    user_to_create = user_info(login_user=f"{data[0]}{data[1]}",
-                                                mail_user = "",
-                                                password = data[2])
-                    db.session.add(user_to_create)
-                    db.session.commit()
-    return render_template('creerAllComptes.html')
+    if (current_user.prof_user == 1):
+        form = FormInscription()
+        if request.method == 'POST':
+            if request.files:
+                uploaded_file = request.files['filename'] # This line uses the same variable and worked fine
+                filepath = os.path.join(app.config['FILE_UPLOADS'], uploaded_file.filename)
+                uploaded_file.save(filepath)
+                with open(filepath) as file:
+                    csv_file = csv.reader(file)
+                    for data in csv_file:
+                        print(data)
+                        user_to_create = user_info(login_user=f"{data[0]}{data[1]}",
+                                                    mail_user = "",
+                                                    password = data[2],
+                                                    prof_user = 0)
+                        db.session.add(user_to_create)
+                        db.session.commit()
+        return render_template('creerAllComptes.html')
+    else: return "Vous n'êtes pas prof"
 
-app.config['FILE_UPLOADS'] = ""
+app.config['FILE_UPLOADS'] = ".\\wams\\uploads"
 
 def archivage(user, réponse, date, typeQuestion):
     archivesto = archive(user = user, réponse = réponse, date = date, typeQuestion = typeQuestion)
