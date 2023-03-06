@@ -41,6 +41,11 @@ def pagesQuestionWaitingRoom():
     print(strTags)
     return render_template("pagesQuestion.html", questions=question.query.all(), globalTags=globalTags, len=len(globalTags), len9=len(globalTags) if len(globalTags)<9 else 9, listeTags=listeTags, strTags=strTags)
 
+@app.route('/pageQuestionnaires', methods=['GET', 'POST'])
+def pageQuestionnaires():
+    print(questionnaire.query.all())
+    return render_template("pageQuestionnaires.html", questionnaires=questionnaire.query.all())
+
 isChecked = False
 
 @app.route('/oneAnswer', methods=['GET', 'POST'])
@@ -134,19 +139,45 @@ def diffusionQ(codeRoom):
 
 @app.route('/updateDiffusionQuestion', methods=['POST'])
 def updateDiffusionQuestion():
-    print("Bah oui c'est appelé")
     codeRoomA = ''.join(random.choices(string.ascii_letters + string.digits, k=8))
     codeRoom = codeRoomA if codeRoomA not in roomOuvertes.keys() else updateDiffusionQuestion()
     infosQuestion = request.json
     roomOuvertes[codeRoom] = infosQuestion
     return codeRoom
 
-
 @app.route('/deleteDiffusion', methods=['GET', 'POST'])
 def deleteDiffusion():
     codeRoom = request.get_json()['codeRoom']
     roomOuvertes.remove(codeRoom)
     return redirect(url_for("pagesQuestion"))
+
+@app.route('/diffusionQuestionnaire/<codeRoomS>/<idq>', methods=['GET', 'POST'])
+def diffusionQuestionnaire(codeRoomS, idq):
+    q=json.loads(request.args.get("q"))
+    listeQ=[]
+    for i in range(len(q)-1):
+        listeQ.append(db.session.query(question).filter_by(Label=q[0]).first())
+    print("ZAEZERTYUIO", listeQ)
+    return render_template("diffusionQuestionnaire.html", questionnairesOuverts=questionnairesOuverts, codeRoomS=codeRoomS, listeQ=listeQ)
+
+@app.route('/updateDiffusionQuestionnaire', methods=['POST'])
+def updateDiffusionQuestionnaire():
+    codeRoomSA = ''.join(random.choices(string.ascii_letters + string.digits, k=8))
+    codeRoomS = codeRoomSA if codeRoomSA not in questionnairesOuverts.keys() else updateDiffusionQuestionnaire()
+    temp=request.json
+    tableQ=db.session.query(questionnaire).filter_by(id=temp).first()
+    listeQ=[]
+    for i in range(1, len(tableQ.__table__.columns)-1):
+        column = f"Q{i}"
+        listeQ.append(getattr(tableQ, column))
+    questionnairesOuverts[codeRoomS] = listeQ
+    return {"codeRoom" : codeRoomS, "listeQ" : listeQ}
+
+@app.route('/joinRoomS', methods=['GET', 'POST'])
+def joinRoomS():
+    #codeRoom = request.json
+    #infosQuestion = questionnairesOuverts[codeRoom]
+    return "hbkjnla,"
 
 @app.route('/update/<int:id>', methods=['GET'])
 def update(id):
