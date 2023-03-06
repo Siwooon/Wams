@@ -318,7 +318,37 @@ $(document).on('click', '#diffusionQuestion', function(){
   })
 })
 
+$(document).on('click', '#boutonRoomKeyS', function(){
+  $.ajax({
+    type: "POST",
+    url: "/joinRoomS",
+    data: JSON.stringify(document.getElementById("roomKeyS").value),
+    contentType: "application/json; charset=utf-8",
+    success: function(response) {
+      //window.location.href = '/diffusionQ/' + response.codeRoom + '?infosQuestion=' + encodeURIComponent(JSON.stringify(response.infosQuestion));
+    },
+    error: function(){
+      console.log("CA MARCHE PAS")
+    }
+  })
+})
 
+$(document).on('click', '#diffusionQuestionnaire', function(){
+  infosQuestion=window.location.href.split("/")
+  $.ajax({
+    type: "POST",
+    url: "/updateDiffusionQuestionnaire",
+    data: JSON.stringify(infosQuestion[infosQuestion.length-1]),
+    contentType: "application/json; charset=utf-8",
+    success: function(response) {
+      console.log(response)
+      window.location.href = '/diffusionQuestionnaire/'+response["codeRoom"]+"/1"+"?q="+encodeURIComponent(JSON.stringify(response["listeQ"]));
+    },
+    error: function(){
+      console.log("ça marche pas")
+    }
+  })
+})
 
 
 });
