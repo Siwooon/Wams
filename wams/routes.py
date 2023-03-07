@@ -11,6 +11,7 @@ from flask_login import login_user, logout_user, current_user, login_required
 
 globalTags=[]
 roomOuvertes={}
+questionnairesOuverts={}
 
 from sqlalchemy import create_engine, MetaData, Table
 from sqlalchemy.orm import sessionmaker
@@ -155,8 +156,8 @@ def deleteDiffusion():
 def diffusionQuestionnaire(codeRoomS, idq):
     q=json.loads(request.args.get("q"))
     listeQ=[]
-    for i in range(len(q)-1):
-        listeQ.append(db.session.query(question).filter_by(Label=q[0]).first())
+    for i in range(len(q)):
+        listeQ.append(db.session.query(question).filter_by(Label=q[i]).first())
     print("ZAEZERTYUIO", listeQ)
     return render_template("diffusionQuestionnaire.html", questionnairesOuverts=questionnairesOuverts, codeRoomS=codeRoomS, listeQ=listeQ)
 
@@ -222,12 +223,12 @@ def addQuestion():
 def q(id):
     allQuestionnaire = questionnaire.query.all()
     
-    ligne_selectionnée = db.session.query(questionnaire).filter_by(Label=id).first()
+    ligne_selectionnée = db.session.query(questionnaire).filter_by(id=id).first()
     print(ligne_selectionnée)
     labels = []
     sto = len(ligne_selectionnée.__table__.columns)
     print(sto)
-    for i in range(1, len(ligne_selectionnée.__table__.columns)-2):
+    for i in range(1, len(ligne_selectionnée.__table__.columns)-1):
         column = f"Q{i}"
         value = getattr(ligne_selectionnée, column)
         if value:
