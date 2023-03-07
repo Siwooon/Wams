@@ -5,7 +5,7 @@
 
 {% block content %}
     {% for quest in questionnaires %}
-        <a href="/q/{{quest.Label}}">{{quest.Label}}</a>
+        <a href="/q/{{quest.id}}">{{quest.Label}}</a>
         <br>
     {% endfor %}
 {% endblock %}
