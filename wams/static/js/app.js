@@ -12,6 +12,9 @@ $(document).ready(function() {
     $('[name="bonne_reponse"]').val($(this).val());
     
 });
+
+  questionnairesIndices={}
+
   $("[name='Réponse2']").on("input", function() {
     Réponse2Button = document.getElementById("R2")
     Réponse2Button.innerHTML = $(this).val();
@@ -325,7 +328,7 @@ $(document).on('click', '#boutonRoomKeyS', function(){
     data: JSON.stringify(document.getElementById("roomKeyS").value),
     contentType: "application/json; charset=utf-8",
     success: function(response) {
-      //window.location.href = '/diffusionQ/' + response.codeRoom + '?infosQuestion=' + encodeURIComponent(JSON.stringify(response.infosQuestion));
+      window.location.href = '/diffusionQuestionnaire/' + response.codeRoom +'?q=' + encodeURIComponent(JSON.stringify(response.infosQuestion));
     },
     error: function(){
       console.log("CA MARCHE PAS")
@@ -341,11 +344,33 @@ $(document).on('click', '#diffusionQuestionnaire', function(){
     data: JSON.stringify(infosQuestion[infosQuestion.length-1]),
     contentType: "application/json; charset=utf-8",
     success: function(response) {
-      console.log(response)
-      window.location.href = '/diffusionQuestionnaire/'+response["codeRoom"]+"/1"+"?q="+encodeURIComponent(JSON.stringify(response["listeQ"]));
+      console.log(response);
+      questionnairesIndices.push({
+        key:response["codeRoom"],
+        value:response["indice"]
+      });
+      window.location.href = '/diffusionQuestionnaire/'+response["codeRoom"]+"?q="+encodeURIComponent(JSON.stringify(response["listeQ"]));
     },
     error: function(){
       console.log("ça marche pas")
+    }
+  })
+})
+
+$(document).on('click', '#deleteRoomS', function(){
+  url = document.location.href.split("?")[0].split("/")
+  console.log(url[url.length-1])
+  $.ajax({
+    type: "POST",
+    url: "/deleteDiffusionS",
+    data: JSON.stringify({codeRoomS : url[url.length-1]}),
+    contentType: "application/json; charset=utf-8",
+    success: function() {
+      console.log("C'EST CENSE MARCHER")
+      window.location.href="/"
+    },
+    error: function(){
+      console.log("CA MARCHE PAS")
     }
   })
 })
