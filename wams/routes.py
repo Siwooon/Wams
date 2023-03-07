@@ -118,7 +118,7 @@ def waitingRoom():
 @app.route('/joinRoomQ', methods=['GET', 'POST'])
 def joinRoomQ():
     codeRoom = request.json
-    infosQuestion = roomOuvertes[codeRoom]
+    infosQuestion = roomOuvertes[codeRoom] if codeRoom in roomOuvertes.keys() else ""
     return {"codeRoom" : codeRoom, "infosQuestion" : infosQuestion}
 
 @app.route('/diffusionQ/<codeRoom>', methods=['GET', 'POST'])
@@ -149,16 +149,15 @@ def updateDiffusionQuestion():
 @app.route('/deleteDiffusion', methods=['GET', 'POST'])
 def deleteDiffusion():
     codeRoom = request.get_json()['codeRoom']
-    roomOuvertes.remove(codeRoom)
+    roomOuvertes.pop(codeRoom, None)
     return redirect(url_for("pagesQuestion"))
 
-@app.route('/diffusionQuestionnaire/<codeRoomS>/<idq>', methods=['GET', 'POST'])
-def diffusionQuestionnaire(codeRoomS, idq):
+@app.route('/diffusionQuestionnaire/<codeRoomS>', methods=['GET', 'POST'])
+def diffusionQuestionnaire(codeRoomS):
     q=json.loads(request.args.get("q"))
     listeQ=[]
     for i in range(len(q)):
         listeQ.append(db.session.query(question).filter_by(Label=q[i]).first())
-    print("ZAEZERTYUIO", listeQ)
     return render_template("diffusionQuestionnaire.html", questionnairesOuverts=questionnairesOuverts, codeRoomS=codeRoomS, listeQ=listeQ)
 
 @app.route('/updateDiffusionQuestionnaire', methods=['POST'])
@@ -172,13 +171,21 @@ def updateDiffusionQuestionnaire():
         column = f"Q{i}"
         listeQ.append(getattr(tableQ, column))
     questionnairesOuverts[codeRoomS] = listeQ
-    return {"codeRoom" : codeRoomS, "listeQ" : listeQ}
+    print(questionnairesOuverts)
+    return {"codeRoom" : codeRoomS, "listeQ" : listeQ, "indice" : 0}
 
 @app.route('/joinRoomS', methods=['GET', 'POST'])
 def joinRoomS():
-    #codeRoom = request.json
-    #infosQuestion = questionnairesOuverts[codeRoom]
-    return "hbkjnla,"
+    codeRoom = request.json
+    infosQuestion = questionnairesOuverts[codeRoom] if codeRoom in questionnairesOuverts.keys() else ""
+    return {"codeRoom" : codeRoom, "infosQuestion" : infosQuestion}
+
+@app.route('/deleteDiffusionS', methods=['GET', 'POST'])
+def deleteDiffusionS():
+    codeRoomS = request.get_json()["codeRoomS"]
+    questionnairesOuverts.pop(codeRoomS, None)
+    return redirect(url_for("pageQuestionnaires"))
+
 
 @app.route('/update/<int:id>', methods=['GET'])
 def update(id):
