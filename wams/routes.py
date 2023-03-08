@@ -12,6 +12,7 @@ from flask_login import login_user, logout_user, current_user, login_required
 globalTags=[]
 roomOuvertes={}
 questionnairesOuverts={}
+indiceQuestion={}
 
 from sqlalchemy import create_engine, MetaData, Table
 from sqlalchemy.orm import sessionmaker
@@ -158,7 +159,7 @@ def diffusionQuestionnaire(codeRoomS):
     listeQ=[]
     for i in range(len(q)):
         listeQ.append(db.session.query(question).filter_by(Label=q[i]).first())
-    return render_template("diffusionQuestionnaire.html", questionnairesOuverts=questionnairesOuverts, codeRoomS=codeRoomS, listeQ=listeQ)
+    return render_template("diffusionQuestionnaire.html", questionnairesOuverts=questionnairesOuverts, codeRoomS=codeRoomS, listeQ=listeQ, indiceQuestion=indiceQuestion[codeRoomS])
 
 @app.route('/updateDiffusionQuestionnaire', methods=['POST'])
 def updateDiffusionQuestionnaire():
@@ -171,8 +172,9 @@ def updateDiffusionQuestionnaire():
         column = f"Q{i}"
         listeQ.append(getattr(tableQ, column))
     questionnairesOuverts[codeRoomS] = listeQ
+    indiceQuestion[codeRoomS] = 0
     print(questionnairesOuverts)
-    return {"codeRoom" : codeRoomS, "listeQ" : listeQ, "indice" : 0}
+    return {"codeRoom" : codeRoomS, "listeQ" : listeQ}
 
 @app.route('/joinRoomS', methods=['GET', 'POST'])
 def joinRoomS():
@@ -186,6 +188,12 @@ def deleteDiffusionS():
     questionnairesOuverts.pop(codeRoomS, None)
     return redirect(url_for("pageQuestionnaires"))
 
+@app.route('/nextQ', methods=['GET', 'POST'])
+def nextQ():
+    codeRoomS = request.json
+    indiceQuestion[codeRoomS]+=1
+    print(questionnairesOuverts[codeRoomS])
+    return questionnairesOuverts[codeRoomS]
 
 @app.route('/update/<int:id>', methods=['GET'])
 def update(id):
