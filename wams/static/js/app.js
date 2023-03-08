@@ -13,7 +13,6 @@ $(document).ready(function() {
     
 });
 
-  questionnairesIndices={}
 
   $("[name='Réponse2']").on("input", function() {
     Réponse2Button = document.getElementById("R2")
@@ -344,11 +343,6 @@ $(document).on('click', '#diffusionQuestionnaire', function(){
     data: JSON.stringify(infosQuestion[infosQuestion.length-1]),
     contentType: "application/json; charset=utf-8",
     success: function(response) {
-      console.log(response);
-      questionnairesIndices.push({
-        key:response["codeRoom"],
-        value:response["indice"]
-      });
       window.location.href = '/diffusionQuestionnaire/'+response["codeRoom"]+"?q="+encodeURIComponent(JSON.stringify(response["listeQ"]));
     },
     error: function(){
@@ -368,6 +362,24 @@ $(document).on('click', '#deleteRoomS', function(){
     success: function() {
       console.log("C'EST CENSE MARCHER")
       window.location.href="/"
+    },
+    error: function(){
+      console.log("CA MARCHE PAS")
+    }
+  })
+})
+
+$(document).on('click', '#nextQ', function(){
+  url = document.location.href.split("?")[0].split("/")
+  $.ajax({
+    type: "POST",
+    url: "/nextQ",
+    data:JSON.stringify(url[url.length-1]),
+    contentType: "application/json; charset=utf-8",
+    success: function(response) {
+      console.log("C'EST CENSE MARCHER")
+      window.location.href = '/diffusionQuestionnaire/'+url[url.length-1]+"?q="+encodeURIComponent(JSON.stringify(response));
+
     },
     error: function(){
       console.log("CA MARCHE PAS")
