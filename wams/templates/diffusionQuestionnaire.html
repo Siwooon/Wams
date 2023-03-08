@@ -7,9 +7,12 @@
     {% if codeRoomS in questionnairesOuverts %}
         <h2>Code de la séquence : {{codeRoomS}}</h2>
         {{listeQ}}
+        {{listeQ[indiceQuestion]}}
         <br>
         <button id="deleteRoomS">Supprimer la diffusion</button>
-        <button id="nextQ">Question suivante</button>
+        {% if indiceQuestion < listeQ|length %}
+            <button id="nextQ">Question suivante</button>
+        {% endif %}
     {% else %}
         <h2>Cette diffusion n'existe pas</h2>
     {% endif %}
