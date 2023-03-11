@@ -13,6 +13,7 @@ globalTags=[]
 roomOuvertes={}
 questionnairesOuverts={}
 indiceQuestion={}
+testDeLaComOMG=[]
 
 from sqlalchemy import create_engine, MetaData, Table
 from sqlalchemy.orm import sessionmaker
@@ -28,7 +29,7 @@ questionnaireTable = Table("questionnaire", metadata, autoload=True, autoload_wi
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
-    print(current_user.prof_user)
+    print(current_user.id)
     return render_template('home.html')
 
 @app.route('/pagesQuestion', methods=['GET', 'POST'])
@@ -112,6 +113,8 @@ def editeur():
     
     return render_template('editeur.html', form = form, question = AllQuestion, globalTags=globalTags, len=len(globalTags), len9 = len(globalTags) if len(globalTags)<9 else 9)
 
+#_________________ Diffusion de questions ____________________
+
 @app.route('/waitingRoom', methods=['GET', 'POST'])
 def waitingRoom():
     return render_template('waitingRoom.html')
@@ -153,13 +156,18 @@ def deleteDiffusion():
     roomOuvertes.pop(codeRoom, None)
     return redirect(url_for("pagesQuestion"))
 
+#_________________ Diffusion de questionnaires ____________________
+
 @app.route('/diffusionQuestionnaire/<codeRoomS>', methods=['GET', 'POST'])
 def diffusionQuestionnaire(codeRoomS):
     q=json.loads(request.args.get("q"))
     listeQ=[]
     for i in range(len(q)):
         listeQ.append(db.session.query(question).filter_by(Label=q[i]).first())
-    return render_template("diffusionQuestionnaire.html", questionnairesOuverts=questionnairesOuverts, codeRoomS=codeRoomS, listeQ=listeQ, indiceQuestion=indiceQuestion[codeRoomS])
+    if codeRoomS in indiceQuestion :
+        return render_template("diffusionQuestionnaire.html", questionnairesOuverts=questionnairesOuverts, codeRoomS=codeRoomS, listeQ=listeQ, indiceQuestion=indiceQuestion[codeRoomS])
+    else:
+        return render_template("diffusionQuestionnaire.html", questionnairesOuverts=questionnairesOuverts, codeRoomS=codeRoomS, listeQ=listeQ, indiceQuestion="")
 
 @app.route('/updateDiffusionQuestionnaire', methods=['POST'])
 def updateDiffusionQuestionnaire():
@@ -293,6 +301,13 @@ def quest(id):
                    Réponse2=Question.Réponse2,
                    Réponse3=Question.Réponse3,
                    Réponse4=Question.Réponse4)
+
+@app.route('/reponseDiffQ', methods=['GET', 'POST'])
+def reponseDiffQ():
+    rep=request.form.get('reponses')
+    print("La réponse fournie par", current_user.id, " est ", rep)
+    return "Ok"
+
 @app.route('/inscription', methods=['GET', 'POST'])
 def inscription():
     form = FormInscription()
