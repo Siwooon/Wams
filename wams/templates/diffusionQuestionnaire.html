@@ -10,7 +10,7 @@
         {{listeQ[indiceQuestion]}}
         <br>
         <button id="deleteRoomS">Supprimer la diffusion</button>
-        {% if indiceQuestion < listeQ|length %}
+        {% if indiceQuestion < listeQ|length -1 %}
             <button id="nextQ">Question suivante</button>
         {% endif %}
     {% else %}
