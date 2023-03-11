@@ -387,5 +387,13 @@ $(document).on('click', '#nextQ', function(){
   })
 })
 
+$(document).on('click', '#submitReponseDiffQ', function(){
+  $.ajax({
+    type: "POST",
+    url: "/reponseDiffQ",
+    contentType: "application/json; charset=utf-8",
+  })
+})
+
 
 });
