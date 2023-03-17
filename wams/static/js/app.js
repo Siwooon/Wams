@@ -1,12 +1,52 @@
 $(document).ready(function() {
   var socket = io();
+  
     socket.on('connected', function(sto) {
         console.log(sto)
     });
 
+    socket.on('EnvoieReponse', function(reponse){
+      
+    })
+   
+    socket.on('envoieDico', function(reponse){
+      console.log(reponse.dict1[reponse.room])
+      var count1 =0
+      var count2 =0
+      var count3 =0
+      var count4 =0
+      for (i of reponse.dict1[reponse.room]) {
+        if (i == document.getElementById("reponse1").value) {
+          count1++;
+        }
+      }
+      for (i of reponse.dict1[reponse.room]) {
+        if (i == document.getElementById("reponse2").value) {
+          count2++;
+        }
+      }
+      for (i of reponse.dict1[reponse.room]) {
+        if (i == document.getElementById("reponse3").value) {
+          count3++;
+        }
+      }
+      for (i of reponse.dict1[reponse.room]) {
+        if (i == document.getElementById("reponse4").value) {
+          count4++;
+        }
+      }
+      console.log(count1*100/reponse.dict1[reponse.room].length)
+      document.getElementById("progress1").value=(count1*100/reponse.dict1[reponse.room].length).toString()
+      document.getElementById("progress2").value=(count2*100/reponse.dict1[reponse.room].length).toString()
+      document.getElementById("progress3").value=(count3*100/reponse.dict1[reponse.room].length).toString()
+      document.getElementById("progress4").value=(count4*100/reponse.dict1[reponse.room].length).toString()
+
+
+    })
 
 
 
+  
 
 
 
@@ -406,5 +446,13 @@ $(document).on('click', '#submitReponseDiffQ', function(){
   })
 })
 
+$(document).on('click', '.button-answer', function() {
+  console.log($(this).val())
+  socket.emit('EnvoieReponse', $(this).val())
+})
+
+
+
 
 });
+

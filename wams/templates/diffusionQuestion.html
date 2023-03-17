@@ -11,7 +11,7 @@
         <h2>Cette diffusion n'existe pas</h2>
     {% endif %}
 
-    {% if existsRoom %}
+    {% if existsRoom%}
         <div style="background-color: rgba(0, 0, 0, 0.37); width: 500px; height: 450px;padding: 40px;position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%); border-radius: 40px;">
             <div style="color:white;
                     font-style: italic;
@@ -28,16 +28,24 @@
         <form method="post">
             <div style="color: white;"><h3><dt>Entrez votre réponse </h3></div>
             
-                <div style="color: white;"><input type="radio" name="reponses" id="reponse1" value="{{ Réponse1 }}"> {{ Réponse1 }} </input></div><br>
-                    <div style="color: white;"><input type="radio" name="reponses" id="reponse2" value="{{ Réponse2 }}"> {{ Réponse2 }} </input></div><br>
-                        <div style="color: white;"><input type="radio" name="reponses" id="reponse3" value="{{ Réponse3 }}"> {{ Réponse3 }} </input></div><br>
-                            <div style="color: white;"><input type="radio" name="reponses" id="reponse4" value="{{ Réponse4 }}"> {{ Réponse4 }} </input></div><br>
+                <div style="color: white;"><input type="radio" class="button-answer" name="reponses" id="reponse1" value="{{ Réponse1 }}"> {{ Réponse1 }} </input></div><br>
+                    <div style="color: white;"><input type="radio" class="button-answer" name="reponses" id="reponse2" value="{{ Réponse2 }}"> {{ Réponse2 }} </input></div><br>
+                        <div style="color: white;"><input type="radio" class="button-answer" name="reponses" id="reponse3" value="{{ Réponse3 }}"> {{ Réponse3 }} </input></div><br>
+                            <div style="color: white;"><input type="radio" class="button-answer" name="reponses" id="reponse4" value="{{ Réponse4 }}"> {{ Réponse4 }} </input></div><br>
         
             <div style="text-align: center;"><p><input id="submitReponseDiffQ" type=submit value=Valider style="width:70px;height:25px"></p></div>
         
         </form>
         
         </div>
+    {% endif %}
+
+    {% if existsRoom and isHost %}
+        <progress id = "progress1" max = "100" value = "0"></progress>
+        <progress id = "progress2" max = "100" value = "0"></progress>
+        <progress id = "progress3" max = "100" value = "0"></progress>
+        <progress id = "progress4" max = "100" value = "0"></progress>
+
     {% endif %}
 
 {% endblock %}

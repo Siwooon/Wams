@@ -15,6 +15,9 @@ globalTags=[]
 roomOuvertes={}
 questionnairesOuverts={}
 indiceQuestion={}
+testDeLaComOMG=[]
+dicoHosts={}
+dicoReponsesQuestions={}
 
 from sqlalchemy import create_engine, MetaData, Table
 from sqlalchemy.orm import sessionmaker
@@ -132,6 +135,7 @@ def joinRoomQ():
 @app.route('/diffusionQ/<codeRoom>', methods=['GET', 'POST'])
 def diffusionQ(codeRoom):
     infosQuestion = request.args.get('infosQuestion')
+    print("FYAZDUAGZDAZ", codeRoom)
     if infosQuestion is not None:
         infosQuestion = json.loads(request.args.get('infosQuestion'))
     if codeRoom in roomOuvertes:
@@ -141,7 +145,7 @@ def diffusionQ(codeRoom):
                    Réponse1=roomOuvertes[codeRoom]['Reponse1'],
                    Réponse2=roomOuvertes[codeRoom]['Reponse2'],
                    Réponse3=roomOuvertes[codeRoom]['Reponse3'],
-                   Réponse4=roomOuvertes[codeRoom]['Reponse4'])
+                   Réponse4=roomOuvertes[codeRoom]['Reponse4'], isHost=isHost(codeRoom))
     else:
         return render_template('diffusionQuestion.html', existsRoom = codeRoom in roomOuvertes)
 
@@ -152,12 +156,17 @@ def updateDiffusionQuestion():
     codeRoom = codeRoomA if codeRoomA not in roomOuvertes.keys() else updateDiffusionQuestion()
     infosQuestion = request.json
     roomOuvertes[codeRoom] = infosQuestion
+    dicoHosts[codeRoom]=current_user.id
+    dicoReponsesQuestions[codeRoom]=[]
+
     return codeRoom
 
 @app.route('/deleteDiffusion', methods=['GET', 'POST'])
 def deleteDiffusion():
     codeRoom = request.get_json()['codeRoom']
     roomOuvertes.pop(codeRoom, None)
+    dicoHosts.pop(codeRoom, None)
+    dicoReponsesQuestions.pop(codeRoom, None)
     return redirect(url_for("pagesQuestion"))
 
 @app.route('/diffusionQuestionnaire/<codeRoomS>', methods=['GET', 'POST'])
@@ -280,8 +289,7 @@ def quest(id):
     
     if reponse == bonneRep:
         login_user = current_user.login_user
-        date_actuelle = date.today()
-        archivage(login_user, reponse, date_actuelle, "question")
+        archivage(login_user, reponse, "question")
         flash("Bonne réponse !", category='success')
     elif (request.form.get('reponses') == None) :
         # flash("Veuillez répondre à la question", category='danger')
@@ -289,8 +297,7 @@ def quest(id):
 
     else:
         login_user = current_user.login_user
-        date_actuelle = date.today()
-        archivage(login_user, reponse, date_actuelle, "question")
+        archivage(login_user, reponse, "question")
         flash("Mauvaise réponse !", category='danger')
     return render_template('question.html', Label=Question.Label, 
                    Etiquette=Question.Etiquette, 
@@ -375,7 +382,57 @@ def creerAllComptes():
 
 app.config['FILE_UPLOADS'] = ".\\wams\\uploads"
 
-def archivage(user, réponse, date, typeQuestion):
-    archivesto = archive(user = user, réponse = réponse, date = date, typeQuestion = typeQuestion)
+def archivage(user, réponse, typeQuestion):
+    archivesto = archive(user = user, réponse = réponse, date = date.today(), typeQuestion = typeQuestion)
     db.session.add(archivesto)
     db.session.commit()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def isHost(code):
+        return current_user.id == dicoHosts[code]
+
+@socketio.on('EnvoieReponse')
+def archivageReponseQuestion(reponse):
+    archivage(current_user.id, reponse, "question")
+    for room in dicoHosts:
+        if dicoHosts[room]==current_user.id:
+            dicoReponsesQuestions[room].append(reponse)
+            dicoRoom=room
+    print(dicoReponsesQuestions)
+    emit('envoieDico', {"dict1" : dicoReponsesQuestions, "room" : dicoRoom})
+
+
+
+@socketio.on('connect')
+def handle_message():
+    print('CHACARONMACARON')
+    sto = 'You are connected'
+    emit('connected', sto)
+
+
+
+
+
+
