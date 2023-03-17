@@ -10,37 +10,38 @@ $(document).ready(function() {
     })
    
     socket.on('envoieDico', function(reponse){
-      console.log(reponse.dict1[reponse.room])
+      room=document.getElementById("stockCode").dataset.codeRoom
+      console.log(reponse.dict1[document.getElementById("stockCode").dataset.codeRoom])
       var count1 =0
       var count2 =0
       var count3 =0
       var count4 =0
-      for (i of reponse.dict1[reponse.room]) {
+      for (i of reponse.dict1[room]) {
         if (i == document.getElementById("reponse1").value) {
           count1++;
         }
       }
-      for (i of reponse.dict1[reponse.room]) {
+      for (i of reponse.dict1[room]) {
         if (i == document.getElementById("reponse2").value) {
           count2++;
         }
       }
-      for (i of reponse.dict1[reponse.room]) {
+      for (i of reponse.dict1[room]) {
         if (i == document.getElementById("reponse3").value) {
           count3++;
         }
       }
-      for (i of reponse.dict1[reponse.room]) {
+      for (i of reponse.dict1[room]) {
         if (i == document.getElementById("reponse4").value) {
           count4++;
         }
       }
-      console.log(count1*100/reponse.dict1[reponse.room].length)
-      document.getElementById("nbRep").innerHTML="Nombre de réponses : " + reponse.dict1[reponse.room].length
-      document.getElementById("progress1").value=(count1*100/reponse.dict1[reponse.room].length).toString()
-      document.getElementById("progress2").value=(count2*100/reponse.dict1[reponse.room].length).toString()
-      document.getElementById("progress3").value=(count3*100/reponse.dict1[reponse.room].length).toString()
-      document.getElementById("progress4").value=(count4*100/reponse.dict1[reponse.room].length).toString()
+      console.log(count1*100/reponse.dict1[room].length)
+      document.getElementById("nbRep").innerHTML="Nombre de réposes : " + reponse.dict1[room].length
+      document.getElementById("progress1").value=(count1*100/reponse.dict1[room].length).toString()
+      document.getElementById("progress2").value=(count2*100/reponse.dict1[room].length).toString()
+      document.getElementById("progress3").value=(count3*100/reponse.dict1[room].length).toString()
+      document.getElementById("progress4").value=(count4*100/reponse.dict1[room].length).toString()
 
 
     })
@@ -449,9 +450,17 @@ $(document).on('click', '#submitReponseDiffQ', function(){
 
 $(document).on('click', '.button-answer', function() {
   console.log($(this).val())
-  socket.emit('EnvoieReponse', $(this).val())
+  socket.emit('EnvoieReponse', {"bouton" : $(this).val(), "room" : document.getElementById(document.getElementById("stockCode").dataset.codeRoom)})
 })
 
+$(document).on('click', '#afficheStatsQuestion', function(){
+  if (document.getElementById("divStatsQuestion").style.display != 'none'){
+    document.getElementById("divStatsQuestion").style.display='none'
+  }
+  else{
+    document.getElementById("divStatsQuestion").style.display='block'
+  }
+})
 
 
 

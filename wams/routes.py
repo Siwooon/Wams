@@ -388,40 +388,15 @@ def archivage(user, réponse, typeQuestion):
     db.session.commit()
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 def isHost(code):
         return current_user.id == dicoHosts[code]
 
 @socketio.on('EnvoieReponse')
 def archivageReponseQuestion(reponse):
-    archivage(current_user.id, reponse, "question")
-    for room in dicoHosts:
-        if dicoHosts[room]==current_user.id:
-            dicoReponsesQuestions[room].append(reponse)
-            dicoRoom=room
+    archivage(current_user.id, reponse.bouton, "question")
+    
     print(dicoReponsesQuestions)
-    emit('envoieDico', {"dict1" : dicoReponsesQuestions, "room" : dicoRoom})
+    emit('envoieDico', dicoReponsesQuestions)
 
 
 

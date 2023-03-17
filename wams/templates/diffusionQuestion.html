@@ -6,12 +6,11 @@
 {% block content %}
     {% if (codeRoom in roomOuvertes) %}
         <h2>Code de la question : {{codeRoom}}</h2>
-        <button id="deleteRoom">Supprimer la diffusion</button>
     {% else %}
         <h2>Cette diffusion n'existe pas</h2>
     {% endif %}
 
-    {% if existsRoom %}
+    {% if existsRoom and not(isHost) %}
         <div style="background-color: rgba(0, 0, 0, 0.37); width: 500px; height: 450px;padding: 40px;position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%); border-radius: 40px;">
             <div style="color:white;
                     font-style: italic;
@@ -42,7 +41,20 @@
         
     {% if existsRoom and isHost %}
 
-    <div>
+    <div style="background-color: rgba(0, 0, 0, 0.37); width: 500px; height: 450px;padding: 40px;position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%); border-radius: 40px;">
+        <div style="color:white;
+                font-style: italic;
+                line-height: 90px;
+                text-align:center;
+                height: 100px;
+                font-weight: 700;
+                font-size: 36px;"><p><span id="labelQuestion">{{ Label }}</span></p></div>
+    
+                <hr>
+    
+    <div style="color: white;"><h1><p class="one" style="text-align: center;" id="énoncéQuestion">{{ Question }}</p></h1></div>
+        <br>
+    <div id = "divStatsQuestion">
         <br>
         <label for="progress1">{{ Réponse1 }}</label>
         <progress id = "progress1" max = "100" value = "0"></progress>
@@ -50,14 +62,31 @@
         <label for="progress2">{{ Réponse2 }}</label>
         <progress id = "progress2" max = "100" value = "0"></progress>
         <br>
-        <h3 id = "nbRep">Nombre de réponses : </h3>
         <label for="progress3">{{ Réponse3 }}</label>
         <progress id = "progress3" max = "100" value = "0"></progress>
         <br>
         <label for="progress4">{{ Réponse4 }}</label>
         <progress id = "progress4" max = "100" value = "0"></progress>
+        <h3 id = "nbRep">Nombre de réponses : </h3>
 
+    </div>        
+
+            <br>
+            <div>
+                <button id = "deleteRoom">Supprimer la diffusion</button>
+
+                <button id = "afficheStatsQuestion">Statistiques de la question</button>
+            </div>
+            
+            
+    
+    
+
+    
     </div>
+
+        
+    <div id="stockCode" data-codeRoom="{{codeRoom}}"></div>
         
         
     {% endif %}
