@@ -36,6 +36,7 @@ $(document).ready(function() {
         }
       }
       console.log(count1*100/reponse.dict1[reponse.room].length)
+      document.getElementById("nbRep").innerHTML="Nombre de réponses : " + reponse.dict1[reponse.room].length
       document.getElementById("progress1").value=(count1*100/reponse.dict1[reponse.room].length).toString()
       document.getElementById("progress2").value=(count2*100/reponse.dict1[reponse.room].length).toString()
       document.getElementById("progress3").value=(count3*100/reponse.dict1[reponse.room].length).toString()

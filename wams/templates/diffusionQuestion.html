@@ -11,7 +11,7 @@
         <h2>Cette diffusion n'existe pas</h2>
     {% endif %}
 
-    {% if existsRoom%}
+    {% if existsRoom %}
         <div style="background-color: rgba(0, 0, 0, 0.37); width: 500px; height: 450px;padding: 40px;position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%); border-radius: 40px;">
             <div style="color:white;
                     font-style: italic;
@@ -39,13 +39,27 @@
         
         </div>
     {% endif %}
-
+        
     {% if existsRoom and isHost %}
+
+    <div>
+        <br>
+        <label for="progress1">{{ Réponse1 }}</label>
         <progress id = "progress1" max = "100" value = "0"></progress>
+        <br>
+        <label for="progress2">{{ Réponse2 }}</label>
         <progress id = "progress2" max = "100" value = "0"></progress>
+        <br>
+        <h3 id = "nbRep">Nombre de réponses : </h3>
+        <label for="progress3">{{ Réponse3 }}</label>
         <progress id = "progress3" max = "100" value = "0"></progress>
+        <br>
+        <label for="progress4">{{ Réponse4 }}</label>
         <progress id = "progress4" max = "100" value = "0"></progress>
 
+    </div>
+        
+        
     {% endif %}
 
 {% endblock %}
