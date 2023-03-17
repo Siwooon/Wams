@@ -1,11 +1,12 @@
 {% extends 'base.html' %}
 {% block title %}
 <title>Editeur</title>
+
 {% endblock %}
 
 {% block content %}
 
-  <script>
+<script>
       MathJax = {
         tex: {
           inlineMath: [['$', '$'], ['\\(', '\\)']]
@@ -14,70 +15,80 @@
           fontCache: 'global'
         }
       };
-  </script>
+</script>
+<script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 
-  <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
-
-  <script>        
-      $(document).ready(function() {
-        const md = window.markdownit({
-          html: true,
-          typographer: true,
-          linkify: true,
-          breaks: true,
-          highlight: function (str, lang) {
-            if (lang && hljs.getLanguage(lang)) {
-              try {
-                return hljs.highlight(str, { language: lang }).value;
-              } catch (__) {}
-            }
-            return ''; // use external default escaping
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  $("#Question").keydown(function(e) {
+    if(e.keyCode == "27"){
+      mermaid.run();
+    }
+  })
+</script>
+<script>
+  function getStringBetween(startStr, endStr, str) {
+    pos = str.indexOf(startStr) + startStr.length;
+    return str.substring(pos, str.indexOf(endStr, pos));
+  }
+  $(document).ready(function() {
+    const md = window.markdownit({
+      html: true,
+      typographer: true,
+      linkify: true,
+      breaks: true,
+      highlight: function (str, lang) {
+        if (lang && hljs.getLanguage(lang)) {
+          try {
+            return hljs.highlight(str, { language: lang }).value;
+          } catch (__) {}
+        }
+        return ''; // use external default escaping
+      }
+    });
+      
+    var socket = io();
+    $("#Question").keydown(function(e) {
+      if ($(this).val().includes("\n```mermaid\n") || $(this).val().startsWith("```mermaid\n")) {
+        socket.emit("typing", data=getStringBetween("```mermaid\n", "\n```", $(this).val()));
+        socket.on("formatted", (arg) => {
+          $("#pre").remove()
+          if(!($(this).val().includes('<pre class="mermaid">'+arg+'</pre>'))) {
+            $("#a").append('<pre class="mermaid">'+arg+'</pre>')
           }
         });
+      }
+    });
 
-          $("[name='Question']").on("input", function() {
-
-            var markdown = $(this).val();
-            var mk = md.render(markdown);
-
-            $("#a").html(mk);
-            MathJax.typeset();
-          });
-      
-      });
-
-    </script>
+    $("[name='Question']").on("input", function() {
+      var markdown = $(this).val();
+      var mk = md.render(markdown);
+      $("#a").html(mk);
+      MathJax.typeset();
+    });
+  });
+</script>
 
 {% if current_user.is_authenticated %}
-
     <div id="divQuestions">
-
 
       {% for question in question %}
           <button data-id="{{ question.id }}" class="update-button">{{ question.Label }}</button>
       {% endfor %}
 
     </div>
-
     <div id="divGauche" class="left">
 
-      
-    
-
-
-    
     <form method="POST" id="myForm" style="width: 100%; height: auto;">
         {{ form.hidden_tag()}}
 
         {{form.bonne_reponse()}}
-
-        
-        
+               
         <br>
+
         {{form.Question()}}
         
         <br><br>
-
         {{form.Label.label()}}
         {{form.Label()}}
         <br><br>
@@ -142,6 +153,7 @@
     <br>
     <div id="visu">
       <p id="a"></p>
+      </div>
     </div>
     <br>
     <div id = boutonsDivDroite>
@@ -155,10 +167,8 @@
       <br>
       <br>
     </div>
-    
     {% else %}
     <p>Il faut être connecté pour accéder au créateur de questions !</p>
     <a href="{{url_for('connexion')}}">Connexion</a>
     {% endif %}
-    
 {% endblock %}

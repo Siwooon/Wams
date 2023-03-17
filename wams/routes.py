@@ -1,5 +1,4 @@
 from wams import app, socketio
-from flask_socketio import send, emit
 from flask import render_template, redirect, url_for, jsonify, flash, request, json
 from wams.db import db
 from wams.db import question, user_info, Etiquettes, questionnaire, archive
@@ -9,12 +8,13 @@ import csv
 import random, string
 from datetime import date
 from flask_login import login_user, logout_user, current_user, login_required
+from flask_socketio import emit, send
+import markdown
 
 globalTags=[]
 roomOuvertes={}
 questionnairesOuverts={}
 indiceQuestion={}
-testDeLaComOMG=[]
 
 from sqlalchemy import create_engine, MetaData, Table
 from sqlalchemy.orm import sessionmaker
@@ -28,9 +28,13 @@ Session = sessionmaker(bind=engine)
 session = Session()
 questionnaireTable = Table("questionnaire", metadata, autoload=True, autoload_with=engine)
 
+
+@socketio.on('typing')
+def typing(data):
+    emit("formatted", data)
+
 @app.route('/', methods=['GET', 'POST'])
 def home():
-    print(current_user.id)
     return render_template('home.html')
 
 @app.route('/pagesQuestion', methods=['GET', 'POST'])
@@ -76,6 +80,7 @@ def editeur():
         Réponse4 = form.Réponse4.data
         bonne_reponse = form.bonne_reponse.data
         
+        
         listNewTags = Etiquette.split(",")
         for i in range(len(listNewTags)) :
             if not bool(Etiquettes.query.filter_by(id=listNewTags[i]).first()):
@@ -113,8 +118,6 @@ def editeur():
     
     
     return render_template('editeur.html', form = form, question = AllQuestion, globalTags=globalTags, len=len(globalTags), len9 = len(globalTags) if len(globalTags)<9 else 9)
-
-#_________________ Diffusion de questions ____________________
 
 @app.route('/waitingRoom', methods=['GET', 'POST'])
 def waitingRoom():
@@ -157,18 +160,13 @@ def deleteDiffusion():
     roomOuvertes.pop(codeRoom, None)
     return redirect(url_for("pagesQuestion"))
 
-#_________________ Diffusion de questionnaires ____________________
-
 @app.route('/diffusionQuestionnaire/<codeRoomS>', methods=['GET', 'POST'])
 def diffusionQuestionnaire(codeRoomS):
     q=json.loads(request.args.get("q"))
     listeQ=[]
     for i in range(len(q)):
         listeQ.append(db.session.query(question).filter_by(Label=q[i]).first())
-    if codeRoomS in indiceQuestion :
-        return render_template("diffusionQuestionnaire.html", questionnairesOuverts=questionnairesOuverts, codeRoomS=codeRoomS, listeQ=listeQ, indiceQuestion=indiceQuestion[codeRoomS])
-    else:
-        return render_template("diffusionQuestionnaire.html", questionnairesOuverts=questionnairesOuverts, codeRoomS=codeRoomS, listeQ=listeQ, indiceQuestion="")
+    return render_template("diffusionQuestionnaire.html", questionnairesOuverts=questionnairesOuverts, codeRoomS=codeRoomS, listeQ=listeQ, indiceQuestion=indiceQuestion[codeRoomS])
 
 @app.route('/updateDiffusionQuestionnaire', methods=['POST'])
 def updateDiffusionQuestionnaire():
@@ -270,7 +268,6 @@ def q(id):
 
     return render_template('questionnaire.html', idQuestions = idQuestions, labelQuestions= labelQuestions)
 
-
 @app.route('/quest/<int:id>', methods=['POST', 'GET'])
 def quest(id):
     Question = question.query.get(id)
@@ -302,13 +299,6 @@ def quest(id):
                    Réponse2=Question.Réponse2,
                    Réponse3=Question.Réponse3,
                    Réponse4=Question.Réponse4)
-
-@app.route('/reponseDiffQ', methods=['GET', 'POST'])
-def reponseDiffQ():
-    rep=request.form.get('reponses')
-    print("La réponse fournie par", current_user.id, " est ", rep)
-    return "Ok"
-
 @app.route('/inscription', methods=['GET', 'POST'])
 def inscription():
     form = FormInscription()
@@ -389,17 +379,3 @@ def archivage(user, réponse, date, typeQuestion):
     archivesto = archive(user = user, réponse = réponse, date = date, typeQuestion = typeQuestion)
     db.session.add(archivesto)
     db.session.commit()
-
-
-
-
-@socketio.on('connect')
-def handle_message():
-    print('CHACARONMACARON')
-    sto = 'You are connected'
-    emit('connected', sto)
-
-
-
-
-

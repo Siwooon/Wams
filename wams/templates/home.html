@@ -4,8 +4,12 @@
 {% endblock %}
 
 {% block content %}
-
-
+    <script type="text/javascript" charset="utf-8">
+        var socket = io();
+        socket.on('connect', function() {
+            socket.emit('message', data='Connexion réussie');
+        });
+    </script>
     <a href="{{url_for('editeur')}}">Acceder à l'éditeur</a>
     <a href="{{url_for('pagesQuestion')}}">Acceder aux questions</a>
     <a href="{{url_for('pageQuestionnaires')}}">Accéder aux questionnaires</a>
