@@ -1,4 +1,5 @@
-from wams import app
+from wams import app, socketio
+from flask_socketio import send, emit
 from flask import render_template, redirect, url_for, jsonify, flash, request, json
 from wams.db import db
 from wams.db import question, user_info, Etiquettes, questionnaire, archive
@@ -388,3 +389,17 @@ def archivage(user, réponse, date, typeQuestion):
     archivesto = archive(user = user, réponse = réponse, date = date, typeQuestion = typeQuestion)
     db.session.add(archivesto)
     db.session.commit()
+
+
+
+
+@socketio.on('connect')
+def handle_message():
+    print('CHACARONMACARON')
+    sto = 'You are connected'
+    emit('connected', sto)
+
+
+
+
+

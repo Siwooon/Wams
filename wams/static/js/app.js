@@ -1,4 +1,15 @@
 $(document).ready(function() {
+  var socket = io();
+    socket.on('connected', function(sto) {
+        console.log(sto)
+    });
+
+
+
+
+
+
+
   
     $('.menu-toggle').click(function() {
       $('.vertical-nav').toggleClass('open');
