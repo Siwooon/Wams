@@ -20,6 +20,7 @@ dicoHosts={}
 dicoHostsS={}
 dicoReponsesQuestions={}
 dicoReponsesSequences={}
+participantsSequences={}
 
 from sqlalchemy import create_engine, MetaData, Table
 from sqlalchemy.orm import sessionmaker
@@ -173,10 +174,11 @@ def deleteDiffusion():
 @app.route('/diffusionQuestionnaire/<codeRoomS>', methods=['GET', 'POST'])
 def diffusionQuestionnaire(codeRoomS):
     q=json.loads(request.args.get("q"))
+    participantsSequences[codeRoomS].append(current_user.id)
     listeQ=[]
     for i in range(len(q)):
         listeQ.append(db.session.query(question).filter_by(Label=q[i]).first())
-    return render_template("diffusionQuestionnaire.html", questionnairesOuverts=questionnairesOuverts, codeRoomS=codeRoomS, listeQ=listeQ, indiceQuestion=indiceQuestion[codeRoomS], isHostS=isHostS(codeRoomS), userIDS=current_user.id)
+    return render_template("diffusionQuestionnaire.html", questionnairesOuverts=questionnairesOuverts, codeRoomS=codeRoomS, listeQ=listeQ, indiceQuestion=indiceQuestion[codeRoomS], isHostS=isHostS(codeRoomS), userIDS=current_user.id, listeParticipants=participantsSequences[codeRoomS])
 
 @app.route('/updateDiffusionQuestionnaire', methods=['POST'])
 def updateDiffusionQuestionnaire():
@@ -192,6 +194,7 @@ def updateDiffusionQuestionnaire():
     indiceQuestion[codeRoomS] = 0
     dicoHostsS[codeRoomS] = current_user.id
     dicoReponsesSequences[codeRoomS]=[]
+    participantsSequences[codeRoomS]=[]
     print(questionnairesOuverts)
     return {"codeRoom" : codeRoomS, "listeQ" : listeQ}
 
@@ -417,6 +420,11 @@ def envoieReponseS(reponse):
     print("comm réussie", reponse["room"])
     dicoReponsesSequences[reponse["room"]].append(reponse["bouton"])
     emit('envoieDicoS', {"dicoReponsesSequences": dicoReponsesSequences, "dicoHostS" : dicoHostsS, "rep" : reponse["bouton"]}, broadcast=True)
+
+@socketio.on('nextQuestion')
+def nextQuestion(reponse):
+    dicoReponsesSequences[reponse["room"]]=[]
+    emit('nextQ', reponse["lien"], broadcast=True)
 
 @socketio.on('connect')
 def handle_message():
