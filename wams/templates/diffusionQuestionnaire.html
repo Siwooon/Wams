@@ -13,6 +13,49 @@
         {% if indiceQuestion < listeQ|length -1 %}
             <button id="nextQ">Question suivante</button>
         {% endif %}
+        <br>
+        {% if not(isHostS) %}
+            {% if listeQ[indiceQuestion].Réponse2 != "" %}
+                <input type="radio" class="button-answerS" id = "reponse1S" name="reponsesS" value="{{listeQ[indiceQuestion].Réponse1}}">{{listeQ[indiceQuestion].Réponse1}}
+                <br>
+                <input type="radio" class="button-answerS" id = "reponse2S" name="reponsesS" value="{{listeQ[indiceQuestion].Réponse2}}">{{listeQ[indiceQuestion].Réponse2}}
+                <br>
+                <input type="radio" class="button-answerS" id = "reponse3S" name="reponsesS" value="{{listeQ[indiceQuestion].Réponse3}}">{{listeQ[indiceQuestion].Réponse3}}
+                <br>
+                <input type="radio" class="button-answerS" id = "reponse4S" name="reponsesS" value="{{listeQ[indiceQuestion].Réponse4}}">{{listeQ[indiceQuestion].Réponse4}}
+            {% else %}
+                <!-- <input id = reponse1S> -->
+            {% endif %}
+                <br>
+                <button id = "submitReponseDiffS">Valider</button>
+        {% else %}
+            <div id = "divStatsQuestion">
+                <br>
+                <label for="progress1S">{{ listeQ[indiceQuestion].Réponse1 }}</label>
+                <progress id = "progress1S" max = "100" value = "0"></progress>
+                <br>
+                {% if Réponse2 != "" %}
+                    <label for="progress2S">{{ listeQ[indiceQuestion].Réponse2 }}</label>
+                    <progress id = "progress2S" max = "100" value = "0"></progress>
+                    <br>
+                    <label for="progress3S">{{ listeQ[indiceQuestion].Réponse3 }}</label>
+                    <progress id = "progress3S" max = "100" value = "0"></progress>
+                    <br>
+                    <label for="progress4S">{{ listeQ[indiceQuestion].Réponse4 }}</label>
+                    <progress id = "progress4S" max = "100" value = "0"></progress>
+                {% else %}
+                    <label for="autreRéponseS">Autre</label>
+                    <progress id = "autreRéponseS" max = "100" value = "0"></progress>
+                {% endif %}
+        
+            </div>
+        {% endif %}
+        <div id="Reponse1Sequence" data-reponse1S="{{listeQ[indiceQuestion].Réponse1}}"></div>
+        <div id="Reponse2Sequence" data-reponse2S="{{listeQ[indiceQuestion].Réponse2}}"></div>
+        <div id="Reponse3Sequence" data-reponse3S="{{listeQ[indiceQuestion].Réponse3}}"></div>
+        <div id="Reponse4Sequence" data-reponse4S="{{listeQ[indiceQuestion].Réponse4}}"></div>
+        <div id = "stockCodeS" data-codeRoomS = {{codeRoomS}}></div>
+        <div id = "dataUserIDS" data-userIDS = {{userIDS}}></div>
     {% else %}
         <h2>Cette diffusion n'existe pas</h2>
     {% endif %}
