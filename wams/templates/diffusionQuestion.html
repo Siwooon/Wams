@@ -24,17 +24,17 @@
         
         <div style="color: white;"><h1><p class="one" style="text-align: center;" id="énoncéQuestion">{{ Question }}</p></h1></div>
         
-        <form method="post">
+        
             <div style="color: white;"><h3><dt>Entrez votre réponse </h3></div>
-            
+            {% if Réponse2 != "" %}
                 <div style="color: white;"><input type="radio" class="button-answer" name="reponses" id="reponse1" value="{{ Réponse1 }}"> {{ Réponse1 }} </input></div><br>
                     <div style="color: white;"><input type="radio" class="button-answer" name="reponses" id="reponse2" value="{{ Réponse2 }}"> {{ Réponse2 }} </input></div><br>
                         <div style="color: white;"><input type="radio" class="button-answer" name="reponses" id="reponse3" value="{{ Réponse3 }}"> {{ Réponse3 }} </input></div><br>
                             <div style="color: white;"><input type="radio" class="button-answer" name="reponses" id="reponse4" value="{{ Réponse4 }}"> {{ Réponse4 }} </input></div><br>
-        
-            <div style="text-align: center;"><p><input id="submitReponseDiffQ" type=submit value=Valider style="width:70px;height:25px"></p></div>
-        
-        </form>
+            {% else %}
+                <div style="color: white;"><input name="reponses" id="reponse1"></div><br>
+            {% endif %}
+            <div style="text-align: center;"><p><button id="submitReponseDiffQ" type="button" style="width:70px;height:25px">Valider</button></p></div>
         
         </div>
     {% endif %}
@@ -59,15 +59,19 @@
         <label for="progress1">{{ Réponse1 }}</label>
         <progress id = "progress1" max = "100" value = "0"></progress>
         <br>
-        <label for="progress2">{{ Réponse2 }}</label>
-        <progress id = "progress2" max = "100" value = "0"></progress>
-        <br>
-        <label for="progress3">{{ Réponse3 }}</label>
-        <progress id = "progress3" max = "100" value = "0"></progress>
-        <br>
-        <label for="progress4">{{ Réponse4 }}</label>
-        <progress id = "progress4" max = "100" value = "0"></progress>
-        
+        {% if Réponse2 != "" %}
+            <label for="progress2">{{ Réponse2 }}</label>
+            <progress id = "progress2" max = "100" value = "0"></progress>
+            <br>
+            <label for="progress3">{{ Réponse3 }}</label>
+            <progress id = "progress3" max = "100" value = "0"></progress>
+            <br>
+            <label for="progress4">{{ Réponse4 }}</label>
+            <progress id = "progress4" max = "100" value = "0"></progress>
+        {% else %}
+            <label for="autreRéponseQ">Autre</label>
+            <progress id = "autreRéponseQ" max = "100" value = "0"></progress>
+        {% endif %}
 
     </div>        
 
