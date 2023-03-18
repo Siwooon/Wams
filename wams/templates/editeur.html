@@ -52,10 +52,9 @@
       if ($(this).val().includes("\n```mermaid\n") || $(this).val().startsWith("```mermaid\n")) {
         socket.emit("typing", data=getStringBetween("```mermaid\n", "\n```", $(this).val()));
         socket.on("formatted", (arg) => {
-          $("#pre").remove()
-          if(!($(this).val().includes('<pre class="mermaid">'+arg+'</pre>'))) {
-            $("#a").append('<pre class="mermaid">'+arg+'</pre>')
-          }
+            if ($("#a").children("pre").length < 2) {
+              $("#a").append('<pre class="mermaid">'+arg+'</pre>')
+            }
         });
       }
     });
