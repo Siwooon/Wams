@@ -5,14 +5,10 @@
 
 {% block content %}
     {% if codeRoomS in questionnairesOuverts %}
-        <h2>Code de la séquence : {{codeRoomS}}</h2>
+        <h2 id="estDansRoom">Code de la séquence : {{codeRoomS}}</h2>
         {{listeQ}}
-        {{listeQ[indiceQuestion]}}
+        {{listeQ[indiceQuestion].Question}}
         <br>
-        <button id="deleteRoomS">Supprimer la diffusion</button>
-        {% if indiceQuestion < listeQ|length -1 %}
-            <button id="nextQ">Question suivante</button>
-        {% endif %}
         <br>
         {% if not(isHostS) %}
             {% if listeQ[indiceQuestion].Réponse2 != "" %}
@@ -24,17 +20,21 @@
                 <br>
                 <input type="radio" class="button-answerS" id = "reponse4S" name="reponsesS" value="{{listeQ[indiceQuestion].Réponse4}}">{{listeQ[indiceQuestion].Réponse4}}
             {% else %}
-                <!-- <input id = reponse1S> -->
+                <input id = reponse1S>
             {% endif %}
                 <br>
                 <button id = "submitReponseDiffS">Valider</button>
         {% else %}
+            <button id="deleteRoomS">Supprimer la diffusion</button>
+            {% if indiceQuestion < listeQ|length -1 %}
+                <button id="nextQ">Question suivante</button>
+            {% endif %}
             <div id = "divStatsQuestion">
                 <br>
                 <label for="progress1S">{{ listeQ[indiceQuestion].Réponse1 }}</label>
                 <progress id = "progress1S" max = "100" value = "0"></progress>
                 <br>
-                {% if Réponse2 != "" %}
+                {% if listeQ[indiceQuestion].Réponse2 != "" %}
                     <label for="progress2S">{{ listeQ[indiceQuestion].Réponse2 }}</label>
                     <progress id = "progress2S" max = "100" value = "0"></progress>
                     <br>
