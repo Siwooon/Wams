@@ -396,6 +396,10 @@ def archivageReponseQuestion(reponse):
     dicoReponsesQuestions[reponse["room"]].append(reponse["bouton"])
     emit('envoieDico', {"dicoReponsesQuestion": dicoReponsesQuestions, "dicoHost" : dicoHosts, "rep" : reponse["bouton"], "listeRep" : "listeRep"}, broadcast=True)
 
+@socketio.on('CorrectionQuestion')
+def CorrectionQuestion(reponse):
+    print("AZUGDYHIUJOKPOLPM", question.query.filter_by(Label=roomOuvertes[reponse]["Label"]).first().bonne_reponse) #question.query.filter_by(Label=Label).first()
+    emit('envoieCorrectionQuestion', question.query.filter_by(Label=roomOuvertes[reponse]["Label"]).first().bonne_reponse, broadcast=True)
 
 
 @socketio.on('connect')
