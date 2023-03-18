@@ -17,7 +17,9 @@ questionnairesOuverts={}
 indiceQuestion={}
 testDeLaComOMG=[]
 dicoHosts={}
+dicoHostsS={}
 dicoReponsesQuestions={}
+dicoReponsesSequences={}
 
 from sqlalchemy import create_engine, MetaData, Table
 from sqlalchemy.orm import sessionmaker
@@ -174,7 +176,7 @@ def diffusionQuestionnaire(codeRoomS):
     listeQ=[]
     for i in range(len(q)):
         listeQ.append(db.session.query(question).filter_by(Label=q[i]).first())
-    return render_template("diffusionQuestionnaire.html", questionnairesOuverts=questionnairesOuverts, codeRoomS=codeRoomS, listeQ=listeQ, indiceQuestion=indiceQuestion[codeRoomS])
+    return render_template("diffusionQuestionnaire.html", questionnairesOuverts=questionnairesOuverts, codeRoomS=codeRoomS, listeQ=listeQ, indiceQuestion=indiceQuestion[codeRoomS], isHostS=isHostS(codeRoomS), userIDS=current_user.id)
 
 @app.route('/updateDiffusionQuestionnaire', methods=['POST'])
 def updateDiffusionQuestionnaire():
@@ -188,6 +190,8 @@ def updateDiffusionQuestionnaire():
         listeQ.append(getattr(tableQ, column))
     questionnairesOuverts[codeRoomS] = listeQ
     indiceQuestion[codeRoomS] = 0
+    dicoHostsS[codeRoomS] = current_user.id
+    dicoReponsesSequences[codeRoomS]=[]
     print(questionnairesOuverts)
     return {"codeRoom" : codeRoomS, "listeQ" : listeQ}
 
@@ -201,6 +205,8 @@ def joinRoomS():
 def deleteDiffusionS():
     codeRoomS = request.get_json()["codeRoomS"]
     questionnairesOuverts.pop(codeRoomS, None)
+    dicoHostsS.pop(codeRoomS, None)
+    dicoReponsesSequences.pop(codeRoomS, None)
     return redirect(url_for("pageQuestionnaires"))
 
 @app.route('/nextQ', methods=['GET', 'POST'])
@@ -388,19 +394,29 @@ def archivage(user, réponse, typeQuestion):
 
 
 def isHost(code):
-        return current_user.id == dicoHosts[code]
+    return current_user.id == dicoHosts[code]
+
+def isHostS(code):
+    return current_user.id == dicoHostsS[code]
 
 @socketio.on('EnvoieReponse')
 def archivageReponseQuestion(reponse):
     archivage(current_user.id, reponse["bouton"], "question")
     dicoReponsesQuestions[reponse["room"]].append(reponse["bouton"])
-    emit('envoieDico', {"dicoReponsesQuestion": dicoReponsesQuestions, "dicoHost" : dicoHosts, "rep" : reponse["bouton"], "listeRep" : "listeRep"}, broadcast=True)
+    emit('envoieDico', {"dicoReponsesQuestion": dicoReponsesQuestions, "dicoHost" : dicoHosts, "rep" : reponse["bouton"]}, broadcast=True)
 
 @socketio.on('CorrectionQuestion')
 def CorrectionQuestion(reponse):
     print("AZUGDYHIUJOKPOLPM", question.query.filter_by(Label=roomOuvertes[reponse]["Label"]).first().bonne_reponse) #question.query.filter_by(Label=Label).first()
     emit('envoieCorrectionQuestion', question.query.filter_by(Label=roomOuvertes[reponse]["Label"]).first().bonne_reponse, broadcast=True)
 
+
+@socketio.on('EnvoieReponseS')
+def envoieReponseS(reponse):
+    #archivage(current_user.id), reponse[]
+    print("comm réussie", reponse["room"])
+    dicoReponsesSequences[reponse["room"]].append(reponse["bouton"])
+    emit('envoieDicoS', {"dicoReponsesSequences": dicoReponsesSequences, "dicoHostS" : dicoHostsS, "rep" : reponse["bouton"]}, broadcast=True)
 
 @socketio.on('connect')
 def handle_message():
