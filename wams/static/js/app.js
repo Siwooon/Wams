@@ -89,6 +89,18 @@ $(document).ready(function() {
           document.getElementById("progress3S").value=(count3*100/reponse["dicoReponsesSequences"][room].length).toString()
           document.getElementById("progress4S").value=(count4*100/reponse["dicoReponsesSequences"][room].length).toString()
         }
+        else{
+          for (i in reponse["dicoReponsesSequences"][room]) {
+            if (reponse["dicoReponsesSequences"][room][i] == document.getElementById("Reponse1Sequence").getAttribute("data-reponse1S")) {
+              count1++;
+            }
+            else{
+              countAutre++;
+            }
+          }
+          document.getElementById("progress1S").value=(count1*100/reponse["dicoReponsesSequences"][room].length).toString()
+          document.getElementById("autreRéponseS").value=(countAutre*100/reponse["dicoReponsesSequences"][room].length).toString()
+        }
       }
     })
   
@@ -467,6 +479,7 @@ $(document).on('click', '#deleteRoomS', function(){
 
 $(document).on('click', '#nextQ', function(){
   url = document.location.href.split("?")[0].split("/")
+
   $.ajax({
     type: "POST",
     url: "/nextQ",
@@ -474,6 +487,7 @@ $(document).on('click', '#nextQ', function(){
     contentType: "application/json; charset=utf-8",
     success: function(response) {
       console.log("C'EST CENSE MARCHER")
+      socket.emit("nextQuestion",{"lien" : '/diffusionQuestionnaire/'+url[url.length-1]+"?q="+encodeURIComponent(JSON.stringify(response)), "room" : url[url.length-1]})
       window.location.href = '/diffusionQuestionnaire/'+url[url.length-1]+"?q="+encodeURIComponent(JSON.stringify(response));
 
     },
@@ -481,6 +495,12 @@ $(document).on('click', '#nextQ', function(){
       console.log("CA MARCHE PAS")
     }
   })
+})
+
+socket.on('nextQ', function(reponse){
+  if(document.getElementById("estDansRoom") != null){
+    window.location.href=reponse
+  }
 })
 
 $(document).on('click', '#submitReponseDiffQ', function() {
@@ -527,17 +547,17 @@ $(document).on('click', "#submitReponseDiffS", function(){
   if(document.getElementById("reponse1S").tagName==="INPUT" && document.getElementById("reponse1S").type === 'radio'){
     for (radio in document.getElementsByClassName("button-answerS")){
       if(document.getElementsByClassName("button-answerS")[radio].checked){
-        // document.getElementById("submitReponseDiffS").style.display='none'
+        document.getElementById("submitReponseDiffS").style.display='none'
         console.log(document.getElementsByClassName("button-answerS")[radio].value)
         socket.emit('EnvoieReponseS', {"bouton" : document.getElementsByClassName("button-answerS")[radio].value, "room" : document.getElementById("stockCodeS").getAttribute('data-codeRoomS')})
       }
     }
   }
-  // else{
-  //   console.log(document.getElementById("stockCode"))
-  //   document.getElementById("submitReponseDiffQ").style.display='none'
-  //   socket.emit('EnvoieReponse', {"bouton" : document.getElementById("reponse1").value, "room" : document.getElementById("stockCode").getAttribute('data-codeRoom')})
-  // }
+  else{
+    console.log(document.getElementById("stockCode"))
+    document.getElementById("submitReponseDiffS").style.display='none'
+    socket.emit('EnvoieReponseS', {"bouton" : document.getElementById("reponse1S").value, "room" : document.getElementById("stockCodeS").getAttribute('data-codeRoomS')})
+  }
 })
 
 });
