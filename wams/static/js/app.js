@@ -53,14 +53,14 @@ $(document).ready(function() {
         document.getElementById("autreRéponseQ").value=(countAutre*100/reponse["dicoReponsesQuestion"][room].length).toString()
       }
         console.log(count1*100/reponse["dicoReponsesQuestion"][room].length)
-        document.getElementById("nbRep").innerText="Nombre de réposes : " + reponse["dicoReponsesQuestion"][room].length
+        document.getElementById("nbRep").innerText="Nombre de réponses : " + reponse["dicoReponsesQuestion"][room].length
         
       }
 
     })
 
 
-
+    
   
 
 
@@ -477,6 +477,14 @@ $(document).on('click', '#afficheStatsQuestion', function(){
   }
 })
 
+$(document).on('click', '#afficheCorrectionQuestion', function(){
+  console.log("clic")
+  socket.emit('CorrectionQuestion', document.getElementById("stockCode").getAttribute("data-codeRoom"))
+})
+
+socket.on('envoieCorrectionQuestion', function(reponse){
+  document.getElementById("correctionQuestion").innerText = "La bonne réponse est : "+reponse
+})
 
 
 });
