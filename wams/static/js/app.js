@@ -10,39 +10,36 @@ $(document).ready(function() {
     })
    
     socket.on('envoieDico', function(reponse){
-      room=document.getElementById("stockCode").dataset.codeRoom
-      console.log(reponse.dict1[document.getElementById("stockCode").dataset.codeRoom])
-      var count1 =0
-      var count2 =0
-      var count3 =0
-      var count4 =0
-      for (i of reponse.dict1[room]) {
-        if (i == document.getElementById("reponse1").value) {
-          count1++;
+      room=document.getElementById("stockCode").getAttribute("data-codeRoom")
+      if(document.getElementById("userIDQuestion").getAttribute("data-userID")==reponse["dicoHost"][room]){
+        var count1 =0
+        var count2 =0
+        var count3 =0
+        var count4 =0
+        console.log(document.getElementById("Reponse1Question").getAttribute("data-reponse1Q"))
+        console.log(reponse["dicoReponsesQuestion"][room])
+        for (i in reponse["dicoReponsesQuestion"][room]) {
+          console.log(i)
+          if (reponse["dicoReponsesQuestion"][room][i] == document.getElementById("Reponse1Question").getAttribute("data-reponse1Q")) {
+            count1++;
+          }
+          if (reponse["dicoReponsesQuestion"][room][i] == document.getElementById("Reponse2Question").getAttribute("data-reponse2Q")) {
+            count2++;
+          }
+          if (reponse["dicoReponsesQuestion"][room][i] == document.getElementById("Reponse3Question").getAttribute("data-reponse3Q")) {
+            count3++;
+          }
+          if (reponse["dicoReponsesQuestion"][room][i] == document.getElementById("Reponse4Question").getAttribute("data-reponse4Q")) {
+            count4++;
+          }
         }
+        console.log(count1*100/reponse["dicoReponsesQuestion"][room].length)
+        document.getElementById("nbRep").innerText="Nombre de réposes : " + reponse["dicoReponsesQuestion"][room].length
+        document.getElementById("progress1").value=(count1*100/reponse["dicoReponsesQuestion"][room].length).toString()
+        document.getElementById("progress2").value=(count2*100/reponse["dicoReponsesQuestion"][room].length).toString()
+        document.getElementById("progress3").value=(count3*100/reponse["dicoReponsesQuestion"][room].length).toString()
+        document.getElementById("progress4").value=(count4*100/reponse["dicoReponsesQuestion"][room].length).toString()
       }
-      for (i of reponse.dict1[room]) {
-        if (i == document.getElementById("reponse2").value) {
-          count2++;
-        }
-      }
-      for (i of reponse.dict1[room]) {
-        if (i == document.getElementById("reponse3").value) {
-          count3++;
-        }
-      }
-      for (i of reponse.dict1[room]) {
-        if (i == document.getElementById("reponse4").value) {
-          count4++;
-        }
-      }
-      console.log(count1*100/reponse.dict1[room].length)
-      document.getElementById("nbRep").innerHTML="Nombre de réposes : " + reponse.dict1[room].length
-      document.getElementById("progress1").value=(count1*100/reponse.dict1[room].length).toString()
-      document.getElementById("progress2").value=(count2*100/reponse.dict1[room].length).toString()
-      document.getElementById("progress3").value=(count3*100/reponse.dict1[room].length).toString()
-      document.getElementById("progress4").value=(count4*100/reponse.dict1[room].length).toString()
-
 
     })
 
@@ -449,8 +446,8 @@ $(document).on('click', '#submitReponseDiffQ', function(){
 })
 
 $(document).on('click', '.button-answer', function() {
-  console.log($(this).val())
-  socket.emit('EnvoieReponse', {"bouton" : $(this).val(), "room" : document.getElementById(document.getElementById("stockCode").dataset.codeRoom)})
+  console.log(document.getElementById("stockCode"))
+  socket.emit('EnvoieReponse', {"bouton" : $(this).val(), "room" : document.getElementById("stockCode").getAttribute('data-codeRoom')})
 })
 
 $(document).on('click', '#afficheStatsQuestion', function(){
