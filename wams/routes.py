@@ -135,7 +135,6 @@ def joinRoomQ():
 @app.route('/diffusionQ/<codeRoom>', methods=['GET', 'POST'])
 def diffusionQ(codeRoom):
     infosQuestion = request.args.get('infosQuestion')
-    print("FYAZDUAGZDAZ", codeRoom)
     if infosQuestion is not None:
         infosQuestion = json.loads(request.args.get('infosQuestion'))
     if codeRoom in roomOuvertes:
@@ -145,7 +144,7 @@ def diffusionQ(codeRoom):
                    Réponse1=roomOuvertes[codeRoom]['Reponse1'],
                    Réponse2=roomOuvertes[codeRoom]['Reponse2'],
                    Réponse3=roomOuvertes[codeRoom]['Reponse3'],
-                   Réponse4=roomOuvertes[codeRoom]['Reponse4'], isHost=isHost(codeRoom))
+                   Réponse4=roomOuvertes[codeRoom]['Reponse4'], isHost=isHost(codeRoom), userID=current_user.id)
     else:
         return render_template('diffusionQuestion.html', existsRoom = codeRoom in roomOuvertes)
 
@@ -393,10 +392,9 @@ def isHost(code):
 
 @socketio.on('EnvoieReponse')
 def archivageReponseQuestion(reponse):
-    archivage(current_user.id, reponse.bouton, "question")
-    
-    print(dicoReponsesQuestions)
-    emit('envoieDico', dicoReponsesQuestions)
+    archivage(current_user.id, reponse["bouton"], "question")
+    dicoReponsesQuestions[reponse["room"]].append(reponse["bouton"])
+    emit('envoieDico', {"dicoReponsesQuestion": dicoReponsesQuestions, "dicoHost" : dicoHosts, "rep" : reponse["bouton"], "listeRep" : "listeRep"}, broadcast=True)
 
 
 
