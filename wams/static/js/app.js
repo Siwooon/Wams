@@ -16,29 +16,45 @@ $(document).ready(function() {
         var count2 =0
         var count3 =0
         var count4 =0
+        var countAutre =0
         console.log(document.getElementById("Reponse1Question").getAttribute("data-reponse1Q"))
         console.log(reponse["dicoReponsesQuestion"][room])
+        if(document.getElementById("Reponse2Question").getAttribute("data-reponse2Q"!="")){
+          for (i in reponse["dicoReponsesQuestion"][room]) {
+            console.log(i)
+            if (reponse["dicoReponsesQuestion"][room][i] == document.getElementById("Reponse1Question").getAttribute("data-reponse1Q")) {
+              count1++;
+            }
+            if (reponse["dicoReponsesQuestion"][room][i] == document.getElementById("Reponse2Question").getAttribute("data-reponse2Q")) {
+              count2++;
+            }
+            if (reponse["dicoReponsesQuestion"][room][i] == document.getElementById("Reponse3Question").getAttribute("data-reponse3Q")) {
+              count3++;
+            }
+            if (reponse["dicoReponsesQuestion"][room][i] == document.getElementById("Reponse4Question").getAttribute("data-reponse4Q")) {
+              count4++;
+            }
+          }
+          document.getElementById("progress1").value=(count1*100/reponse["dicoReponsesQuestion"][room].length).toString()
+          document.getElementById("progress2").value=(count2*100/reponse["dicoReponsesQuestion"][room].length).toString()
+          document.getElementById("progress3").value=(count3*100/reponse["dicoReponsesQuestion"][room].length).toString()
+          document.getElementById("progress4").value=(count4*100/reponse["dicoReponsesQuestion"][room].length).toString()
+      }
+      else{
         for (i in reponse["dicoReponsesQuestion"][room]) {
-          console.log(i)
           if (reponse["dicoReponsesQuestion"][room][i] == document.getElementById("Reponse1Question").getAttribute("data-reponse1Q")) {
             count1++;
           }
-          if (reponse["dicoReponsesQuestion"][room][i] == document.getElementById("Reponse2Question").getAttribute("data-reponse2Q")) {
-            count2++;
-          }
-          if (reponse["dicoReponsesQuestion"][room][i] == document.getElementById("Reponse3Question").getAttribute("data-reponse3Q")) {
-            count3++;
-          }
-          if (reponse["dicoReponsesQuestion"][room][i] == document.getElementById("Reponse4Question").getAttribute("data-reponse4Q")) {
-            count4++;
+          else{
+            countAutre++;
           }
         }
+        document.getElementById("progress1").value=(count1*100/reponse["dicoReponsesQuestion"][room].length).toString()
+        document.getElementById("autreRéponseQ").value=(countAutre*100/reponse["dicoReponsesQuestion"][room].length).toString()
+      }
         console.log(count1*100/reponse["dicoReponsesQuestion"][room].length)
         document.getElementById("nbRep").innerText="Nombre de réposes : " + reponse["dicoReponsesQuestion"][room].length
-        document.getElementById("progress1").value=(count1*100/reponse["dicoReponsesQuestion"][room].length).toString()
-        document.getElementById("progress2").value=(count2*100/reponse["dicoReponsesQuestion"][room].length).toString()
-        document.getElementById("progress3").value=(count3*100/reponse["dicoReponsesQuestion"][room].length).toString()
-        document.getElementById("progress4").value=(count4*100/reponse["dicoReponsesQuestion"][room].length).toString()
+        
       }
 
     })
@@ -437,17 +453,19 @@ $(document).on('click', '#nextQ', function(){
   })
 })
 
-$(document).on('click', '#submitReponseDiffQ', function(){
-  $.ajax({
-    type: "POST",
-    url: "/reponseDiffQ",
-    contentType: "application/json; charset=utf-8",
-  })
-})
-
-$(document).on('click', '.button-answer', function() {
-  console.log(document.getElementById("stockCode"))
-  socket.emit('EnvoieReponse', {"bouton" : $(this).val(), "room" : document.getElementById("stockCode").getAttribute('data-codeRoom')})
+$(document).on('click', '#submitReponseDiffQ', function() {
+  if(document.getElementById("reponse1").tagName==="INPUT" && document.getElementById("reponse1").type === 'radio'){
+    for (radio in document.getElementsByClassName("button-answer")){
+      if(radio.checked){
+        console.log(document.getElementById("stockCode"))
+        socket.emit('EnvoieReponse', {"bouton" : radio.value, "room" : document.getElementById("stockCode").getAttribute('data-codeRoom')})
+      }
+    }
+  }
+  else{
+    console.log(document.getElementById("stockCode"))
+    socket.emit('EnvoieReponse', {"bouton" : document.getElementById("reponse1").value, "room" : document.getElementById("stockCode").getAttribute('data-codeRoom')})
+  }
 })
 
 $(document).on('click', '#afficheStatsQuestion', function(){
