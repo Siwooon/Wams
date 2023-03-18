@@ -19,9 +19,8 @@ $(document).ready(function() {
         var countAutre =0
         console.log(document.getElementById("Reponse1Question").getAttribute("data-reponse1Q"))
         console.log(reponse["dicoReponsesQuestion"][room])
-        if(document.getElementById("Reponse2Question").getAttribute("data-reponse2Q"!="")){
+        if(document.getElementById("Reponse2Question").getAttribute("data-reponse2Q")!=""){
           for (i in reponse["dicoReponsesQuestion"][room]) {
-            console.log(i)
             if (reponse["dicoReponsesQuestion"][room][i] == document.getElementById("Reponse1Question").getAttribute("data-reponse1Q")) {
               count1++;
             }
@@ -60,7 +59,38 @@ $(document).ready(function() {
     })
 
 
-    
+    socket.on("envoieDicoS", function(reponse){
+      room=document.getElementById("stockCodeS").getAttribute("data-codeRoomS") 
+      if(reponse["dicoHostS"][room]==document.getElementById("dataUserIDS").getAttribute("data-userIDS")){
+        var count1 =0
+        var count2 =0
+        var count3 =0
+        var count4 =0
+        var countAutre =0
+        console.log(reponse["dicoReponsesSequences"])
+        if(document.getElementById("Reponse2Sequence").getAttribute("data-reponse2S")!=""){
+          for (i in reponse["dicoReponsesSequences"][room]){
+            console.log(reponse["dicoReponsesSequences"][i])
+            if (reponse["dicoReponsesSequences"][room][i] == document.getElementById("Reponse1Sequence").getAttribute("data-reponse1S")) {
+              count1++;
+            }
+            if (reponse["dicoReponsesSequences"][room][i] == document.getElementById("Reponse2Sequence").getAttribute("data-reponse2S")) {
+              count2++;
+            }
+            if (reponse["dicoReponsesSequences"][room][i] == document.getElementById("Reponse3Sequence").getAttribute("data-reponse3S")) {
+              count3++;
+            }
+            if (reponse["dicoReponsesSequences"][room][i] == document.getElementById("Reponse4Sequence").getAttribute("data-reponse4S")) {
+              count4++;
+            }
+          }
+          document.getElementById("progress1S").value=(count1*100/reponse["dicoReponsesSequences"][room].length).toString()
+          document.getElementById("progress2S").value=(count2*100/reponse["dicoReponsesSequences"][room].length).toString()
+          document.getElementById("progress3S").value=(count3*100/reponse["dicoReponsesSequences"][room].length).toString()
+          document.getElementById("progress4S").value=(count4*100/reponse["dicoReponsesSequences"][room].length).toString()
+        }
+      }
+    })
   
 
 
@@ -455,15 +485,18 @@ $(document).on('click', '#nextQ', function(){
 
 $(document).on('click', '#submitReponseDiffQ', function() {
   if(document.getElementById("reponse1").tagName==="INPUT" && document.getElementById("reponse1").type === 'radio'){
+    console.log(document.getElementsByClassName("button-answer"))
     for (radio in document.getElementsByClassName("button-answer")){
-      if(radio.checked){
-        console.log(document.getElementById("stockCode"))
-        socket.emit('EnvoieReponse', {"bouton" : radio.value, "room" : document.getElementById("stockCode").getAttribute('data-codeRoom')})
+      if(document.getElementsByClassName("button-answer")[radio].checked){
+        console.log(document.getElementsByClassName("button-answer")[radio].value)
+        document.getElementById("submitReponseDiffQ").style.display='none'
+        socket.emit('EnvoieReponse', {"bouton" : document.getElementsByClassName("button-answer")[radio].value, "room" : document.getElementById("stockCode").getAttribute('data-codeRoom')})
       }
     }
   }
   else{
     console.log(document.getElementById("stockCode"))
+    document.getElementById("submitReponseDiffQ").style.display='none'
     socket.emit('EnvoieReponse', {"bouton" : document.getElementById("reponse1").value, "room" : document.getElementById("stockCode").getAttribute('data-codeRoom')})
   }
 })
@@ -483,9 +516,29 @@ $(document).on('click', '#afficheCorrectionQuestion', function(){
 })
 
 socket.on('envoieCorrectionQuestion', function(reponse){
+  if(document.getElementById("submitReponseDiffQ") != null){
+    document.getElementById("submitReponseDiffQ").style.display='none'
+  }
   document.getElementById("correctionQuestion").innerText = "La bonne réponse est : "+reponse
 })
 
+$(document).on('click', "#submitReponseDiffS", function(){
+  console.log(document.getElementsByClassName("button-answerS"))
+  if(document.getElementById("reponse1S").tagName==="INPUT" && document.getElementById("reponse1S").type === 'radio'){
+    for (radio in document.getElementsByClassName("button-answerS")){
+      if(document.getElementsByClassName("button-answerS")[radio].checked){
+        // document.getElementById("submitReponseDiffS").style.display='none'
+        console.log(document.getElementsByClassName("button-answerS")[radio].value)
+        socket.emit('EnvoieReponseS', {"bouton" : document.getElementsByClassName("button-answerS")[radio].value, "room" : document.getElementById("stockCodeS").getAttribute('data-codeRoomS')})
+      }
+    }
+  }
+  // else{
+  //   console.log(document.getElementById("stockCode"))
+  //   document.getElementById("submitReponseDiffQ").style.display='none'
+  //   socket.emit('EnvoieReponse', {"bouton" : document.getElementById("reponse1").value, "room" : document.getElementById("stockCode").getAttribute('data-codeRoom')})
+  // }
+})
 
 });
 
