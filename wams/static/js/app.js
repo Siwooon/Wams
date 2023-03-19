@@ -529,12 +529,13 @@ $(document).on('click', '#afficheStatsQuestion', function(){
   }
 })
 
-$(document).on('click', '#afficheCorrectionQuestion', function(){
-  console.log("clic")
-  socket.emit('CorrectionQuestion', document.getElementById("stockCode").getAttribute("data-codeRoom"))
+$(document).on('click', '.stopRepQ', function(){
+  console.log($(this).attr('id'))
+  socket.emit('CorrectionQuestion', {"code" : document.getElementById("stockCode").getAttribute("data-codeRoom"), "estCorrec":$(this).attr('id')=="afficheCorrectionQuestion"})
 })
 
-socket.on('envoieCorrectionQuestion', function(reponse){
+socket.on('envoieCorrectionQuestion', function(){
+  console.log("hnkj,lkm;l")
   if(document.getElementById("submitReponseDiffQ") != null){
     document.getElementById("submitReponseDiffQ").style.display='none'
   }
