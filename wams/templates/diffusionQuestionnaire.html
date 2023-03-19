@@ -4,10 +4,15 @@
 {% endblock %}
 
 {% block content %}
+    <p id="estSurPageDiffSequence"></p>
     {% if codeRoomS in questionnairesOuverts %}
         <h2 id="estDansRoom">Code de la séquence : {{codeRoomS}}</h2>
         {{listeQ}}
         {{listeQ[indiceQuestion].Question}}
+        <br>
+        {% if estCorrigee %}
+            <h3 id="correctionSequence">La bonne réponse est : {{listeQ[indiceQuestion].bonne_reponse}}</h3>
+        {% endif %}
         <br>
         <br>
         {% if not(isHostS) %}
@@ -22,14 +27,19 @@
             {% else %}
                 <input id = reponse1S>
             {% endif %}
-                <br>
+            <br>
+            {% if not(estStoppee) %}
                 <button id = "submitReponseDiffS">Valider</button>
+            {% endif %}
         {% else %}
             <button id="deleteRoomS">Supprimer la diffusion</button>
+            <button id="afficheStatsSequence">Statistiques de la question</button>
+            <button id="stopRepSequence" class="stopRepS">Stopper les réponses</button>
+            <button id="afficheCorrectionSequence" class="stopRepS">Afficher la correction</button>
             {% if indiceQuestion < listeQ|length -1 %}
                 <button id="nextQ">Question suivante</button>
             {% endif %}
-            <div id = "divStatsQuestion">
+            <div id = "divStatsSequence">
                 <br>
                 <label for="progress1S">{{ listeQ[indiceQuestion].Réponse1 }}</label>
                 <progress id = "progress1S" max = "100" value = "0"></progress>
