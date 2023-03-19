@@ -11,6 +11,7 @@ $(document).ready(function() {
    
     socket.on('envoieDico', function(reponse){
       room=document.getElementById("stockCode").getAttribute("data-codeRoom")
+      document.getElementById("nbRep").innerText = "Nombre de réponses : "+ reponse["dicoReponsesQuestion"][room].length
       if(document.getElementById("userIDQuestion").getAttribute("data-userID")==reponse["dicoHost"][room]){
         var count1 =0
         var count2 =0
@@ -52,8 +53,6 @@ $(document).ready(function() {
         document.getElementById("autreRéponseQ").value=(countAutre*100/reponse["dicoReponsesQuestion"][room].length).toString()
       }
         console.log(count1*100/reponse["dicoReponsesQuestion"][room].length)
-        document.getElementById("nbRep").innerText="Nombre de réponses : " + reponse["dicoReponsesQuestion"][room].length
-        
       }
 
     })
@@ -539,7 +538,7 @@ socket.on('envoieCorrectionQuestion', function(reponse){
   if(document.getElementById("submitReponseDiffQ") != null){
     document.getElementById("submitReponseDiffQ").style.display='none'
   }
-  document.getElementById("correctionQuestion").innerText = "La bonne réponse est : "+reponse
+  location.reload()
 })
 
 $(document).on('click', "#submitReponseDiffS", function(){
