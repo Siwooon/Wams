@@ -23,6 +23,8 @@ dicoReponsesSequences={} #répertorie toutes les réponses envoyées par les par
 participantsSequences={} #répertorie tous les participants de chaque diffusion de séquence
 estStoppeeQuestion={} #pour savoir si une question est arrêtée quand un participant arrive
 estCorrigeeQuestion={} #pour savoir si une question est corrigee
+estStoppeeSequence={} #pour séquence
+estCorrigeeSequence={}
 
 from sqlalchemy import create_engine, MetaData, Table
 from sqlalchemy.orm import sessionmaker
@@ -186,7 +188,7 @@ def diffusionQuestionnaire(codeRoomS):
     listeQ=[]
     for i in range(len(q)):
         listeQ.append(db.session.query(question).filter_by(Label=q[i]).first())
-    return render_template("diffusionQuestionnaire.html", questionnairesOuverts=questionnairesOuverts, codeRoomS=codeRoomS, listeQ=listeQ, indiceQuestion=indiceQuestion[codeRoomS], isHostS=isHostS(codeRoomS), userIDS=current_user.id, listeParticipants=participantsSequences[codeRoomS])
+    return render_template("diffusionQuestionnaire.html", questionnairesOuverts=questionnairesOuverts, codeRoomS=codeRoomS, listeQ=listeQ, indiceQuestion=indiceQuestion[codeRoomS], isHostS=isHostS(codeRoomS), userIDS=current_user.id, estStoppee=estStoppeeSequence[codeRoomS], estCorrigee=estCorrigeeSequence[codeRoomS])
 
 @app.route('/updateDiffusionQuestionnaire', methods=['POST'])
 def updateDiffusionQuestionnaire():
@@ -203,6 +205,8 @@ def updateDiffusionQuestionnaire():
     dicoHostsS[codeRoomS] = current_user.id
     dicoReponsesSequences[codeRoomS]=[]
     participantsSequences[codeRoomS]=[]
+    estStoppeeSequence[codeRoomS]=False
+    estCorrigeeSequence[codeRoomS]=False
     print(questionnairesOuverts)
     return {"codeRoom" : codeRoomS, "listeQ" : listeQ}
 
@@ -218,12 +222,16 @@ def deleteDiffusionS():
     questionnairesOuverts.pop(codeRoomS, None)
     dicoHostsS.pop(codeRoomS, None)
     dicoReponsesSequences.pop(codeRoomS, None)
+    estStoppeeSequence.pop(codeRoomS, None)
+    estCorrigeeSequence.pop(codeRoomS, None)
     return redirect(url_for("pageQuestionnaires"))
 
 @app.route('/nextQ', methods=['GET', 'POST'])
 def nextQ():
     codeRoomS = request.json
     indiceQuestion[codeRoomS]+=1
+    estStoppeeSequence[codeRoomS]=False
+    estCorrigeeSequence[codeRoomS]=False
     print(questionnairesOuverts[codeRoomS])
     return questionnairesOuverts[codeRoomS]
 
@@ -436,6 +444,15 @@ def envoieReponseS(reponse):
 def nextQuestion(reponse):
     dicoReponsesSequences[reponse["room"]]=[]
     emit('nextQ', reponse["lien"], broadcast=True)
+
+@socketio.on('CorrectionSequence')
+def CorrectionSequence(reponse):
+    estStoppeeSequence[reponse["code"]]=True
+    if reponse["estCorrec"]:
+        estCorrigeeSequence[reponse["code"]]=True
+    emit('envoieCorrectionSequence', broadcast=True)
+
+
 
 @socketio.on('connect')
 def handle_message():
