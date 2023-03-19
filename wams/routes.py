@@ -11,16 +11,18 @@ from flask_login import login_user, logout_user, current_user, login_required
 from flask_socketio import emit, send
 import markdown
 
-globalTags=[]
-roomOuvertes={}
-questionnairesOuverts={}
-indiceQuestion={}
+globalTags=[] #étiquettes par défaut
+roomOuvertes={} #dictionnaire contenant toutes les diffusions de question avec la question associée
+questionnairesOuverts={} #dictionnaire contenant toutes les diffusions de séquences avec a liste des questions associée
+indiceQuestion={} #pour savoir à quelle question en est chaque diffusion de séquence
 testDeLaComOMG=[]
-dicoHosts={}
-dicoHostsS={}
-dicoReponsesQuestions={}
-dicoReponsesSequences={}
-participantsSequences={}
+dicoHosts={} #répertorie les hosts pour chaque diffusion de question
+dicoHostsS={} #répertorie les hosts pour chaque diffusion de séquence
+dicoReponsesQuestions={} #répertorie toutes les réponses envoyées par les participants dans une diffusion de question
+dicoReponsesSequences={} #répertorie toutes les réponses envoyées par les participants dans une diffusion de séquence
+participantsSequences={} #répertorie tous les participants de chaque diffusion de séquence
+estStoppeeQuestion={} #pour savoir si une question est arrêtée quand un participant arrive
+estCorrigeeQuestion={} #pour savoir si une question est corrigee
 
 from sqlalchemy import create_engine, MetaData, Table
 from sqlalchemy.orm import sessionmaker
@@ -147,7 +149,8 @@ def diffusionQ(codeRoom):
                    Réponse1=roomOuvertes[codeRoom]['Reponse1'],
                    Réponse2=roomOuvertes[codeRoom]['Reponse2'],
                    Réponse3=roomOuvertes[codeRoom]['Reponse3'],
-                   Réponse4=roomOuvertes[codeRoom]['Reponse4'], isHost=isHost(codeRoom), userID=current_user.id)
+                   Réponse4=roomOuvertes[codeRoom]['Reponse4'],
+                   Bonne_Réponse=roomOuvertes[codeRoom]['Bonne_Reponse'], isHost=isHost(codeRoom), userID=current_user.id, estStoppee=estStoppeeQuestion[codeRoom], estCorrigee=estCorrigeeQuestion[codeRoom])
     else:
         return render_template('diffusionQuestion.html', existsRoom = codeRoom in roomOuvertes)
 
@@ -160,6 +163,8 @@ def updateDiffusionQuestion():
     roomOuvertes[codeRoom] = infosQuestion
     dicoHosts[codeRoom]=current_user.id
     dicoReponsesQuestions[codeRoom]=[]
+    estStoppeeQuestion[codeRoom]=False
+    estCorrigeeQuestion[codeRoom]=False
 
     return codeRoom
 
@@ -169,12 +174,15 @@ def deleteDiffusion():
     roomOuvertes.pop(codeRoom, None)
     dicoHosts.pop(codeRoom, None)
     dicoReponsesQuestions.pop(codeRoom, None)
+    estStoppeeQuestion.pop(codeRoom, None)
+    estCorrigeeQuestion.pop(codeRoom, None)
     return redirect(url_for("pagesQuestion"))
 
 @app.route('/diffusionQuestionnaire/<codeRoomS>', methods=['GET', 'POST'])
 def diffusionQuestionnaire(codeRoomS):
     q=json.loads(request.args.get("q"))
-    participantsSequences[codeRoomS].append(current_user.id)
+    if codeRoomS in participantsSequences.keys():
+        participantsSequences[codeRoomS].append(current_user.id)
     listeQ=[]
     for i in range(len(q)):
         listeQ.append(db.session.query(question).filter_by(Label=q[i]).first())
@@ -313,7 +321,8 @@ def quest(id):
                    Réponse1=Question.Réponse1,
                    Réponse2=Question.Réponse2,
                    Réponse3=Question.Réponse3,
-                   Réponse4=Question.Réponse4)
+                   Réponse4=Question.Réponse4,
+                   Bonne_Réponse=Question.bonne_reponse)
 @app.route('/inscription', methods=['GET', 'POST'])
 def inscription():
     form = FormInscription()
@@ -410,6 +419,8 @@ def archivageReponseQuestion(reponse):
 
 @socketio.on('CorrectionQuestion')
 def CorrectionQuestion(reponse):
+    estStoppeeQuestion[reponse]=True
+    estCorrigeeQuestion[reponse]=True
     print("AZUGDYHIUJOKPOLPM", question.query.filter_by(Label=roomOuvertes[reponse]["Label"]).first().bonne_reponse) #question.query.filter_by(Label=Label).first()
     emit('envoieCorrectionQuestion', question.query.filter_by(Label=roomOuvertes[reponse]["Label"]).first().bonne_reponse, broadcast=True)
 
