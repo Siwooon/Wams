@@ -419,15 +419,15 @@ def archivageReponseQuestion(reponse):
 
 @socketio.on('CorrectionQuestion')
 def CorrectionQuestion(reponse):
-    estStoppeeQuestion[reponse]=True
-    estCorrigeeQuestion[reponse]=True
-    print("AZUGDYHIUJOKPOLPM", question.query.filter_by(Label=roomOuvertes[reponse]["Label"]).first().bonne_reponse) #question.query.filter_by(Label=Label).first()
-    emit('envoieCorrectionQuestion', question.query.filter_by(Label=roomOuvertes[reponse]["Label"]).first().bonne_reponse, broadcast=True)
+    estStoppeeQuestion[reponse["code"]]=True
+    if reponse["estCorrec"]:
+        estCorrigeeQuestion[reponse["code"]]=True
+    emit('envoieCorrectionQuestion', broadcast=True)
 
 
 @socketio.on('EnvoieReponseS')
 def envoieReponseS(reponse):
-    #archivage(current_user.id), reponse[]
+    archivage(current_user.id, reponse["bouton"], "sequence")
     print("comm réussie", reponse["room"])
     dicoReponsesSequences[reponse["room"]].append(reponse["bouton"])
     emit('envoieDicoS', {"dicoReponsesSequences": dicoReponsesSequences, "dicoHostS" : dicoHostsS, "rep" : reponse["bouton"]}, broadcast=True)
