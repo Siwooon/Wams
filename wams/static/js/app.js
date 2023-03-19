@@ -535,11 +535,9 @@ $(document).on('click', '.stopRepQ', function(){
 })
 
 socket.on('envoieCorrectionQuestion', function(){
-  console.log("hnkj,lkm;l")
-  if(document.getElementById("submitReponseDiffQ") != null){
-    document.getElementById("submitReponseDiffQ").style.display='none'
+  if(document.getElementById("estSurPageDiffQuestion")!=null){
+    location.reload()
   }
-  location.reload()
 })
 
 $(document).on('click', "#submitReponseDiffS", function(){
@@ -559,6 +557,27 @@ $(document).on('click', "#submitReponseDiffS", function(){
     socket.emit('EnvoieReponseS', {"bouton" : document.getElementById("reponse1S").value, "room" : document.getElementById("stockCodeS").getAttribute('data-codeRoomS')})
   }
 })
+
+$(document).on('click', '#afficheStatsSequence', function(){
+  if (document.getElementById("divStatsSequence").style.display != 'none'){
+    document.getElementById("divStatsSequence").style.display='none'
+  }
+  else{
+    document.getElementById("divStatsSequence").style.display='block'
+  }
+})
+
+$(document).on('click', '.stopRepS', function(){
+  console.log("aojezk,l;m")
+  socket.emit('CorrectionSequence', {"code" : document.getElementById("stockCodeS").getAttribute("data-codeRoomS"), "estCorrec":$(this).attr('id')=="afficheCorrectionSequence"})
+})
+
+socket.on("envoieCorrectionSequence", function(){
+  if(document.getElementById("estSurPageDiffSequence")!=null){
+    location.reload()
+  }
+})
+
 
 });
 
