@@ -34,8 +34,10 @@
             {% else %}
                 <div style="color: white;"><input name="reponses" id="reponse1"></div><br>
             {% endif %}
-            <div style="text-align: center;"><p><button id="submitReponseDiffQ" type="button" style="width:70px;height:25px">Valider</button></p></div>
-        
+
+            {% if not(estStoppee) %}
+                <div style="text-align: center;"><p><button id="submitReponseDiffQ" type="button" style="width:70px;height:25px">Valider</button></p></div>
+            {% endif %}
         </div>
     {% endif %}
         
@@ -99,8 +101,10 @@
         
         
     {% endif %}
-    <h3 id = "nbRep">Nombre de réponses : </h3>
-    <h3 id = "correctionQuestion"></h3>
+    <h3 id = "nbRep"></h3>
+    {% if estCorrigee %}
+        <h3 id = "correctionQuestion">La bonne réponse est : {{Bonne_Réponse}}</h3>
+    {% endif %}
     <div id="stockCode" data-codeRoom="{{codeRoom}}"></div>
     <div id="userIDQuestion" data-userID="{{userID}}"></div>
 
