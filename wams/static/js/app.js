@@ -578,6 +578,19 @@ socket.on("envoieCorrectionSequence", function(){
   }
 })
 
+socket.on("nouveauParticipantS", function(reponse){
+  if(document.getElementById("nbParticipantsS") != null){
+    document.getElementById("nbParticipantsS").innerText="Nombre de participants : "+reponse[document.getElementById("stockCodeS").getAttribute("data-codeRoomS")].length
+  }
+})
+
+socket.on("nouveauParticipantQ", function(reponse){
+  console.log("qq se connecte")
+  if(document.getElementById("nbParticipantsQ") != null){
+    document.getElementById("nbParticipantsQ").innerText="Nombre de participants : "+reponse[document.getElementById("stockCode").getAttribute("data-codeRoom")].length
+  }
+})
+
 
 });
 
