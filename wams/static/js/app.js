@@ -69,7 +69,6 @@ $(document).ready(function() {
         console.log(reponse["dicoReponsesSequences"])
         if(document.getElementById("Reponse2Sequence").getAttribute("data-reponse2S")!=""){
           for (i in reponse["dicoReponsesSequences"][room]){
-            console.log(reponse["dicoReponsesSequences"][i])
             if (reponse["dicoReponsesSequences"][room][i] == document.getElementById("Reponse1Sequence").getAttribute("data-reponse1S")) {
               count1++;
             }
@@ -585,7 +584,7 @@ socket.on("nouveauParticipantS", function(reponse){
 })
 
 socket.on("nouveauParticipantQ", function(reponse){
-  console.log("qq se connecte")
+  console.log(document.getElementById("stockCode").getAttribute("data-codeRoom"))
   if(document.getElementById("nbParticipantsQ") != null){
     document.getElementById("nbParticipantsQ").innerText="Nombre de participants : "+reponse[document.getElementById("stockCode").getAttribute("data-codeRoom")].length
   }
