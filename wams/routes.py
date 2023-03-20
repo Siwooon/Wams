@@ -148,7 +148,7 @@ def diffusionQ(codeRoom):
     if codeRoom in participantsQuestions.keys():
         if current_user.id not in participantsQuestions[codeRoom]:
             participantsQuestions[codeRoom].append(current_user.id)
-            socketio.emit("nouveauParticipantQ", participantsQuestions, broadcast=True)
+            socketio.emit("nouveauParticipantQ", participantsQuestions)
     if codeRoom in roomOuvertes:
         return render_template('diffusionQuestion.html', existsRoom = codeRoom in roomOuvertes, codeRoom=codeRoom, roomOuvertes=roomOuvertes, infosQuestion=infosQuestion, Label=roomOuvertes[codeRoom]['Label'], 
                    Etiquette=roomOuvertes[codeRoom]['Etiquette'], 
@@ -193,7 +193,7 @@ def diffusionQuestionnaire(codeRoomS):
     if codeRoomS in participantsSequences.keys():
         if current_user.id not in participantsSequences[codeRoomS]:
             participantsSequences[codeRoomS].append(current_user.id)
-            socketio.emit("nouveauParticipantS", participantsSequences, broadcast=True)
+            socketio.emit("nouveauParticipantS", participantsSequences)
     listeQ=[]
     for i in range(len(q)):
         listeQ.append(db.session.query(question).filter_by(Label=q[i]).first())
