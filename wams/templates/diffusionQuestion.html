@@ -13,13 +13,11 @@
 
     {% if existsRoom and not(isHost) %}
         <div style="background-color: rgba(0, 0, 0, 0.37); width: 500px; height: 450px;padding: 40px;position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%); border-radius: 40px;">
-            <div style="color:white;
-                    font-style: italic;
-                    line-height: 90px;
-                    text-align:center;
-                    height: 100px;
-                    font-weight: 700;
-                    font-size: 36px;"><p><span id="labelQuestion">{{ Label }}</span></p></div>
+            <div style="color:white; font-style: italic; line-height: 90px; text-align:center; height: 100px; font-weight: 700; font-size: 36px;">
+                
+                <h1 id="labelQuestion">{{Label}}</h1>
+                
+            </div>
         
                     <hr>
         
@@ -27,6 +25,8 @@
         
         
             <div style="color: white;"><h3><dt>Entrez votre réponse </h3></div>
+                <br>
+                
             {% if Réponse2 != "" %}
                 <div style="color: white;"><input type="radio" class="button-answer" name="reponses" id="reponse1" value="{{ Réponse1 }}"> {{ Réponse1 }} </input></div><br>
                     <div style="color: white;"><input type="radio" class="button-answer" name="reponses" id="reponse2" value="{{ Réponse2 }}"> {{ Réponse2 }} </input></div><br>
@@ -44,7 +44,7 @@
         
     {% if existsRoom and isHost %}
 
-    <div style="background-color: rgba(0, 0, 0, 0.37); width: 500px; height: 450px;padding: 40px;position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%); border-radius: 40px;">
+    <div style="background-color: rgba(0, 0, 0, 0.37); width: 60%; height: 55%;padding: 40px;position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%); border-radius: 40px;">
         <div style="color:white;
                 font-style: italic;
                 line-height: 90px;
@@ -75,6 +75,9 @@
             <label for="autreRéponseQ">Autre</label>
             <progress id = "autreRéponseQ" max = "100" value = "0"></progress>
         {% endif %}
+
+
+        <br><br>
 
     </div>        
 

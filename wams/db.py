@@ -11,6 +11,8 @@ class archive(db.Model):
     réponse = db.Column(db.String(), nullable =False)
     date = db.Column(db.String(), nullable =False)
     typeQuestion = db.Column(db.String(), nullable =False)
+    def __repr__(self):
+        return f'archive {self.user}'
     
 class question(db.Model): 
     id = db.Column(db.Integer(), primary_key=True)

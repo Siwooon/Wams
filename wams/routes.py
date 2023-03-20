@@ -313,7 +313,6 @@ def quest(id):
     
     if reponse == bonneRep:
         login_user = current_user.login_user
-        archivage(login_user, reponse, "question")
         flash("Bonne réponse !", category='success')
     elif (request.form.get('reponses') == None) :
         # flash("Veuillez répondre à la question", category='danger')
@@ -321,7 +320,6 @@ def quest(id):
 
     else:
         login_user = current_user.login_user
-        archivage(login_user, reponse, "question")
         flash("Mauvaise réponse !", category='danger')
     return render_template('question.html', Label=Question.Label, 
                    Etiquette=Question.Etiquette, 
@@ -346,6 +344,13 @@ def inscription():
         for errors in form.errors.values():
             flash(f'Erreur : {errors}', category='danger')
     return render_template('inscription.html', form=form)
+
+@app.route('/stats', methods=['GET', 'POST'])
+def stats():
+    print("jjjsgivpgvigeaviùegavùiega")
+    sto = archive.query.all()
+    print(question.query.all())
+    return render_template('stats.html', stats = archive.query.all())
 
 @app.route('/changerPassword', methods=['GET', 'POST'])
 def changerPassword():
@@ -421,7 +426,7 @@ def isHostS(code):
 
 @socketio.on('EnvoieReponse')
 def archivageReponseQuestion(reponse):
-    archivage(current_user.id, reponse["bouton"], "question")
+    archivage(current_user.login_user, reponse["bouton"], "question")
     dicoReponsesQuestions[reponse["room"]].append(reponse["bouton"])
     emit('envoieDico', {"dicoReponsesQuestion": dicoReponsesQuestions, "dicoHost" : dicoHosts, "rep" : reponse["bouton"]}, broadcast=True)
 
@@ -435,7 +440,7 @@ def CorrectionQuestion(reponse):
 
 @socketio.on('EnvoieReponseS')
 def envoieReponseS(reponse):
-    archivage(current_user.id, reponse["bouton"], "sequence")
+    archivage(current_user.login_user, reponse["bouton"], "sequence")
     print("comm réussie", reponse["room"])
     dicoReponsesSequences[reponse["room"]].append(reponse["bouton"])
     emit('envoieDicoS', {"dicoReponsesSequences": dicoReponsesSequences, "dicoHostS" : dicoHostsS, "rep" : reponse["bouton"]}, broadcast=True)
@@ -459,9 +464,6 @@ def handle_message():
     print('CHACARONMACARON')
     sto = 'You are connected'
     emit('connected', sto)
-
-
-
 
 
 

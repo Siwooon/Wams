@@ -7,14 +7,35 @@
     <p id="estSurPageDiffSequence"></p>
     {% if codeRoomS in questionnairesOuverts %}
         <h2 id="estDansRoom">Code de la séquence : {{codeRoomS}}</h2>
-        {{listeQ}}
-        {{listeQ[indiceQuestion].Question}}
-        <br>
+
+        <div style="background-color: rgba(0, 0, 0, 0.37); width: 60%; height: 55%;padding: 40px;position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%); border-radius: 40px;">
+
+            <div style="color:white; font-style: italic; line-height: 90px; text-align:center; height: 100px; font-weight: 700; font-size: 36px;">
+                
+                {{listeQ[indiceQuestion].Label}}
+                
+            </div>
+
+            <hr>
+            
+            <div>
+                <h1>{{listeQ[indiceQuestion].Question}}</h1>
+            </div>
+        
+        {% if not(isHostS) %}
+
+        <div style="color: white;"><h3><dt>Entrez votre réponse </h3></div>
+
+        {% endif %}
+
+
+
+            
+
+            <br>
         {% if estCorrigee %}
             <h3 id="correctionSequence">La bonne réponse est : {{listeQ[indiceQuestion].bonne_reponse}}</h3>
         {% endif %}
-        <br>
-        <br>
         {% if not(isHostS) %}
             {% if listeQ[indiceQuestion].Réponse2 != "" %}
                 <input type="radio" class="button-answerS" id = "reponse1S" name="reponsesS" value="{{listeQ[indiceQuestion].Réponse1}}">{{listeQ[indiceQuestion].Réponse1}}
@@ -32,6 +53,27 @@
                 <button id = "submitReponseDiffS">Valider</button>
             {% endif %}
         {% else %}
+        <div id = "divStatsSequence">
+
+            <label for="progress1S">{{ listeQ[indiceQuestion].Réponse1 }}</label>
+            <progress id = "progress1S" max = "100" value = "0"></progress>
+            <br>
+            {% if listeQ[indiceQuestion].Réponse2 != "" %}
+                <label for="progress2S">{{ listeQ[indiceQuestion].Réponse2 }}</label>
+                <progress id = "progress2S" max = "100" value = "0"></progress>
+                <br>
+                <label for="progress3S">{{ listeQ[indiceQuestion].Réponse3 }}</label>
+                <progress id = "progress3S" max = "100" value = "0"></progress>
+                <br>
+                <label for="progress4S">{{ listeQ[indiceQuestion].Réponse4 }}</label>
+                <progress id = "progress4S" max = "100" value = "0"></progress>
+            {% else %}
+                <label for="autreRéponseS">Autre</label>
+                <progress id = "autreRéponseS" max = "100" value = "0"></progress>
+            {% endif %}
+    
+        </div>
+        <br><br>
             <button id="deleteRoomS">Supprimer la diffusion</button>
             <button id="afficheStatsSequence">Statistiques de la question</button>
             <button id="stopRepSequence" class="stopRepS">Stopper les réponses</button>
@@ -39,26 +81,7 @@
             {% if indiceQuestion < listeQ|length -1 %}
                 <button id="nextQ">Question suivante</button>
             {% endif %}
-            <div id = "divStatsSequence">
-                <br>
-                <label for="progress1S">{{ listeQ[indiceQuestion].Réponse1 }}</label>
-                <progress id = "progress1S" max = "100" value = "0"></progress>
-                <br>
-                {% if listeQ[indiceQuestion].Réponse2 != "" %}
-                    <label for="progress2S">{{ listeQ[indiceQuestion].Réponse2 }}</label>
-                    <progress id = "progress2S" max = "100" value = "0"></progress>
-                    <br>
-                    <label for="progress3S">{{ listeQ[indiceQuestion].Réponse3 }}</label>
-                    <progress id = "progress3S" max = "100" value = "0"></progress>
-                    <br>
-                    <label for="progress4S">{{ listeQ[indiceQuestion].Réponse4 }}</label>
-                    <progress id = "progress4S" max = "100" value = "0"></progress>
-                {% else %}
-                    <label for="autreRéponseS">Autre</label>
-                    <progress id = "autreRéponseS" max = "100" value = "0"></progress>
-                {% endif %}
-        
-            </div>
+            
         {% endif %}
         <div id="Reponse1Sequence" data-reponse1S="{{listeQ[indiceQuestion].Réponse1}}"></div>
         <div id="Reponse2Sequence" data-reponse2S="{{listeQ[indiceQuestion].Réponse2}}"></div>
@@ -70,3 +93,8 @@
         <h2>Cette diffusion n'existe pas</h2>
     {% endif %}
 {% endblock %}
+
+
+        </div>
+
+        
