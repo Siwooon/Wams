@@ -20,6 +20,7 @@ dicoHosts={} #répertorie les hosts pour chaque diffusion de question
 dicoHostsS={} #répertorie les hosts pour chaque diffusion de séquence
 dicoReponsesQuestions={} #répertorie toutes les réponses envoyées par les participants dans une diffusion de question
 dicoReponsesSequences={} #répertorie toutes les réponses envoyées par les participants dans une diffusion de séquence
+participantsQuestions={} #répertorie tous les participants de chaque diffusion de question
 participantsSequences={} #répertorie tous les participants de chaque diffusion de séquence
 estStoppeeQuestion={} #pour savoir si une question est arrêtée quand un participant arrive
 estCorrigeeQuestion={} #pour savoir si une question est corrigee
@@ -144,6 +145,10 @@ def diffusionQ(codeRoom):
     infosQuestion = request.args.get('infosQuestion')
     if infosQuestion is not None:
         infosQuestion = json.loads(request.args.get('infosQuestion'))
+    if codeRoom in participantsQuestions.keys():
+        if current_user.id not in participantsQuestions[codeRoom]:
+            participantsQuestions[codeRoom].append(current_user.id)
+            socketio.emit("nouveauParticipantQ", participantsQuestions, broadcast=True)
     if codeRoom in roomOuvertes:
         return render_template('diffusionQuestion.html', existsRoom = codeRoom in roomOuvertes, codeRoom=codeRoom, roomOuvertes=roomOuvertes, infosQuestion=infosQuestion, Label=roomOuvertes[codeRoom]['Label'], 
                    Etiquette=roomOuvertes[codeRoom]['Etiquette'], 
@@ -167,6 +172,7 @@ def updateDiffusionQuestion():
     dicoReponsesQuestions[codeRoom]=[]
     estStoppeeQuestion[codeRoom]=False
     estCorrigeeQuestion[codeRoom]=False
+    participantsQuestions[codeRoom]=[]
 
     return codeRoom
 
@@ -178,13 +184,16 @@ def deleteDiffusion():
     dicoReponsesQuestions.pop(codeRoom, None)
     estStoppeeQuestion.pop(codeRoom, None)
     estCorrigeeQuestion.pop(codeRoom, None)
+    participantsQuestions.pop(codeRoom, None)
     return redirect(url_for("pagesQuestion"))
 
 @app.route('/diffusionQuestionnaire/<codeRoomS>', methods=['GET', 'POST'])
 def diffusionQuestionnaire(codeRoomS):
     q=json.loads(request.args.get("q"))
     if codeRoomS in participantsSequences.keys():
-        participantsSequences[codeRoomS].append(current_user.id)
+        if current_user.id not in participantsSequences[codeRoomS]:
+            participantsSequences[codeRoomS].append(current_user.id)
+            socketio.emit("nouveauParticipantS", participantsSequences, broadcast=True)
     listeQ=[]
     for i in range(len(q)):
         listeQ.append(db.session.query(question).filter_by(Label=q[i]).first())
