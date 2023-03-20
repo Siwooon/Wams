@@ -1,111 +1,73 @@
-{% extends 'question.html' %}
+{% extends "base.html" %}
 {% block title %}
-<title>Question en cours</title>
+    <title>Séquence en cours</title>
 {% endblock %}
 
 {% block content %}
-    <p id="estSurPageDiffQuestion"></p>
-    {% if (codeRoom in roomOuvertes) %}
-        <h2>Code de la question : {{codeRoom}}</h2>
+    <p id="estSurPageDiffSequence"></p>
+    {% if codeRoomS in questionnairesOuverts %}
+        <h2 id="estDansRoom">Code de la séquence : {{codeRoomS}}</h2>
+        {{listeQ}}
+        {{listeQ[indiceQuestion].Question}}
+        <br>
+        {% if estCorrigee %}
+            <h3 id="correctionSequence">La bonne réponse est : {{listeQ[indiceQuestion].bonne_reponse}}</h3>
+        {% endif %}
+        <br>
+        <br>
+        {% if not(isHostS) %}
+            {% if listeQ[indiceQuestion].Réponse2 != "" %}
+                <input type="radio" class="button-answerS" id = "reponse1S" name="reponsesS" value="{{listeQ[indiceQuestion].Réponse1}}">{{listeQ[indiceQuestion].Réponse1}}
+                <br>
+                <input type="radio" class="button-answerS" id = "reponse2S" name="reponsesS" value="{{listeQ[indiceQuestion].Réponse2}}">{{listeQ[indiceQuestion].Réponse2}}
+                <br>
+                <input type="radio" class="button-answerS" id = "reponse3S" name="reponsesS" value="{{listeQ[indiceQuestion].Réponse3}}">{{listeQ[indiceQuestion].Réponse3}}
+                <br>
+                <input type="radio" class="button-answerS" id = "reponse4S" name="reponsesS" value="{{listeQ[indiceQuestion].Réponse4}}">{{listeQ[indiceQuestion].Réponse4}}
+            {% else %}
+                <input id = reponse1S>
+            {% endif %}
+            <br>
+            {% if not(estStoppee) %}
+                <button id = "submitReponseDiffS">Valider</button>
+            {% endif %}
+        {% else %}
+            <button id="deleteRoomS">Supprimer la diffusion</button>
+            <button id="afficheStatsSequence">Statistiques de la question</button>
+            <button id="stopRepSequence" class="stopRepS">Stopper les réponses</button>
+            <button id="afficheCorrectionSequence" class="stopRepS">Afficher la correction</button>
+            {% if indiceQuestion < listeQ|length -1 %}
+                <button id="nextQ">Question suivante</button>
+            {% endif %}
+            <div id = "divStatsSequence">
+                <br>
+                <label for="progress1S">{{ listeQ[indiceQuestion].Réponse1 }}</label>
+                <progress id = "progress1S" max = "100" value = "0"></progress>
+                <br>
+                {% if listeQ[indiceQuestion].Réponse2 != "" %}
+                    <label for="progress2S">{{ listeQ[indiceQuestion].Réponse2 }}</label>
+                    <progress id = "progress2S" max = "100" value = "0"></progress>
+                    <br>
+                    <label for="progress3S">{{ listeQ[indiceQuestion].Réponse3 }}</label>
+                    <progress id = "progress3S" max = "100" value = "0"></progress>
+                    <br>
+                    <label for="progress4S">{{ listeQ[indiceQuestion].Réponse4 }}</label>
+                    <progress id = "progress4S" max = "100" value = "0"></progress>
+                {% else %}
+                    <label for="autreRéponseS">Autre</label>
+                    <progress id = "autreRéponseS" max = "100" value = "0"></progress>
+                {% endif %}
+        
+            </div>
+            <h3 id="nbParticipantsS"></h3>
+        {% endif %}
+        <div id="Reponse1Sequence" data-reponse1S="{{listeQ[indiceQuestion].Réponse1}}"></div>
+        <div id="Reponse2Sequence" data-reponse2S="{{listeQ[indiceQuestion].Réponse2}}"></div>
+        <div id="Reponse3Sequence" data-reponse3S="{{listeQ[indiceQuestion].Réponse3}}"></div>
+        <div id="Reponse4Sequence" data-reponse4S="{{listeQ[indiceQuestion].Réponse4}}"></div>
+        <div id = "stockCodeS" data-codeRoomS = {{codeRoomS}}></div>
+        <div id = "dataUserIDS" data-userIDS = {{userIDS}}></div>
     {% else %}
         <h2>Cette diffusion n'existe pas</h2>
     {% endif %}
-
-    {% if existsRoom and not(isHost) %}
-        <div style="background-color: rgba(0, 0, 0, 0.37); width: 500px; height: 450px;padding: 40px;position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%); border-radius: 40px;">
-            <div style="color:white;
-                    font-style: italic;
-                    line-height: 90px;
-                    text-align:center;
-                    height: 100px;
-                    font-weight: 700;
-                    font-size: 36px;"><p><span id="labelQuestion">{{ Label }}</span></p></div>
-        
-                    <hr>
-        
-        <div style="color: white;"><h1><p class="one" style="text-align: center;" id="énoncéQuestion">{{ Question }}</p></h1></div>
-        
-        
-            <div style="color: white;"><h3><dt>Entrez votre réponse </h3></div>
-            {% if Réponse2 != "" %}
-                <div style="color: white;"><input type="radio" class="button-answer" name="reponses" id="reponse1" value="{{ Réponse1 }}"> {{ Réponse1 }} </input></div><br>
-                    <div style="color: white;"><input type="radio" class="button-answer" name="reponses" id="reponse2" value="{{ Réponse2 }}"> {{ Réponse2 }} </input></div><br>
-                        <div style="color: white;"><input type="radio" class="button-answer" name="reponses" id="reponse3" value="{{ Réponse3 }}"> {{ Réponse3 }} </input></div><br>
-                            <div style="color: white;"><input type="radio" class="button-answer" name="reponses" id="reponse4" value="{{ Réponse4 }}"> {{ Réponse4 }} </input></div><br>
-            {% else %}
-                <div style="color: white;"><input name="reponses" id="reponse1"></div><br>
-            {% endif %}
-
-            {% if not(estStoppee) %}
-                <div style="text-align: center;"><p><button id="submitReponseDiffQ" type="button" style="width:70px;height:25px">Valider</button></p></div>
-            {% endif %}
-        </div>
-    {% endif %}
-        
-    {% if existsRoom and isHost %}
-    <div style="background-color: rgba(0, 0, 0, 0.37); width: 500px; height: 450px;padding: 40px;position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%); border-radius: 40px;">
-        <div style="color:white;
-                font-style: italic;
-                line-height: 90px;
-                text-align:center;
-                height: 100px;
-                font-weight: 700;
-                font-size: 36px;"><p><span id="labelQuestion">{{ Label }}</span></p></div>
-    
-                <hr>
-    
-    <div style="color: white;"><h1><p class="one" style="text-align: center;" id="énoncéQuestion">{{ Question }}</p></h1></div>
-        <br>
-    <div id = "divStatsQuestion">
-        <br>
-        <label for="progress1">{{ Réponse1 }}</label>
-        <progress id = "progress1" max = "100" value = "0"></progress>
-        <br>
-        {% if Réponse2 != "" %}
-            <label for="progress2">{{ Réponse2 }}</label>
-            <progress id = "progress2" max = "100" value = "0"></progress>
-            <br>
-            <label for="progress3">{{ Réponse3 }}</label>
-            <progress id = "progress3" max = "100" value = "0"></progress>
-            <br>
-            <label for="progress4">{{ Réponse4 }}</label>
-            <progress id = "progress4" max = "100" value = "0"></progress>
-        {% else %}
-            <label for="autreRéponseQ">Autre</label>
-            <progress id = "autreRéponseQ" max = "100" value = "0"></progress>
-        {% endif %}
-
-    </div>        
-
-            <br>
-            <div>
-                <button id = "deleteRoom">Supprimer la diffusion</button>
-                <button id = "afficheStatsQuestion">Statistiques de la question</button>
-                <button id = "stopRepQuestion" class="stopRepQ">Stopper les réponses</button>
-                <button id = "afficheCorrectionQuestion" class="stopRepQ">Afficher la correction</button>
-            </div>
-            
-            
-        <div id="Reponse1Question" data-reponse1Q="{{Réponse1}}"></div>
-        <div id="Reponse2Question" data-reponse2Q="{{Réponse2}}"></div>
-        <div id="Reponse3Question" data-reponse3Q="{{Réponse3}}"></div>
-        <div id="Reponse4Question" data-reponse4Q="{{Réponse4}}"></div>
-        
-
-    
-
-    
-    </div>
-
-    <h3 id="nbParticipantsQ"></h3>
-        
-        
-    {% endif %}
-    <h3 id = "nbRep"></h3>
-    {% if estCorrigee %}
-        <h3 id = "correctionQuestion">La bonne réponse est : {{Bonne_Réponse}}</h3>
-    {% endif %}
-    <div id="stockCode" data-codeRoom="{{codeRoom}}"></div>
-    <div id="userIDQuestion" data-userID="{{userID}}"></div>
-
 {% endblock %}
