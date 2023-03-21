@@ -197,7 +197,7 @@ def diffusionQuestionnaire(codeRoomS):
     listeQ=[]
     for i in range(len(q)):
         listeQ.append(db.session.query(question).filter_by(Label=q[i]).first())
-    return render_template("diffusionQuestionnaire.html", questionnairesOuverts=questionnairesOuverts, codeRoomS=codeRoomS, listeQ=listeQ, indiceQuestion=indiceQuestion[codeRoomS], isHostS=isHostS(codeRoomS), userIDS=current_user.id, estStoppee=estStoppeeSequence[codeRoomS], estCorrigee=estCorrigeeSequence[codeRoomS])
+    return render_template("diffusionQuestionnaire.html", questionnairesOuverts=questionnairesOuverts, codeRoomS=codeRoomS, listeQ=listeQ, indiceQuestion=indiceQuestion[codeRoomS], isHostS=isHostS(codeRoomS), userIDS=current_user.id)
 
 @app.route('/updateDiffusionQuestionnaire', methods=['POST'])
 def updateDiffusionQuestionnaire():
@@ -444,7 +444,7 @@ def CorrectionQuestion(reponse):
     estStoppeeQuestion[reponse["code"]]=True
     if reponse["estCorrec"]:
         estCorrigeeQuestion[reponse["code"]]=True
-    emit('envoieCorrectionQuestion', broadcast=True)
+    emit('envoieCorrectionQuestion', reponse["estCorrec"], broadcast=True)
 
 
 @socketio.on('EnvoieReponseS')
@@ -464,7 +464,7 @@ def CorrectionSequence(reponse):
     estStoppeeSequence[reponse["code"]]=True
     if reponse["estCorrec"]:
         estCorrigeeSequence[reponse["code"]]=True
-    emit('envoieCorrectionSequence', broadcast=True)
+    emit('envoieCorrectionSequence', reponse["estCorrec"], broadcast=True)
 
 
 
