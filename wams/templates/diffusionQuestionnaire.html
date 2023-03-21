@@ -7,7 +7,7 @@
     <p id="estSurPageDiffSequence"></p>
     {% if codeRoomS in questionnairesOuverts %}
         <h2 id="estDansRoom">Code de la séquence : {{codeRoomS}}</h2>
-
+        <h3 id="correctionSequence"></h3>
         <div style="background-color: rgba(0, 0, 0, 0.37); width: 60%; height: 55%;padding: 40px;position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%); border-radius: 40px;">
 
             <div style="color:white; font-style: italic; line-height: 90px; text-align:center; height: 100px; font-weight: 700; font-size: 36px;">
@@ -34,7 +34,7 @@
 
             <br>
         {% if estCorrigee %}
-            <h3 id="correctionSequence">La bonne réponse est : {{listeQ[indiceQuestion].bonne_reponse}}</h3>
+            <h3 id="correctionSequence"></h3>
         {% endif %}
         {% if not(isHostS) %}
             {% if listeQ[indiceQuestion].Réponse2 != "" %}
@@ -80,12 +80,13 @@
                 {% endif %}
         
             </div>
-            <h3 id="nbParticipants"></h3>
+            <h3 id="nbParticipantsS"></h3>
         {% endif %}
-        <div id="Reponse1Sequence" data-reponse1S="{{listeQ[indiceQuestion].Réponse1}}"></div>
-        <div id="Reponse2Sequence" data-reponse2S="{{listeQ[indiceQuestion].Réponse2}}"></div>
-        <div id="Reponse3Sequence" data-reponse3S="{{listeQ[indiceQuestion].Réponse3}}"></div>
-        <div id="Reponse4Sequence" data-reponse4S="{{listeQ[indiceQuestion].Réponse4}}"></div>
+        <div id="Reponse1Sequence" data-reponse1S={{listeQ[indiceQuestion].Réponse1}}></div>
+        <div id="Reponse2Sequence" data-reponse2S={{listeQ[indiceQuestion].Réponse2}}></div>
+        <div id="Reponse3Sequence" data-reponse3S={{listeQ[indiceQuestion].Réponse3}}></div>
+        <div id="Reponse4Sequence" data-reponse4S={{listeQ[indiceQuestion].Réponse4}}></div>
+        <div id="stockBonneRepS" data-bonneRepS={{listeQ[indiceQuestion].bonne_reponse}}></div>
         <div id = "stockCodeS" data-codeRoomS = {{codeRoomS}}></div>
         <div id = "dataUserIDS" data-userIDS = {{userIDS}}></div>
     {% else %}
