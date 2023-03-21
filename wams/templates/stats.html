@@ -13,6 +13,8 @@
     <th>Type de question</th>
 </tr>
 
+<br><br>
+
     {% for stat in stats %}
         <tr>
             <td>{{ stat.user }}</td>
@@ -20,6 +22,7 @@
             <td>{{ stat.date }}</td>
             <td>{{ stat.typeQuestion }}</td>
         </tr>
+        <br><br>
     {% endfor %}
 
 {% endblock %}

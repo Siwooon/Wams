@@ -356,9 +356,10 @@ def inscription():
 
 @app.route('/stats', methods=['GET', 'POST'])
 def stats():
-    print("jjjsgivpgvigeaviùegavùiega")
-    sto = archive.query.all()
-    print(question.query.all())
+    archivesto = archive(user = "Simon", réponse = "Test", date = date.today(), typeQuestion = "typeQuestion")
+    db.session.add(archivesto)
+    db.session.commit()
+    print("HEOHHHHHHHHHHHHHHHHHHHHHO")
     return render_template('stats.html', stats = archive.query.all())
 
 @app.route('/changerPassword', methods=['GET', 'POST'])
