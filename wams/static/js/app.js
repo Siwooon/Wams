@@ -12,6 +12,7 @@ $(document).ready(function() {
     socket.on('envoieDico', function(reponse){
       room=document.getElementById("stockCode").getAttribute("data-codeRoom")
       document.getElementById("nbRep").innerText = "Nombre de réponses : "+ reponse["dicoReponsesQuestion"][room].length
+      console.log(document.getElementById("userIDQuestion").getAttribute("data-userID"))
       if(document.getElementById("userIDQuestion").getAttribute("data-userID")==reponse["dicoHost"][room]){
         var count1 =0
         var count2 =0
@@ -533,9 +534,12 @@ $(document).on('click', '.stopRepQ', function(){
   socket.emit('CorrectionQuestion', {"code" : document.getElementById("stockCode").getAttribute("data-codeRoom"), "estCorrec":$(this).attr('id')=="afficheCorrectionQuestion"})
 })
 
-socket.on('envoieCorrectionQuestion', function(){
-  if(document.getElementById("estSurPageDiffQuestion")!=null){
-    location.reload()
+socket.on('envoieCorrectionQuestion', function(reponse){
+  if(document.getElementById("submitReponseDiff")!=null){
+    document.getElementById("submitReponseDiff").style.display="none"
+  }
+  if(document.getElementById("estSurPageDiffQuestion")!=null && reponse){
+    document.getElementById("correctionQuestion").innerText="La réponse est : "+ document.getElementById("stockBonneRep").getAttribute("data-bonneRep")
   }
 })
 
@@ -571,9 +575,12 @@ $(document).on('click', '.stopRepS', function(){
   socket.emit('CorrectionSequence', {"code" : document.getElementById("stockCodeS").getAttribute("data-codeRoomS"), "estCorrec":$(this).attr('id')=="afficheCorrectionSequence"})
 })
 
-socket.on("envoieCorrectionSequence", function(){
-  if(document.getElementById("estSurPageDiffSequence")!=null){
-    location.reload()
+socket.on("envoieCorrectionSequence", function(reponse){
+  if(document.getElementById("submitReponseDiffS")!=null){
+    document.getElementById("submitReponseDiffS").style.display="none"
+  }
+  if(document.getElementById("estSurPageDiffSequence")!=null && reponse){
+    document.getElementById("correctionSequence").innerText="La réponse est : "+ document.getElementById("stockBonneRepS").getAttribute("data-bonneRepS")
   }
 })
 
@@ -584,7 +591,6 @@ socket.on("nouveauParticipantS", function(reponse){
 })
 
 socket.on("nouveauParticipantQ", function(reponse){
-  console.log(document.getElementById("stockCode").getAttribute("data-codeRoom"))
   if(document.getElementById("nbParticipantsQ") != null){
     document.getElementById("nbParticipantsQ").innerText="Nombre de participants : "+reponse[document.getElementById("stockCode").getAttribute("data-codeRoom")].length
   }
