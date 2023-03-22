@@ -406,6 +406,7 @@ def creerAllComptes():
             if request.files:
                 uploaded_file = request.files['filename'] # This line uses the same variable and worked fine
                 filepath = os.path.join(app.config['FILE_UPLOADS'], uploaded_file.filename)
+                print(filepath)
                 uploaded_file.save(filepath)
                 with open(filepath) as file:
                     csv_file = csv.reader(file)
@@ -420,7 +421,7 @@ def creerAllComptes():
         return render_template('creerAllComptes.html')
     else: return "Vous n'êtes pas prof"
 
-app.config['FILE_UPLOADS'] = ".\\wams\\uploads"
+
 
 def archivage(user, réponse, typeQuestion):
     archivesto = archive(user = user, réponse = réponse, date = date.today(), typeQuestion = typeQuestion)

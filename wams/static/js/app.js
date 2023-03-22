@@ -5,9 +5,11 @@ $(document).ready(function() {
         console.log(sto)
     });
 
-    socket.on('EnvoieReponse', function(reponse){
-      
-    })
+
+    function getStringBetween(startStr, endStr, str) {
+      pos = str.indexOf(startStr) + startStr.length;
+      return str.substring(pos, str.indexOf(endStr, pos));
+    }
    
     socket.on('envoieDico', function(reponse){
       room=document.getElementById("stockCode").getAttribute("data-codeRoom")
@@ -231,7 +233,7 @@ $(document).ready(function() {
       type: 'GET',
       url : '/oneAnswer',
       success : function() {
-        console.log("OUISTITI")
+        console.log("ça fonctionne")
       }
     })
 

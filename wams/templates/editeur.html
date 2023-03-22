@@ -54,6 +54,8 @@
         socket.on("formatted", (arg) => {
             if ($("#a").children("pre").length < 2) {
               $("#a").append('<pre class="mermaid">'+arg+'</pre>')
+              $(".language-mermaid").remove();
+              
             }
         });
       }

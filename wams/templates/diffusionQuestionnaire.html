@@ -4,6 +4,34 @@
 {% endblock %}
 
 {% block content %}
+<script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+    $(document).ready(function() {
+    const md = window.markdownit({
+      html: true,
+      typographer: true,
+      linkify: true,
+      breaks: true,
+      highlight: function (str, lang) {
+        if (lang && hljs.getLanguage(lang)) {
+          try {
+            return hljs.highlight(str, { language: lang }).value;
+          } catch (__) {}
+        }
+        return ''; // use external default escaping
+      }
+    });
+    })
+</script>
+<script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
     <p id="estSurPageDiffSequence"></p>
     {% if codeRoomS in questionnairesOuverts %}
         <h2 id="estDansRoom">Code de la séquence : {{codeRoomS}}</h2>

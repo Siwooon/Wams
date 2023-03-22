@@ -12,15 +12,54 @@
   });
 </script>
 <script>
-    var socket = io();
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
     $(document).ready(function() {
+    const md = window.markdownit({
+      html: true,
+      typographer: true,
+      linkify: true,
+      breaks: true,
+      highlight: function (str, lang) {
+        if (lang && hljs.getLanguage(lang)) {
+          try {
+            return hljs.highlight(str, { language: lang }).value;
+          } catch (__) {}
+        }
+        return ''; // use external default escaping
+      }
+    });
+    })
+</script>
+<script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+<script>
+    var socket = io();
+    
+    function getStringBetween(startStr, endStr, str) {
+        
+        pos = str.indexOf(startStr) + startStr.length;
+        return str.substring(pos, str.indexOf(endStr, pos));
+    }
+    console.log(getStringBetween('a', 'b', 'acccb'))
+
+    $(document).ready(function() {
+
         if($("#énoncéQuestion").html().includes("```mermaid")) {
             socket.emit("typing", data=getStringBetween("```mermaid\n", "\n```", $("#énoncéQuestion").html()));
             socket.on("formatted", (arg) => {
                 if ($("#énoncéQuestion").children("pre").length < 2) {
-                $("#énoncéQuestion").append('<pre class="mermaid">'+arg+'</pre>')
-                document.getElementById("énoncéQuestion").innerHTML.replace(arg, "")
-                mermaid.run();
+                    var pre = document.createElement("pre");
+                    pre.className = "mermaid";
+                    pre.textContent = arg;
+                    $("#énoncéQuestion").append(pre);
+                    mermaid.run();
                 }
             });
         }
@@ -122,15 +161,16 @@
     </div>
 
         
-   <h4>{{userID}}</h4>
+   
         
         
     {% endif %}
     <h3 id = "nbRep"></h3>
-    {% if estCorrigee %}
-        <h3 id = "correctionQuestion">La bonne réponse est : {{Bonne_Réponse}}</h3>
-    {% endif %}
+    
+    <h3 id = "correctionQuestion"></h3>
+   
     <div id="stockCode" data-codeRoom="{{codeRoom}}"></div>
     <div id="userIDQuestion" data-userID="{{userID}}"></div>
+    <div id="stockBonneRep" data-bonneRep="{{Bonne_Réponse}}"></div>
 
 {% endblock %}

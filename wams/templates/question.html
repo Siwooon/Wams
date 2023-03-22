@@ -12,6 +12,42 @@
   });
 </script>
 <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+
+    $(document).ready(function() {
+    const md = window.markdownit({
+      html: true,
+      typographer: true,
+      linkify: true,
+      breaks: true,
+      highlight: function (str, lang) {
+        if (lang && hljs.getLanguage(lang)) {
+          try {
+            return hljs.highlight(str, { language: lang }).value;
+          } catch (__) {}
+        }
+        return ''; // use external default escaping
+      }
+    });
+    })
+
+    $("#énoncéQuestion").on("input", function() {
+      var markdown = $(this).val();
+      var mk = md.render(markdown);
+      $("#rep").html(mk);
+      MathJax.typeset();
+    });
+</script>
+<script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+<script>
     var socket = io();
     $(document).ready(function() {
         if($("#énoncéQuestion").html().includes("```mermaid")) {
@@ -27,7 +63,7 @@
 </script>
 
 <div style="background-color: rgba(0, 0, 0, 0.37); width: 500px; height: 450px;padding: 40px;position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%); border-radius: 40px;">
-    <div style="color:white;
+    <div id="rep" style="color:white;
             font-style: italic;
             line-height: 90px;
             text-align:center;
