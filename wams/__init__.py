@@ -11,7 +11,7 @@ app = Flask(__name__, static_folder='static')
 
 app.config ['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///wams.db?check_same_thread=False'
 app.config['SECRET_KEY'] = '34d5960ea9a2224236324903'
-app.config['FILE_UPLOADS'] = "\\uploads"
+app.config['FILE_UPLOADS'] = "wams\\uploads"
 Markdown(app)
 db = SQLAlchemy(app)
 socketio = SocketIO(app)

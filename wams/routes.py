@@ -274,7 +274,6 @@ def addQuestion():
         connection.execute(query)
         nbcolonnes +=1
     
-    # name_columns = [col.name for col in questionnaireTable.columns]
     new_questionnaire = questionnaire(Label=listeQuestions[0])
     listeQuestions.pop(0)
     for i in range(len(listeQuestions)):
@@ -324,9 +323,7 @@ def quest(id):
         login_user = current_user.login_user
         flash("Bonne réponse !", category='success')
     elif (request.form.get('reponses') == None) :
-        # flash("Veuillez répondre à la question", category='danger')
-        None
-
+        flash("Veuillez répondre à la question", category='danger')
     else:
         login_user = current_user.login_user
         flash("Mauvaise réponse !", category='danger')
@@ -369,7 +366,7 @@ def changerPassword():
     if form.validate_on_submit():
         user_to_create = user_info(password = form.password1.data)
         user = user_info.query.filter_by(login_user=current_user.login_user).first()
-        user.password_user = user_to_create.password_user #This is my problem line, I guess.
+        user.password_user = user_to_create.password_user
         db.session.add(user)
         db.session.commit()
     if form.errors != {}:
@@ -404,14 +401,12 @@ def creerAllComptes():
         form = FormInscription()
         if request.method == 'POST':
             if request.files:
-                uploaded_file = request.files['filename'] # This line uses the same variable and worked fine
+                uploaded_file = request.files['filename']
                 filepath = os.path.join(app.config['FILE_UPLOADS'], uploaded_file.filename)
-                print(filepath)
                 uploaded_file.save(filepath)
                 with open(filepath) as file:
                     csv_file = csv.reader(file)
                     for data in csv_file:
-                        print(data)
                         user_to_create = user_info(login_user=f"{data[0]}{data[1]}",
                                                     mail_user = "",
                                                     password = data[2],
