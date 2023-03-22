@@ -4,7 +4,29 @@
 {% endblock %}
 
 {% block content %}
-<div style="background-color: rgba(0, 0, 0, 0.37); width: 60%; height: 55%;padding: 40px;position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%); border-radius: 40px;">
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.0.3-alpha.1/dist/mermaid.min.js"></script>
+<script>
+  mermaid.initialize({
+    startOnLoad: true
+  });
+</script>
+<script>
+    var socket = io();
+    $(document).ready(function() {
+        if($("#énoncéQuestion").html().includes("```mermaid")) {
+            socket.emit("typing", data=getStringBetween("```mermaid\n", "\n```", $("#énoncéQuestion").html()));
+            socket.on("formatted", (arg) => {
+                if ($("#énoncéQuestion").children("pre").length < 2) {
+                $("#énoncéQuestion").append('<pre class="mermaid">'+arg+'</pre>')
+                mermaid.run();
+                }
+            });
+        }
+    })
+</script>
+
+<div style="background-color: rgba(0, 0, 0, 0.37); width: 500px; height: 450px;padding: 40px;position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%); border-radius: 40px;">
     <div style="color:white;
             font-style: italic;
             line-height: 90px;
@@ -15,29 +37,22 @@
 
             <hr>
 
-<div style="color: white;">
-    
-    <h1><p class="one" style="text-align: center;" id="énoncéQuestion">{{ Question }}</p></h1>
+<div style="color: white;"><h1><p class="one" style="text-align: center;" id="énoncéQuestion">{{ Question }}</p></h1></div>
 
-    <form method="post">
-        <div style="color: white;"><h3><dt>Entrez votre réponse </h3></div>
-            <br>
-        {% if Réponse2 != "" %}
-            <div style="color: white;"><input type="radio" name="reponses" id="reponse1" value="{{ Réponse1 }}"> {{ Réponse1 }} </input></div><br>
-                <div style="color: white;"><input type="radio" name="reponses" id="reponse2" value="{{ Réponse2 }}"> {{ Réponse2 }} </input></div><br>
-                    <div style="color: white;"><input type="radio" name="reponses" id="reponse3" value="{{ Réponse3 }}"> {{ Réponse3 }} </input></div><br>
-                        <div style="color: white;"><input type="radio" name="reponses" id="reponse4" value="{{ Réponse4 }}"> {{ Réponse4 }} </input></div><br>
-        {% else %}
-            <div style="color: white;"><input name="reponses" id="reponse1"></div><br>
-        {% endif %}
-    
-        <div style="text-align: center;"><p><input type=submit value=Valider style="width:70px;height:25px"></p></div>
-    
-    </form>
+<form method="post">
+    <div style="color: white;"><h3><dt>Entrez votre réponse </h3></div>
+    {% if Réponse2 != "" %}
+        <div style="color: white;"><input type="radio" name="reponses" id="reponse1" value="{{ Réponse1 }}"> {{ Réponse1 }} </input></div><br>
+            <div style="color: white;"><input type="radio" name="reponses" id="reponse2" value="{{ Réponse2 }}"> {{ Réponse2 }} </input></div><br>
+                <div style="color: white;"><input type="radio" name="reponses" id="reponse3" value="{{ Réponse3 }}"> {{ Réponse3 }} </input></div><br>
+                    <div style="color: white;"><input type="radio" name="reponses" id="reponse4" value="{{ Réponse4 }}"> {{ Réponse4 }} </input></div><br>
+    {% else %}
+        <div style="color: white;"><input name="reponses" id="reponse1"></div><br>
+    {% endif %}
 
-</div>
+    <div style="text-align: center;"><p><input type=submit value=Valider style="width:70px;height:25px"></p></div>
 
-
+</form>
 
 </div>
 
