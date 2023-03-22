@@ -15,6 +15,13 @@
 
     {% block title %}
     {% endblock %}
+    
+    <script>    
+        function getStringBetween(startStr, endStr, str) {
+            pos = str.indexOf(startStr) + startStr.length;
+            return str.substring(pos, str.indexOf(endStr, pos));
+        }
+    </script>
 
     <button class="menu-toggle">Menu</button>
     <nav class="vertical-nav">

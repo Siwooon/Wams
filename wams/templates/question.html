@@ -48,18 +48,21 @@
 <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 
 <script>
-    var socket = io();
-    $(document).ready(function() {
-        if($("#énoncéQuestion").html().includes("```mermaid")) {
-            socket.emit("typing", data=getStringBetween("```mermaid\n", "\n```", $("#énoncéQuestion").html()));
-            socket.on("formatted", (arg) => {
-                if ($("#énoncéQuestion").children("pre").length < 2) {
-                $("#énoncéQuestion").append('<pre class="mermaid">'+arg+'</pre>')
-                mermaid.run();
-                }
-            });
-        }
-    })
+  var socket = io();
+  $(document).ready(function() {
+      if($("#énoncéQuestion").html().includes("```mermaid")) {
+          socket.emit("typing", data=getStringBetween("```mermaid\n", "\n```", $("#énoncéQuestion").html()));
+          socket.on("formatted", (arg) => {
+              var stringToRemove = arg.replace(/&gt;/g, ">");
+
+              $("#énoncéQuestion").text(function(_, text) {
+                  return stringToRemove.replace(stringToRemove, "");
+              });
+              $("#énoncéQuestion").append('<pre class="mermaid">'+arg+'</pre>')
+              mermaid.run();
+          });
+      }
+  })
 </script>
 
 <div style="background-color: rgba(0, 0, 0, 0.37); width: 500px; height: 450px;padding: 40px;position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%); border-radius: 40px;">

@@ -51,11 +51,10 @@
     $("#Question").keydown(function(e) {
       if ($(this).val().includes("\n```mermaid\n") || $(this).val().startsWith("```mermaid\n")) {
         socket.emit("typing", data=getStringBetween("```mermaid\n", "\n```", $(this).val()));
+        $(".language-mermaid").empty()
         socket.on("formatted", (arg) => {
-            if ($("#a").children("pre").length < 2) {
+            if ($("#a").children(".mermaid").length < 1) {
               $("#a").append('<pre class="mermaid">'+arg+'</pre>')
-              $(".language-mermaid").remove();
-              
             }
         });
       }

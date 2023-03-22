@@ -41,26 +41,17 @@
 
 <script>
     var socket = io();
-    
-    function getStringBetween(startStr, endStr, str) {
-        
-        pos = str.indexOf(startStr) + startStr.length;
-        return str.substring(pos, str.indexOf(endStr, pos));
-    }
-    console.log(getStringBetween('a', 'b', 'acccb'))
-
     $(document).ready(function() {
-
         if($("#énoncéQuestion").html().includes("```mermaid")) {
             socket.emit("typing", data=getStringBetween("```mermaid\n", "\n```", $("#énoncéQuestion").html()));
             socket.on("formatted", (arg) => {
-                if ($("#énoncéQuestion").children("pre").length < 2) {
-                    var pre = document.createElement("pre");
-                    pre.className = "mermaid";
-                    pre.textContent = arg;
-                    $("#énoncéQuestion").append(pre);
-                    mermaid.run();
-                }
+                var stringToRemove = arg.replace(/&gt;/g, ">");
+
+                $("#énoncéQuestion").text(function(_, text) {
+                    return stringToRemove.replace(stringToRemove, "");
+                });
+                $("#énoncéQuestion").append('<pre class="mermaid">'+arg+'</pre>')
+                mermaid.run();
             });
         }
     })
