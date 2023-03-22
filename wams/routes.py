@@ -446,7 +446,7 @@ def CorrectionQuestion(reponse):
     estStoppeeQuestion[reponse["code"]]=True
     if reponse["estCorrec"]:
         estCorrigeeQuestion[reponse["code"]]=True
-    emit('envoieCorrectionQuestion', reponse["estCorrec"], broadcast=True)
+    emit('envoieCorrectionQuestion', {"correction" : reponse["estCorrec"], "code" : reponse["code"]}, broadcast=True)
 
 
 @socketio.on('EnvoieReponseS')
@@ -466,7 +466,7 @@ def CorrectionSequence(reponse):
     estStoppeeSequence[reponse["code"]]=True
     if reponse["estCorrec"]:
         estCorrigeeSequence[reponse["code"]]=True
-    emit('envoieCorrectionSequence', reponse["estCorrec"], broadcast=True)
+    emit('envoieCorrectionSequence', {"correction" : reponse["estCorrec"], "code" : reponse["code"]}, broadcast=True)
 
 
 
