@@ -411,9 +411,15 @@ $(document).on('click', '#deleteRoom', function(){
     }
   })
 })
+
+function escapeSpecialChars(jsonString) {
+  return jsonString.replace(/[\u0000-\u001F\u007F-\u009F]/g, (c) => {
+    return '\\u' + ('0000' + c.charCodeAt(0).toString(16)).slice(-4);
+  });
+}
         
 $(document).on('click', '#diffusionQuestion', function(){
-  var infosQuestion = JSON.parse(document.getElementById('dataQuestion').dataset.infosQuestion);
+  var infosQuestion = JSON.parse(escapeSpecialChars(document.getElementById('dataQuestion').dataset.infosQuestion));
   console.log(infosQuestion)
   $.ajax({
     type: "POST",
