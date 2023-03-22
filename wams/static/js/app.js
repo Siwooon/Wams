@@ -537,10 +537,10 @@ $(document).on('click', '.stopRepQ', function(){
 })
 
 socket.on('envoieCorrectionQuestion', function(reponse){
-  if(document.getElementById("submitReponseDiff")!=null){
-    document.getElementById("submitReponseDiff").style.display="none"
-  }
-  if(document.getElementById("estSurPageDiffQuestion")!=null && reponse){
+  if(document.getElementById("estSurPageDiffQuestion")!=null && reponse["correction"] && document.getElementById("stockCode").getAttribute("data-codeRoom")==reponse["code"]){
+    if(document.getElementById("submitReponseDiff")!=null){
+      document.getElementById("submitReponseDiff").style.display="none"
+    }
     document.getElementById("correctionQuestion").innerText="La réponse est : "+ document.getElementById("stockBonneRep").getAttribute("data-bonneRep")
   }
 })
@@ -578,10 +578,10 @@ $(document).on('click', '.stopRepS', function(){
 })
 
 socket.on("envoieCorrectionSequence", function(reponse){
-  if(document.getElementById("submitReponseDiffS")!=null){
-    document.getElementById("submitReponseDiffS").style.display="none"
-  }
-  if(document.getElementById("estSurPageDiffSequence")!=null && reponse){
+  if(document.getElementById("estSurPageDiffSequence")!=null && reponse["correction"] && document.getElementById("stockCodeS").getAttribute("data-codeRoomS")==reponse["code"]){
+    if(document.getElementById("submitReponseDiffS")!=null){
+      document.getElementById("submitReponseDiffS").style.display="none"
+    }
     document.getElementById("correctionSequence").innerText="La réponse est : "+ document.getElementById("stockBonneRepS").getAttribute("data-bonneRepS")
   }
 })
