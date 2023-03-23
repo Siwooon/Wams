@@ -4,6 +4,12 @@
 {% endblock %}
 
 {% block content %}
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.0.3-alpha.1/dist/mermaid.min.js"></script>
+<script>
+  mermaid.initialize({
+    startOnLoad: true
+  });
+</script>
 <script>
     MathJax = {
       tex: {
@@ -13,6 +19,7 @@
         fontCache: 'global'
       }
     };
+
     $(document).ready(function() {
     const md = window.markdownit({
       html: true,
@@ -28,7 +35,12 @@
         return ''; // use external default escaping
       }
     });
-    })
+
+    var markdown = $("#énoncéQuestion").html();
+    var mk = md.render(markdown);
+    $("#énoncéQuestion").html(mk);
+    MathJax.typeset();
+  })
 </script>
 <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 
@@ -47,7 +59,7 @@
             <hr>
             
             <div>
-                <h1>{{listeQ[indiceQuestion].Question}}</h1>
+                <h1 id="énoncéQuestion">{{listeQ[indiceQuestion].Question}}</h1>
             </div>
         
         {% if not(isHostS) %}
