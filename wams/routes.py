@@ -416,6 +416,9 @@ def creerAllComptes():
         return render_template('creerAllComptes.html')
     else: return "Vous n'êtes pas prof"
 
+@app.route('/controle', methods=["GET", "POST"])
+def controle():
+    return render_template('controle.html')
 
 
 def archivage(user, réponse, typeQuestion):
