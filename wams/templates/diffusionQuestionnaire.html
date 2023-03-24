@@ -42,6 +42,19 @@
     MathJax.typeset();
   })
 </script>
+<script>
+  function htmlDecode(input) {
+    var doc = new DOMParser().parseFromString(input, "text/html");
+    return doc.documentElement.textContent;
+  }
+  var socket = io();
+  $(document).ready(function() {
+    $("#énoncéQuestion").append('<pre class="mermaid">'+htmlDecode($(".language-mermaid").html().replace("&gt;", ">"))+'</pre>')
+    mermaid.run()
+    $(".language-mermaid").empty()
+  })
+</script>
+
 <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 
     <p id="estSurPageDiffSequence"></p>
