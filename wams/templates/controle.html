@@ -5,16 +5,19 @@
 
 {% block content %}
 {% for e in listeEtiquettes %}
-    <input type="number" min="0" step="1" max="{{dicoQuestionsParTag1[e] | length}}" placeholder="{{e}}" value="0"> {{e}}
+min : <input type="number" class = "encadrementMin" min="0" step="1" max="{{dicoQuestionsParTag1[e] | length}}" placeholder="min" value="0"> max : <input id="max{{e}}" class="encadrementMax" type="number" min="0" step="1" max="{{dicoQuestionsParTag1[e] | length}}" placeholder="max" value="0"> {{e}}
     <br>
 {% endfor %}
 <br>
-<input type="text">Entrez le nombre de sujets
+<input type="number" id="nbQuestions" value="0">Entrez le nombre de sujets
 <br>
 <input type="checkbox">Mélanger les thèmes
 <br>
-<button>Créer les sujets</button>
+<button id="submitSujets">Créer les sujets</button>
 <br>
 <br>
 {{dicoQuestionsParTag1}}
+<br>
+<br>
+<h3 id="msgErreurFourchette"></h3>
 {% endblock %}
