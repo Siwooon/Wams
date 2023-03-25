@@ -418,7 +418,16 @@ def creerAllComptes():
 
 @app.route('/controle', methods=["GET", "POST"])
 def controle():
-    return render_template('controle.html')
+    listeEtiquettes=[]
+    dicoQuestionsParTag1={}
+    for etiquette in Etiquettes.query.all():
+        listeEtiquettes.append(etiquette.id)
+        dicoQuestionsParTag1[etiquette.id]=[]
+        for quest in question.query.all():
+            if etiquette.id == quest.Etiquette.split(",")[0]:
+                dicoQuestionsParTag1[etiquette.id].append(quest)
+    print(dicoQuestionsParTag1)
+    return render_template('controle.html', listeEtiquettes=listeEtiquettes, dicoQuestionsParTag1=dicoQuestionsParTag1)
 
 
 def archivage(user, réponse, typeQuestion):
