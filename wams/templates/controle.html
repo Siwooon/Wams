@@ -4,7 +4,17 @@
 {% endblock %}
 
 {% block content %}
-[Insérer sélection de tag]
-<input type="text">Entrez le nombre de sujet
+{% for e in listeEtiquettes %}
+    <input type="number" min="0" step="1" max="{{dicoQuestionsParTag1[e] | length}}" placeholder="{{e}}" value="0"> {{e}}
+    <br>
+{% endfor %}
+<br>
+<input type="text">Entrez le nombre de sujets
+<br>
 <input type="checkbox">Mélanger les thèmes
+<br>
+<button>Créer les sujets</button>
+<br>
+<br>
+{{dicoQuestionsParTag1}}
 {% endblock %}
