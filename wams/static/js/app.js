@@ -105,7 +105,22 @@ $(document).ready(function() {
       }
     })
   
-
+    $(document).on("click", "#submitSujets", function(){
+      addMax=0
+      addMin=0
+      encadreMax = Array.from(document.getElementsByClassName("encadrementMax")).filter(elem => elem.tagName === "INPUT");
+      encadreMin = Array.from(document.getElementsByClassName("encadrementMin")).filter(elem => elem.tagName === "INPUT");
+      for(max in encadreMax){
+        addMax+=parseInt(encadreMax[max].value);
+      }
+      for(min in encadreMin){
+        addMin+=parseInt(encadreMin[min].value);
+      }
+      if(addMax<document.getElementById("nbQuestions").value | addMin>document.getElementById("nbQuestions").value){
+        document.getElementById("msgErreurFourchette").innerText="On ne peut pas produire ce nombre de sujets avec les fourchettes données"
+        console.log("On ne peut pas produire ce nombre de sujets avec les fourchettes données")
+      }
+    })
 
 
   
