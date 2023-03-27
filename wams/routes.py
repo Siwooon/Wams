@@ -10,6 +10,8 @@ from datetime import date
 from flask_login import login_user, logout_user, current_user, login_required
 from flask_socketio import emit, send
 import markdown
+import math
+from itertools import combinations, product, islice
 
 globalTags=[] #étiquettes par défaut
 roomOuvertes={} #dictionnaire contenant toutes les diffusions de question avec la question associée
@@ -427,20 +429,6 @@ def controle():
             if etiquette.id == quest.Etiquette.split(",")[0]:
                 dicoQuestionsParTag1[etiquette.id].append(quest)
     print(dicoQuestionsParTag1)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     return render_template('controle.html', listeEtiquettes=listeEtiquettes, dicoQuestionsParTag1=dicoQuestionsParTag1)
 
 
@@ -488,6 +476,18 @@ def CorrectionSequence(reponse):
     if reponse["estCorrec"]:
         estCorrigeeSequence[reponse["code"]]=True
     emit('envoieCorrectionSequence', {"correction" : reponse["estCorrec"], "code" : reponse["code"]}, broadcast=True)
+
+@socketio.on('fourchetteQuestionsParTag')
+def fourchetteQuestionsParTag(dico):
+    print(dico)
+    totalPossibilités=1
+    for tag in dico["dictionnaireMinMax"]:
+        print(tag)
+        nbQuest=random.randint(int(dico["dictionnaireMinMax"][tag][0]),int(dico["dictionnaireMinMax"][tag][1]))
+        totalPossibilités=totalPossibilités*math.comb(int(dico["dictionnaireMinMax"][tag][2]), nbQuest)
+        print("Pour ", nbQuest, "questions de ", tag, " parmi ", int(dico["dictionnaireMinMax"][tag][2]))
+    print(totalPossibilités)
+    print("azdazdaz", dico["dicoQuestionsParTag"])
 
 
 
