@@ -1,634 +1,501 @@
-$(document).ready(function() {
-  var socket = io();
-  
-    socket.on('connected', function(sto) {
-        console.log(sto)
-    });
+from wams import app, socketio
+from flask import render_template, redirect, url_for, jsonify, flash, request, json
+from wams.db import db
+from wams.db import question, user_info, Etiquettes, questionnaire, archive
+from wams.forms import Form, FormInscription, FormConnexion, FormChangerPassword
+import os
+import csv
+import random, string
+from datetime import date
+from flask_login import login_user, logout_user, current_user, login_required
+from flask_socketio import emit, send
+import markdown
+import math
+from itertools import combinations, product, islice
+
+globalTags=[] #étiquettes par défaut
+roomOuvertes={} #dictionnaire contenant toutes les diffusions de question avec la question associée
+questionnairesOuverts={} #dictionnaire contenant toutes les diffusions de séquences avec a liste des questions associée
+indiceQuestion={} #pour savoir à quelle question en est chaque diffusion de séquence
+testDeLaComOMG=[]
+dicoHosts={} #répertorie les hosts pour chaque diffusion de question
+dicoHostsS={} #répertorie les hosts pour chaque diffusion de séquence
+dicoReponsesQuestions={} #répertorie toutes les réponses envoyées par les participants dans une diffusion de question
+dicoReponsesSequences={} #répertorie toutes les réponses envoyées par les participants dans une diffusion de séquence
+participantsQuestions={} #répertorie tous les participants de chaque diffusion de question
+participantsSequences={} #répertorie tous les participants de chaque diffusion de séquence
+estStoppeeQuestion={} #pour savoir si une question est arrêtée quand un participant arrive
+estCorrigeeQuestion={} #pour savoir si une question est corrigee
+estStoppeeSequence={} #pour séquence
+estCorrigeeSequence={}
+
+from sqlalchemy import create_engine, MetaData, Table
+from sqlalchemy.orm import sessionmaker
+
+globalTags=["Web", "Java", "Arithmétique", "Graphes"]
+engine = create_engine('sqlite:///instance/wams.db?check_same_thread=False')
+connection = engine.connect()
+print(engine.table_names())
+metadata = MetaData()
+Session = sessionmaker(bind=engine)
+session = Session()
+questionnaireTable = Table("questionnaire", metadata, autoload=True, autoload_with=engine)
 
 
-    function getStringBetween(startStr, endStr, str) {
-      pos = str.indexOf(startStr) + startStr.length;
-      return str.substring(pos, str.indexOf(endStr, pos));
-    }
-   
-    socket.on('envoieDico', function(reponse){
-      room=document.getElementById("stockCode").getAttribute("data-codeRoom")
-      document.getElementById("nbRep").innerText = "Nombre de réponses : "+ reponse["dicoReponsesQuestion"][room].length
-      console.log(document.getElementById("userIDQuestion").getAttribute("data-userID"))
-      if(document.getElementById("userIDQuestion").getAttribute("data-userID")==reponse["dicoHost"][room]){
-        var count1 =0
-        var count2 =0
-        var count3 =0
-        var count4 =0
-        var countAutre =0
-        console.log(document.getElementById("Reponse1Question").getAttribute("data-reponse1Q"))
-        console.log(reponse["dicoReponsesQuestion"][room])
-        if(document.getElementById("Reponse2Question").getAttribute("data-reponse2Q")!=""){
-          for (i in reponse["dicoReponsesQuestion"][room]) {
-            if (reponse["dicoReponsesQuestion"][room][i] == document.getElementById("Reponse1Question").getAttribute("data-reponse1Q")) {
-              count1++;
-            }
-            if (reponse["dicoReponsesQuestion"][room][i] == document.getElementById("Reponse2Question").getAttribute("data-reponse2Q")) {
-              count2++;
-            }
-            if (reponse["dicoReponsesQuestion"][room][i] == document.getElementById("Reponse3Question").getAttribute("data-reponse3Q")) {
-              count3++;
-            }
-            if (reponse["dicoReponsesQuestion"][room][i] == document.getElementById("Reponse4Question").getAttribute("data-reponse4Q")) {
-              count4++;
-            }
-          }
-          document.getElementById("progress1").value=(count1*100/reponse["dicoReponsesQuestion"][room].length).toString()
-          document.getElementById("progress2").value=(count2*100/reponse["dicoReponsesQuestion"][room].length).toString()
-          document.getElementById("progress3").value=(count3*100/reponse["dicoReponsesQuestion"][room].length).toString()
-          document.getElementById("progress4").value=(count4*100/reponse["dicoReponsesQuestion"][room].length).toString()
-      }
-      else{
-        for (i in reponse["dicoReponsesQuestion"][room]) {
-          if (reponse["dicoReponsesQuestion"][room][i] == document.getElementById("Reponse1Question").getAttribute("data-reponse1Q")) {
-            count1++;
-          }
-          else{
-            countAutre++;
-          }
-        }
-        document.getElementById("progress1").value=(count1*100/reponse["dicoReponsesQuestion"][room].length).toString()
-        document.getElementById("autreRéponseQ").value=(countAutre*100/reponse["dicoReponsesQuestion"][room].length).toString()
-      }
-        console.log(count1*100/reponse["dicoReponsesQuestion"][room].length)
-      }
+@socketio.on('typing')
+def typing(data):
+    emit("formatted", data)
 
-    })
+@app.route('/', methods=['GET', 'POST'])
+def home():
+    return render_template('home.html')
+
+@app.route('/pagesQuestion', methods=['GET', 'POST'])
+def pagesQuestion():
+    return render_template('pagesQuestion.html', questions=question.query.all(), globalTags=globalTags, len=len(globalTags), len9 = len(globalTags) if len(globalTags)<9 else 9)# listeTags = listeTags, lenTags = len(listeTags))
+
+@app.route('/pagesQuestionWaitingRoom', methods=['GET', 'POST'])
+def pagesQuestionWaitingRoom():
+    listeTags = json.loads(request.data)["listeTags"]
+    print(listeTags)
+    strTags = json.loads(request.data)["strTags"]
+    print(strTags)
+    return render_template("pagesQuestion.html", questions=question.query.all(), globalTags=globalTags, len=len(globalTags), len9=len(globalTags) if len(globalTags)<9 else 9, listeTags=listeTags, strTags=strTags)
+
+@app.route('/pageQuestionnaires', methods=['GET', 'POST'])
+def pageQuestionnaires():
+    print(questionnaire.query.all())
+    return render_template("pageQuestionnaires.html", questionnaires=questionnaire.query.all())
+
+isChecked = False
+
+@app.route('/oneAnswer', methods=['GET', 'POST'])
+def oneAnswer():
+    global isChecked
+    isChecked = not(isChecked)
+    return redirect(url_for('editeur'))
 
 
-    socket.on("envoieDicoS", function(reponse){
-      room=document.getElementById("stockCodeS").getAttribute("data-codeRoomS") 
-      if(reponse["dicoHostS"][room]==document.getElementById("dataUserIDS").getAttribute("data-userIDS")){
-        var count1 =0
-        var count2 =0
-        var count3 =0
-        var count4 =0
-        var countAutre =0
-        console.log(reponse["dicoReponsesSequences"])
-        if(document.getElementById("Reponse2Sequence").getAttribute("data-reponse2S")!=""){
-          for (i in reponse["dicoReponsesSequences"][room]){
-            if (reponse["dicoReponsesSequences"][room][i] == document.getElementById("Reponse1Sequence").getAttribute("data-reponse1S")) {
-              count1++;
-            }
-            if (reponse["dicoReponsesSequences"][room][i] == document.getElementById("Reponse2Sequence").getAttribute("data-reponse2S")) {
-              count2++;
-            }
-            if (reponse["dicoReponsesSequences"][room][i] == document.getElementById("Reponse3Sequence").getAttribute("data-reponse3S")) {
-              count3++;
-            }
-            if (reponse["dicoReponsesSequences"][room][i] == document.getElementById("Reponse4Sequence").getAttribute("data-reponse4S")) {
-              count4++;
-            }
-          }
-          document.getElementById("progress1S").value=(count1*100/reponse["dicoReponsesSequences"][room].length).toString()
-          document.getElementById("progress2S").value=(count2*100/reponse["dicoReponsesSequences"][room].length).toString()
-          document.getElementById("progress3S").value=(count3*100/reponse["dicoReponsesSequences"][room].length).toString()
-          document.getElementById("progress4S").value=(count4*100/reponse["dicoReponsesSequences"][room].length).toString()
-        }
-        else{
-          for (i in reponse["dicoReponsesSequences"][room]) {
-            if (reponse["dicoReponsesSequences"][room][i] == document.getElementById("Reponse1Sequence").getAttribute("data-reponse1S")) {
-              count1++;
-            }
-            else{
-              countAutre++;
-            }
-          }
-          document.getElementById("progress1S").value=(count1*100/reponse["dicoReponsesSequences"][room].length).toString()
-          document.getElementById("autreRéponseS").value=(countAutre*100/reponse["dicoReponsesSequences"][room].length).toString()
-        }
-      }
-    })
-  
-    $(document).on("click", "#submitSujets", function(){
-      addMax=0
-      addMin=0
-      encadreMax = Array.from(document.getElementsByClassName("encadrementMax")).filter(elem => elem.tagName === "INPUT");
-      encadreMin = Array.from(document.getElementsByClassName("encadrementMin")).filter(elem => elem.tagName === "INPUT");
-      dictionnaireMinMax={}
-      for(min in encadreMin){
-        addMin+=parseInt(encadreMin[min].value);
-        dictionnaireMinMax[encadreMin[min].getAttribute("name")]=[encadreMin[min].value]        
-      }
-      for(max in encadreMax){
-        addMax+=parseInt(encadreMax[max].value);
-        dictionnaireMinMax[encadreMax[max].getAttribute("name")].push(encadreMax[max].value)
-        dictionnaireMinMax[encadreMax[max].getAttribute("name")].push(encadreMax[max].max)
-
-      }
-      if(addMax<document.getElementById("nbQuestions").value | addMin>document.getElementById("nbQuestions").value){
-        document.getElementById("msgErreurFourchette").innerText="On ne peut pas produire ce nombre de sujets avec les fourchettes données"
-        console.log("On ne peut pas produire ce nombre de sujets avec les fourchettes données")
-      }
-      else{
-        console.log(dictionnaireMinMax)
-        console.log(document.getElementById("questionsParTag").innerText)
-        socket.emit("fourchetteQuestionsParTag", {'dictionnaireMinMax':dictionnaireMinMax, 'dicoQuestionsParTag':document.getElementById("questionsParTag").getAttribute("data-questionParTag")})
-      }
-    })
-
-
-  
-    $('.menu-toggle').click(function() {
-      $('.vertical-nav').toggleClass('open');
-    });
-  
-  $('[name="bonne_reponse"]').hide();
-
-  $("[name='Réponse1']").on("input", function() {
-    Réponse1Button = document.getElementById("R1")
-    Réponse1Button.innerHTML = $(this).val();
-    $('[name="bonne_reponse"]').val($(this).val());
-    
-});
-
-
-  $("[name='Réponse2']").on("input", function() {
-    Réponse2Button = document.getElementById("R2")
-    Réponse2Button.innerHTML = $(this).val();
-    
-  });
-
-  $("[name='Réponse3']").on("input", function() {
-    Réponse3Button = document.getElementById("R3")
-    Réponse3Button.innerHTML = $(this).val();
-    
-  });
-
-  
-
-  $("[name='Réponse4']").on("input", function() {
-    Réponse4Button = document.getElementById("R4")
-    Réponse4Button.innerHTML = $(this).val();
-    
-  });
-
-  function ajouterTag(newTag){ //Fonction permettant d'ajouter à l'input "Etiquette" le tag en paramètre
-    if(document.getElementById("Etiquette").value == ""){
-      document.getElementById("Etiquette").value += newTag;
-    }else{
-      if (!document.getElementById("Etiquette").value.includes(newTag)){
-      document.getElementById("Etiquette").value += "," + newTag;
-      }
-      else{ //Suppression des tags cliqués une deuxième fois
-        if(document.getElementById("Etiquette").value == newTag){
-          document.getElementById("Etiquette").value = "";
-        }else if(document.getElementById("Etiquette").value.startsWith(newTag+",")){
-          document.getElementById("Etiquette").value = document.getElementById("Etiquette").value.replace(newTag+",", "");
-        }else if(document.getElementById("Etiquette").value.startsWith(","+newTag, document.getElementById("Etiquette").length - newTag.length)){
-          document.getElementById("Etiquette").value = document.getElementById("Etiquette").value.replace(","+newTag, "");
-        }else document.getElementById("Etiquette").value = document.getElementById("Etiquette").value.replace(","+newTag, "");
-      }
-    }
-    }
-
-  $(document).on('click', ".tagButton", function(){
-    ajouterTag(this.id)});
-
-  $(document).on('click', ".plus", function(){ //fonction pour afficher plus d'éléments dans le html
-    tagListPlus = document.getElementsByClassName("tagButtonPlus");
-    document.getElementById("submitCustomTags").style.display = 'inline';
-    document.getElementById("addTags").style.display = 'inline';
-    for (var i = 0 ; i < tagListPlus.length ; i++){
-      tagListPlus[i].style.display='inline-block';
-    }
-    this.style.display = 'none';
-    document.getElementById("moins").style.display = 'block';
-  });
-  
-  $(document).on('click', ".moins", function(){ //À l'inverse, affiche moins d'éléments
-    tagListPlus = document.getElementsByClassName("tagButtonPlus");
-    document.getElementById("submitCustomTags").style.display = 'none';
-    document.getElementById("addTags").style.display = 'none';
-    for (var i = 0 ; i < tagListPlus.length ; i++){
-      tagListPlus[i].style.display='none';
-    }
-    this.style.display = 'none';
-    document.getElementById("plus").style.display = 'inline';
-  });
-
-  $(document).on('click', ".submitCustomTags", function(){ //Ajout des tags personnalisés
-    document.getElementById("addTags").style.display = 'none';
-    document.getElementById("submitCustomTags").style.display = 'none';
-    ajouterTag(document.getElementById("addTags").value);
-    document.getElementById("addTags").value = "";
-    document.getElementById("moins").style.display='none';
-    document.getElementById("plus").style.display='block';
-  });
-
-  $(document).on('click', ".submitRechercheTags", function(){ //Pour pagesQuestion.html
-    listeTags = document.getElementById("Etiquette").value.split(",")
-    console.log(listeTags)
-    $.ajax({
-      type: "POST",
-      url: "/pagesQuestionWaitingRoom",
-      data: JSON.stringify({"listeTags": listeTags, "strTags": document.getElementById("Etiquette").value}),
-      contentType: "application/json; charset=utf-8",
-      dataType: "html",
-      success: function(response) {
-        document.documentElement.innerHTML = response;
-        console.log("C'EST CENSE ÊTRE BON LÀ")
-      },
-      error: function(jqXHR, textStatus, errorThrown) {
-        console.error("Erreur : " + textStatus, errorThrown);
-      }
-    })
-  });
-
- function afficheBoutons(){
-  var checked = $("#BoutonValNum").is(":checked");
-    if(checked){
-      document.getElementById("boutonsDivDroite").style.display = 'none'
-      document.getElementById("QCM").style.display = 'none';
-    }
-    else{
-      document.getElementById("boutonsDivDroite").style.display = 'block'
-      document.getElementById("QCM").style.display = 'block';
-    }
- }
-
-  $(document).on("click", "#BoutonValNum", function(){
-    afficheBoutons();
-    $.ajax({
-      type: 'GET',
-      url : '/oneAnswer',
-      success : function() {
-        console.log("ça fonctionne")
-      }
-    })
-
-
-  });
-  
-  var listeQuestions= [];
-  $('.update-button').click(function() {
-    var sto = $(this).text();
-    listeQuestions.push(sto);
-    console.log(listeQuestions);
-
-    var clonedButton = $(this).clone().removeClass('update-button').addClass('pageQuestionButton');
-    $('.button-container').append(clonedButton);
-
-    var QuestionId = $(this).data('id');
-
-    
-
-    Réponse1Button = document.getElementById("R1")
-
-    Réponse2Button = document.getElementById("R2")
-
-    Réponse3Button = document.getElementById("R3")
-
-    Réponse4Button = document.getElementById("R4")
-    $.ajax({
-      type: 'GET',
-      url: '/update/' + QuestionId,
-      success: function(data) {
-        $('input[name="Label"]').val(data.Label);
-        $('input[name="Etiquette"]').val(data.Etiquette);
-        $('[name="Question"]').val(data.Question);
-        $('[name="Réponse1"]').val(data.Réponse1);
-        if(!(data.Réponse2 == "")){
-          $('[name="Réponse2"]').val(data.Réponse2);
-          $('[name="Réponse3"]').val(data.Réponse3);
-          $('[name="Réponse4"]').val(data.Réponse4);
-          $('[name="bonne_reponse"]').val(data.bonne_reponse);
-          Réponse1Button.innerHTML = $('[name="Réponse1"]').val();
-          Réponse2Button.innerHTML = $('[name="Réponse2"]').val();
-          Réponse3Button.innerHTML = $('[name="Réponse3"]').val();
-          Réponse4Button.innerHTML = $('[name="Réponse4"]').val();
-          document.getElementById("BoutonValNum").checked = false;
-          afficheBoutons();
-        }else{
-          document.getElementById("BoutonValNum").checked = true;
-          afficheBoutons();
-        }
-        if(!(data.Réponse2 == "")){
-
-          if ($('[name="bonne_reponse"]').val()==$('[name="Réponse1"]').val()) {
-            radiobtn = document.getElementById("BonneRéponse1");
-            radiobtn.checked = true;
-          } else if ($('[name="bonne_reponse"]').val()==$('[name="Réponse2"]').val()) {
-            radiobtn = document.getElementById("BonneRéponse2");
-            radiobtn.checked = true;
-          } else if ($('[name="bonne_reponse"]').val()==$('[name="Réponse3"]').val()) {
-            radiobtn = document.getElementById("BonneRéponse3");
-            radiobtn.checked = true;
-          } else if ($('[name="bonne_reponse"]').val()==$('[name="Réponse4"]').val()) {
-            radiobtn = document.getElementById("BonneRéponse4");
-            radiobtn.checked = true;
-          } 
-        }
-
+@app.route('/editeur', methods=['GET', 'POST'])
+def editeur():
+    for tag in Etiquettes.query.all():
+        if not(tag.id in globalTags): #Initialise les étiquettes de base
+            globalTags.append(tag.id)
+    AllQuestion = question.query.all()
+    form = Form()
+    if form.validate_on_submit():
+        Label = form.Label.data
+        Etiquette = form.Etiquette.data
+        Questiondata = form.Question.data
+        Réponse1 = form.Réponse1.data
+        Réponse2 = form.Réponse2.data
+        Réponse3 =form.Réponse3.data
+        Réponse4 = form.Réponse4.data
+        bonne_reponse = form.bonne_reponse.data
         
-      }
-    });
-  });
-
-  $(document).on('click', '.pageQuestionButton', function() {
-    $(this).remove();
-    var sto = $(this).text();
-    var index = listeQuestions.indexOf(sto);
-    listeQuestions.splice(index, 1);
-    
-    console.log(listeQuestions);
-  });
-
-  $("#reset-button").click(function(){
-  $('[name="Label"]').val("");
-  $('[name="Etiquette"]').val("");
-  $('[name="Question"]').val("");
-  $('[name="Réponse1"]').val("");
-  $('[name="Réponse2"]').val("");
-  $('[name="Réponse3"]').val("");
-  $('[name="Réponse4"]').val("");
-  $('[name="bonne_reponse"]').val("");
-  $('#a').empty()
-
-  radiobtn1 = document.getElementById("BonneRéponse1");
-  radiobtn1.checked = false;
-  radiobtn2 = document.getElementById("BonneRéponse2");
-  radiobtn2.checked = false;
-  radiobtn3 = document.getElementById("BonneRéponse3");
-  radiobtn3.checked = false;
-  radiobtn4 = document.getElementById("BonneRéponse4");
-  radiobtn4.checked = false;
-  Réponse1Button.innerHTML = null
-  Réponse2Button.innerHTML = null
-  Réponse3Button.innerHTML = null
-  Réponse4Button.innerHTML = null
-});
-
-$('#BonneRéponse1').change(function(){
-  $('[name="bonne_reponse"]').val($('[name="Réponse1"]').val());
-})
-
-$('#BonneRéponse2').change(function(){
-  $('[name="bonne_reponse"]').val($('[name="Réponse2"]').val());
-})
-
-$('#BonneRéponse3').change(function(){
-  $('[name="bonne_reponse"]').val($('[name="Réponse3"]').val());
-})
-
-$('#BonneRéponse4').change(function(){
-  $('[name="bonne_reponse"]').val($('[name="Réponse4"]').val());
-})
-
-$("#envoyerPageQuestions").click(function() {
-  label = $("#labelQuestionnaire").val();
-  listeQuestions.unshift(label)
-  console.log(listeQuestions)
-  
-  $.ajax({
-    type: "POST",
-    url: "/add",
-    data: JSON.stringify({'listeQuestions': listeQuestions}),
-    contentType: "application/json; charset=utf-8",
-    dataType: "json",
-    success: function() {
-      console.log("Questionnaire ajouté !")
-    }
-
-  })
-
-
-
-})
-
-
-
-
-$(document).on('click', '#boutonRoomKey', function(){
-  $.ajax({
-    type: "POST",
-    url: "/joinRoomQ",
-    data: JSON.stringify(document.getElementById("roomKey").value),
-    contentType: "application/json; charset=utf-8",
-    success: function(response) {
-      window.location.href = '/diffusionQ/' + response.codeRoom + '?infosQuestion=' + encodeURIComponent(JSON.stringify(response.infosQuestion));
-    },
-    error: function(){
-      console.log("CA MARCHE PAS")
-    }
-  })
-})
-
-$(document).on('click', '#deleteRoom', function(){
-  url = document.location.href.split("?")[0].split("/")
-  console.log(url[url.length-1])
-  $.ajax({
-    type: "POST",
-    url: "/deleteDiffusion",
-    data: JSON.stringify({codeRoom : url[url.length-1]}),
-    contentType: "application/json; charset=utf-8",
-    success: function() {
-      console.log("C'EST CENSE MARCHER")
-      window.location.href="/"
-    },
-    error: function(){
-      console.log("CA MARCHE PAS")
-    }
-  })
-})
-
-function escapeSpecialChars(jsonString) {
-  return jsonString.replace(/[\u0000-\u001F\u007F-\u009F]/g, (c) => {
-    return '\\u' + ('0000' + c.charCodeAt(0).toString(16)).slice(-4);
-  });
-}
         
-$(document).on('click', '#diffusionQuestion', function(){
-  var infosQuestion = JSON.parse(escapeSpecialChars(document.getElementById('dataQuestion').dataset.infosQuestion));
-  console.log(infosQuestion)
-  $.ajax({
-    type: "POST",
-    url: "/updateDiffusionQuestion",
-    data: JSON.stringify(infosQuestion),
-    contentType: "application/json; charset=utf-8",
-    success: function(response) {
-      window.location.href = '/diffusionQ/' + response + '?infosQuestion=' + encodeURIComponent(JSON.stringify(infosQuestion));
-    },
-    error: function(){
-      console.log("ça marche pas")
-    }
-  })
-})
+        listNewTags = Etiquette.split(",")
+        for i in range(len(listNewTags)) :
+            if not bool(Etiquettes.query.filter_by(id=listNewTags[i]).first()):
+                if not (listNewTags[i] == ""): #Ajout des étiquettes submit à la db sans doublon
+                    newTag = Etiquettes(id=listNewTags[i])
+                    db.session.add(newTag)
+                    db.session.commit()
+                
+        for tag in Etiquettes.query.all():
+            if not bool(Etiquettes.query.filter_by(id=tag.id).first()):
+                if not (tag.id == ""): #Ajout des nouvelles étiquettes de la db dans une liste envoyée au html
+                    globalTags.append(tag.id)
+        
+        if not(isChecked):
+            print("erreur", isChecked)
+            if not Label.strip() or not Etiquette.strip() or not Questiondata.strip() or not Réponse1.strip() or not Réponse2.strip() or not Réponse3.strip() or not Réponse4.strip():
+                raise ValueError("Les champs ne peuvent pas être vides ou remplis d'espaces uniquement.")
 
-$(document).on('click', '#boutonRoomKeyS', function(){
-  $.ajax({
-    type: "POST",
-    url: "/joinRoomS",
-    data: JSON.stringify(document.getElementById("roomKeyS").value),
-    contentType: "application/json; charset=utf-8",
-    success: function(response) {
-      window.location.href = '/diffusionQuestionnaire/' + response.codeRoom +'?q=' + encodeURIComponent(JSON.stringify(response.infosQuestion));
-    },
-    error: function(){
-      console.log("CA MARCHE PAS")
-    }
-  })
-})
+        Questionfilter = question.query.filter_by(Label=Label).first()
 
-$(document).on('click', '#diffusionQuestionnaire', function(){
-  infosQuestion=window.location.href.split("/")
-  $.ajax({
-    type: "POST",
-    url: "/updateDiffusionQuestionnaire",
-    data: JSON.stringify(infosQuestion[infosQuestion.length-1]),
-    contentType: "application/json; charset=utf-8",
-    success: function(response) {
-      window.location.href = '/diffusionQuestionnaire/'+response["codeRoom"]+"?q="+encodeURIComponent(JSON.stringify(response["listeQ"]));
-    },
-    error: function(){
-      console.log("ça marche pas")
-    }
-  })
-})
+        if Questionfilter:
+            Questionfilter.Etiquette = Etiquette
+            Questionfilter.Question = Questiondata
+            Questionfilter.Réponse1 = Réponse1
+            Questionfilter.Réponse2 = Réponse2
+            Questionfilter.Réponse3 = Réponse3
+            Questionfilter.Réponse4 = Réponse4
+            Questionfilter.bonne_reponse = bonne_reponse
+        else:
+            QuestionToAdd = question(Label=Label, Etiquette=Etiquette, Question=Questiondata, Réponse1=Réponse1, Réponse2=Réponse2, Réponse3=Réponse3, Réponse4=Réponse4, bonne_reponse=bonne_reponse)
+            db.session.add(QuestionToAdd)
+            db.session.commit()
+            return redirect(url_for('editeur'))
+        db.session.commit()
+    
+    
+    return render_template('editeur.html', form = form, question = AllQuestion, globalTags=globalTags, len=len(globalTags), len9 = len(globalTags) if len(globalTags)<9 else 9)
 
-$(document).on('click', '#deleteRoomS', function(){
-  url = document.location.href.split("?")[0].split("/")
-  console.log(url[url.length-1])
-  $.ajax({
-    type: "POST",
-    url: "/deleteDiffusionS",
-    data: JSON.stringify({codeRoomS : url[url.length-1]}),
-    contentType: "application/json; charset=utf-8",
-    success: function() {
-      console.log("C'EST CENSE MARCHER")
-      window.location.href="/"
-    },
-    error: function(){
-      console.log("CA MARCHE PAS")
-    }
-  })
-})
+@app.route('/waitingRoom', methods=['GET', 'POST'])
+def waitingRoom():
+    return render_template('waitingRoom.html')
 
-$(document).on('click', '#nextQ', function(){
-  url = document.location.href.split("?")[0].split("/")
+@app.route('/joinRoomQ', methods=['GET', 'POST'])
+def joinRoomQ():
+    codeRoom = request.json
+    infosQuestion = roomOuvertes[codeRoom] if codeRoom in roomOuvertes.keys() else ""
+    return {"codeRoom" : codeRoom, "infosQuestion" : infosQuestion}
 
-  $.ajax({
-    type: "POST",
-    url: "/nextQ",
-    data:JSON.stringify(url[url.length-1]),
-    contentType: "application/json; charset=utf-8",
-    success: function(response) {
-      console.log("C'EST CENSE MARCHER")
-      socket.emit("nextQuestion",{"lien" : '/diffusionQuestionnaire/'+url[url.length-1]+"?q="+encodeURIComponent(JSON.stringify(response)), "room" : url[url.length-1]})
-      window.location.href = '/diffusionQuestionnaire/'+url[url.length-1]+"?q="+encodeURIComponent(JSON.stringify(response));
-
-    },
-    error: function(){
-      console.log("CA MARCHE PAS")
-    }
-  })
-})
-
-socket.on('nextQ', function(reponse){
-  if(document.getElementById("estDansRoom") != null){
-    window.location.href=reponse
-  }
-})
-
-$(document).on('click', '#submitReponseDiffQ', function() {
-  if(document.getElementById("reponse1").tagName==="INPUT" && document.getElementById("reponse1").type === 'radio'){
-    console.log(document.getElementsByClassName("button-answer"))
-    for (radio in document.getElementsByClassName("button-answer")){
-      if(document.getElementsByClassName("button-answer")[radio].checked){
-        console.log(document.getElementsByClassName("button-answer")[radio].value)
-        document.getElementById("submitReponseDiffQ").style.display='none'
-        socket.emit('EnvoieReponse', {"bouton" : document.getElementsByClassName("button-answer")[radio].value, "room" : document.getElementById("stockCode").getAttribute('data-codeRoom')})
-      }
-    }
-  }
-  else{
-    console.log(document.getElementById("stockCode"))
-    document.getElementById("submitReponseDiffQ").style.display='none'
-    socket.emit('EnvoieReponse', {"bouton" : document.getElementById("reponse1").value, "room" : document.getElementById("stockCode").getAttribute('data-codeRoom')})
-  }
-})
-
-$(document).on('click', '#afficheStatsQuestion', function(){
-  if (document.getElementById("divStatsQuestion").style.display != 'none'){
-    document.getElementById("divStatsQuestion").style.display='none'
-  }
-  else{
-    document.getElementById("divStatsQuestion").style.display='block'
-  }
-})
-
-$(document).on('click', '.stopRepQ', function(){
-  console.log($(this).attr('id'))
-  socket.emit('CorrectionQuestion', {"code" : document.getElementById("stockCode").getAttribute("data-codeRoom"), "estCorrec":$(this).attr('id')=="afficheCorrectionQuestion"})
-})
-
-socket.on('envoieCorrectionQuestion', function(reponse){
-  if(document.getElementById("estSurPageDiffQuestion")!=null && reponse["correction"] && document.getElementById("stockCode").getAttribute("data-codeRoom")==reponse["code"]){
-    if(document.getElementById("submitReponseDiff")!=null){
-      document.getElementById("submitReponseDiff").style.display="none"
-    }
-    document.getElementById("correctionQuestion").innerText="La réponse est : "+ document.getElementById("stockBonneRep").getAttribute("data-bonneRep")
-  }
-})
-
-$(document).on('click', "#submitReponseDiffS", function(){
-  console.log(document.getElementsByClassName("button-answerS"))
-  if(document.getElementById("reponse1S").tagName==="INPUT" && document.getElementById("reponse1S").type === 'radio'){
-    for (radio in document.getElementsByClassName("button-answerS")){
-      if(document.getElementsByClassName("button-answerS")[radio].checked){
-        document.getElementById("submitReponseDiffS").style.display='none'
-        console.log(document.getElementsByClassName("button-answerS")[radio].value)
-        socket.emit('EnvoieReponseS', {"bouton" : document.getElementsByClassName("button-answerS")[radio].value, "room" : document.getElementById("stockCodeS").getAttribute('data-codeRoomS')})
-      }
-    }
-  }
-  else{
-    console.log(document.getElementById("stockCode"))
-    document.getElementById("submitReponseDiffS").style.display='none'
-    socket.emit('EnvoieReponseS', {"bouton" : document.getElementById("reponse1S").value, "room" : document.getElementById("stockCodeS").getAttribute('data-codeRoomS')})
-  }
-})
-
-$(document).on('click', '#afficheStatsSequence', function(){
-  if (document.getElementById("divStatsSequence").style.display != 'none'){
-    document.getElementById("divStatsSequence").style.display='none'
-  }
-  else{
-    document.getElementById("divStatsSequence").style.display='block'
-  }
-})
-
-$(document).on('click', '.stopRepS', function(){
-  console.log("aojezk,l;m")
-  socket.emit('CorrectionSequence', {"code" : document.getElementById("stockCodeS").getAttribute("data-codeRoomS"), "estCorrec":$(this).attr('id')=="afficheCorrectionSequence"})
-})
-
-socket.on("envoieCorrectionSequence", function(reponse){
-  if(document.getElementById("estSurPageDiffSequence")!=null && reponse["correction"] && document.getElementById("stockCodeS").getAttribute("data-codeRoomS")==reponse["code"]){
-    if(document.getElementById("submitReponseDiffS")!=null){
-      document.getElementById("submitReponseDiffS").style.display="none"
-    }
-    document.getElementById("correctionSequence").innerText="La réponse est : "+ document.getElementById("stockBonneRepS").getAttribute("data-bonneRepS")
-  }
-})
-
-socket.on("nouveauParticipantS", function(reponse){
-  if(document.getElementById("nbParticipantsS") != null){
-    document.getElementById("nbParticipantsS").innerText="Nombre de participants : "+reponse[document.getElementById("stockCodeS").getAttribute("data-codeRoomS")].length
-  }
-})
-
-socket.on("nouveauParticipantQ", function(reponse){
-  if(document.getElementById("nbParticipantsQ") != null){
-    document.getElementById("nbParticipantsQ").innerText="Nombre de participants : "+reponse[document.getElementById("stockCode").getAttribute("data-codeRoom")].length
-  }
-})
+@app.route('/diffusionQ/<codeRoom>', methods=['GET', 'POST'])
+def diffusionQ(codeRoom):
+    infosQuestion = request.args.get('infosQuestion')
+    if infosQuestion is not None:
+        infosQuestion = json.loads(request.args.get('infosQuestion'))
+    if codeRoom in participantsQuestions.keys():
+        if current_user.id not in participantsQuestions[codeRoom]:
+            participantsQuestions[codeRoom].append(current_user.id)
+            socketio.emit("nouveauParticipantQ", participantsQuestions)
+    if codeRoom in roomOuvertes:
+        return render_template('diffusionQuestion.html', existsRoom = codeRoom in roomOuvertes, codeRoom=codeRoom, roomOuvertes=roomOuvertes, infosQuestion=infosQuestion, Label=roomOuvertes[codeRoom]['Label'], 
+                   Etiquette=roomOuvertes[codeRoom]['Etiquette'], 
+                   Question=roomOuvertes[codeRoom]['Question'], 
+                   Réponse1=roomOuvertes[codeRoom]['Reponse1'],
+                   Réponse2=roomOuvertes[codeRoom]['Reponse2'],
+                   Réponse3=roomOuvertes[codeRoom]['Reponse3'],
+                   Réponse4=roomOuvertes[codeRoom]['Reponse4'],
+                   Bonne_Réponse=roomOuvertes[codeRoom]['Bonne_Reponse'], isHost=isHost(codeRoom), userID=current_user.id, estStoppee=estStoppeeQuestion[codeRoom], estCorrigee=estCorrigeeQuestion[codeRoom])
+    else:
+        return render_template('diffusionQuestion.html', existsRoom = codeRoom in roomOuvertes)
 
 
-});
+@app.route('/updateDiffusionQuestion', methods=['POST'])
+def updateDiffusionQuestion():
+    codeRoomA = ''.join(random.choices(string.ascii_letters + string.digits, k=8))
+    codeRoom = codeRoomA if codeRoomA not in roomOuvertes.keys() else updateDiffusionQuestion()
+    infosQuestion = request.json
+    roomOuvertes[codeRoom] = infosQuestion
+    dicoHosts[codeRoom]=current_user.id
+    dicoReponsesQuestions[codeRoom]=[]
+    estStoppeeQuestion[codeRoom]=False
+    estCorrigeeQuestion[codeRoom]=False
+    participantsQuestions[codeRoom]=[]
+
+    return codeRoom
+
+@app.route('/deleteDiffusion', methods=['GET', 'POST'])
+def deleteDiffusion():
+    codeRoom = request.get_json()['codeRoom']
+    roomOuvertes.pop(codeRoom, None)
+    dicoHosts.pop(codeRoom, None)
+    dicoReponsesQuestions.pop(codeRoom, None)
+    estStoppeeQuestion.pop(codeRoom, None)
+    estCorrigeeQuestion.pop(codeRoom, None)
+    participantsQuestions.pop(codeRoom, None)
+    return redirect(url_for("pagesQuestion"))
+
+@app.route('/diffusionQuestionnaire/<codeRoomS>', methods=['GET', 'POST'])
+def diffusionQuestionnaire(codeRoomS):
+    q=json.loads(request.args.get("q"))
+    if codeRoomS in participantsSequences.keys():
+        if current_user.id not in participantsSequences[codeRoomS]:
+            participantsSequences[codeRoomS].append(current_user.id)
+            socketio.emit("nouveauParticipantS", participantsSequences)
+    listeQ=[]
+    for i in range(len(q)):
+        listeQ.append(db.session.query(question).filter_by(Label=q[i]).first())
+    return render_template("diffusionQuestionnaire.html", questionnairesOuverts=questionnairesOuverts, codeRoomS=codeRoomS, listeQ=listeQ, indiceQuestion=indiceQuestion[codeRoomS], isHostS=isHostS(codeRoomS), userIDS=current_user.id)
+
+@app.route('/updateDiffusionQuestionnaire', methods=['POST'])
+def updateDiffusionQuestionnaire():
+    codeRoomSA = ''.join(random.choices(string.ascii_letters + string.digits, k=8))
+    codeRoomS = codeRoomSA if codeRoomSA not in questionnairesOuverts.keys() else updateDiffusionQuestionnaire()
+    temp=request.json
+    tableQ=db.session.query(questionnaire).filter_by(id=temp).first()
+    listeQ=[]
+    for i in range(1, len(tableQ.__table__.columns)-1):
+        column = f"Q{i}"
+        listeQ.append(getattr(tableQ, column))
+    questionnairesOuverts[codeRoomS] = listeQ
+    indiceQuestion[codeRoomS] = 0
+    dicoHostsS[codeRoomS] = current_user.id
+    dicoReponsesSequences[codeRoomS]=[]
+    participantsSequences[codeRoomS]=[]
+    estStoppeeSequence[codeRoomS]=False
+    estCorrigeeSequence[codeRoomS]=False
+    print(questionnairesOuverts)
+    return {"codeRoom" : codeRoomS, "listeQ" : listeQ}
+
+@app.route('/joinRoomS', methods=['GET', 'POST'])
+def joinRoomS():
+    codeRoom = request.json
+    infosQuestion = questionnairesOuverts[codeRoom] if codeRoom in questionnairesOuverts.keys() else ""
+    return {"codeRoom" : codeRoom, "infosQuestion" : infosQuestion}
+
+@app.route('/deleteDiffusionS', methods=['GET', 'POST'])
+def deleteDiffusionS():
+    codeRoomS = request.get_json()["codeRoomS"]
+    questionnairesOuverts.pop(codeRoomS, None)
+    dicoHostsS.pop(codeRoomS, None)
+    dicoReponsesSequences.pop(codeRoomS, None)
+    estStoppeeSequence.pop(codeRoomS, None)
+    estCorrigeeSequence.pop(codeRoomS, None)
+    return redirect(url_for("pageQuestionnaires"))
+
+@app.route('/nextQ', methods=['GET', 'POST'])
+def nextQ():
+    codeRoomS = request.json
+    indiceQuestion[codeRoomS]+=1
+    estStoppeeSequence[codeRoomS]=False
+    estCorrigeeSequence[codeRoomS]=False
+    print(questionnairesOuverts[codeRoomS])
+    return questionnairesOuverts[codeRoomS]
+
+@app.route('/update/<int:id>', methods=['GET'])
+def update(id):
+    Question = question.query.get(id)
+    return jsonify(Label=Question.Label, 
+                   Etiquette=Question.Etiquette, 
+                   Question=Question.Question, 
+                   Réponse1=Question.Réponse1,
+                   Réponse2=Question.Réponse2,
+                   Réponse3=Question.Réponse3,
+                   Réponse4=Question.Réponse4,
+                   bonne_reponse=Question.bonne_reponse)
+
+@app.route('/add', methods=['POST'])
+def addQuestion():
+    listeQuestions = request.get_json()['listeQuestions']
+    x = len(questionnaireTable.columns)-2
+    print(listeQuestions)
+    print(len(listeQuestions))
+    nbcolonnes = len(questionnaireTable.columns) - 2
+    print(nbcolonnes)
+    
+    while len(listeQuestions) >= nbcolonnes:
+        x +=1
+        Column_name = f'Q{x}'
+
+        print(Column_name)
+        query = f'ALTER TABLE questionnaire ADD {Column_name};'
+        connection.execute(query)
+        nbcolonnes +=1
+    
+    new_questionnaire = questionnaire(Label=listeQuestions[0])
+    listeQuestions.pop(0)
+    for i in range(len(listeQuestions)):
+        setattr(new_questionnaire, f"Q{str(i+1)}", listeQuestions[i])
+    db.session.add(new_questionnaire)
+    db.session.commit()
+    return redirect(url_for('editeur'))
+
+@app.route('/q/<id>', methods=['POST', 'GET'])
+def q(id):
+    allQuestionnaire = questionnaire.query.all()
+    
+    ligne_selectionnée = db.session.query(questionnaire).filter_by(id=id).first()
+    print(ligne_selectionnée)
+    labels = []
+    sto = len(ligne_selectionnée.__table__.columns)
+    print(sto)
+    for i in range(1, len(ligne_selectionnée.__table__.columns)-1):
+        column = f"Q{i}"
+        value = getattr(ligne_selectionnée, column)
+        if value:
+            labels.append(value)
+    questionsRows = db.session.query(question).filter(question.Label.in_(labels)).all()
+
+    idQuestions = []
+    labelQuestions = []
+    for questionRow in questionsRows:
+        idQuestions.append(questionRow.id)
+        labelQuestions.append(questionRow.Label)
+    print(idQuestions)
+    
+
+
+    return render_template('questionnaire.html', idQuestions = idQuestions, labelQuestions= labelQuestions)
+
+@app.route('/quest/<int:id>', methods=['POST', 'GET'])
+def quest(id):
+    Question = question.query.get(id)
+    bonnesReps = question.query.with_entities(question.bonne_reponse)
+    bonneRep = str(bonnesReps[id-1]).strip("()',").replace("\\n", "\n").replace("\\r", "")
+    print(bonneRep)
+
+    reponse = request.form.get('reponses')
+    print(reponse)
+    
+    if reponse == bonneRep:
+        login_user = current_user.login_user
+        flash("Bonne réponse !", category='success')
+    elif (request.form.get('reponses') == None) :
+        flash("Veuillez répondre à la question", category='danger')
+    else:
+        login_user = current_user.login_user
+        flash("Mauvaise réponse !", category='danger')
+    return render_template('question.html', Label=Question.Label, 
+                   Etiquette=Question.Etiquette, 
+                   Question=Question.Question, 
+                   Réponse1=Question.Réponse1,
+                   Réponse2=Question.Réponse2,
+                   Réponse3=Question.Réponse3,
+                   Réponse4=Question.Réponse4,
+                   Bonne_Réponse=Question.bonne_reponse)
+@app.route('/inscription', methods=['GET', 'POST'])
+def inscription():
+    form = FormInscription()
+    if form.validate_on_submit():
+        user_to_create = user_info(login_user=form.username.data,
+                                    mail_user = form.mail.data,
+                                    password = form.password1.data,
+                                    prof_user = 1)
+        db.session.add(user_to_create)
+        db.session.commit()
+        return redirect(url_for('connexion'))
+    if form.errors != {}:
+        for errors in form.errors.values():
+            flash(f'Erreur : {errors}', category='danger')
+    return render_template('inscription.html', form=form)
+
+@app.route('/stats', methods=['GET', 'POST'])
+def stats():
+    archivesto = archive(user = "Simon", réponse = "Test", date = date.today(), typeQuestion = "typeQuestion")
+    db.session.add(archivesto)
+    db.session.commit()
+    print("HEOHHHHHHHHHHHHHHHHHHHHHO")
+    return render_template('stats.html', stats = archive.query.all())
+
+@app.route('/changerPassword', methods=['GET', 'POST'])
+def changerPassword():
+    form = FormChangerPassword()
+    print("mdp user :", current_user.password_user)
+    if form.validate_on_submit():
+        user_to_create = user_info(password = form.password1.data)
+        user = user_info.query.filter_by(login_user=current_user.login_user).first()
+        user.password_user = user_to_create.password_user
+        db.session.add(user)
+        db.session.commit()
+    if form.errors != {}:
+        for errors in form.errors.values():
+            flash(f'Erreur : {errors}', category='danger')
+    return render_template('changePassword.html', form=form)
+
+@app.route('/connexion', methods=['GET', 'POST'])
+def connexion():
+    if not current_user.is_authenticated:
+        form = FormConnexion()
+        if form.validate_on_submit():
+            passed_user = user_info.query.filter_by(login_user=form.username.data).first()
+            if passed_user and passed_user.check_password_correction(passed_password = form.password.data):
+                login_user(passed_user)
+                # flash(f"Connection réussie sous l'username {passed_user.login_user}", category='success')
+                return redirect(url_for('editeur'))
+            else:
+                flash(f"Erreur, le nom d'utilisateur ne correspond pas au mot de passe !", category='danger')
+        return render_template('connexion.html', form=form)
+    else: return "Vous êtes déjà connecté !"
+
+@app.route('/deconnexion', methods=['GET', 'POST'])
+def deconnexion():
+    logout_user()
+    flash("Deconnexion réussie !", category='info')
+    return redirect(url_for('editeur'))
+
+@app.route('/creerAllComptes', methods=["GET", "POST"])
+def creerAllComptes():
+    if (current_user.prof_user == 1):
+        form = FormInscription()
+        if request.method == 'POST':
+            if request.files:
+                uploaded_file = request.files['filename']
+                filepath = os.path.join(app.config['FILE_UPLOADS'], uploaded_file.filename)
+                uploaded_file.save(filepath)
+                with open(filepath) as file:
+                    csv_file = csv.reader(file)
+                    for data in csv_file:
+                        user_to_create = user_info(login_user=f"{data[0]}{data[1]}",
+                                                    mail_user = "",
+                                                    password = data[2],
+                                                    prof_user = 0)
+                        db.session.add(user_to_create)
+                        db.session.commit()
+        return render_template('creerAllComptes.html')
+    else: return "Vous n'êtes pas prof"
+
+@app.route('/controle', methods=["GET", "POST"])
+def controle():
+    listeEtiquettes=[]
+    dicoQuestionsParTag1={}
+    for etiquette in Etiquettes.query.all():
+        listeEtiquettes.append(etiquette.id)
+        dicoQuestionsParTag1[etiquette.id]=[]
+        for quest in question.query.all():
+            if etiquette.id == quest.Etiquette.split(",")[0]:
+                dicoQuestionsParTag1[etiquette.id].append(quest)
+    print(dicoQuestionsParTag1)
+    return render_template('controle.html', listeEtiquettes=listeEtiquettes, dicoQuestionsParTag1=dicoQuestionsParTag1)
+
+
+def archivage(user, réponse, typeQuestion):
+    archivesto = archive(user = user, réponse = réponse, date = date.today(), typeQuestion = typeQuestion)
+    db.session.add(archivesto)
+    db.session.commit()
+
+
+def isHost(code):
+    return current_user.id == dicoHosts[code]
+
+def isHostS(code):
+    return current_user.id == dicoHostsS[code]
+
+@socketio.on('EnvoieReponse')
+def archivageReponseQuestion(reponse):
+    archivage(current_user.login_user, reponse["bouton"], "question")
+    dicoReponsesQuestions[reponse["room"]].append(reponse["bouton"])
+    emit('envoieDico', {"dicoReponsesQuestion": dicoReponsesQuestions, "dicoHost" : dicoHosts, "rep" : reponse["bouton"]}, broadcast=True)
+
+@socketio.on('CorrectionQuestion')
+def CorrectionQuestion(reponse):
+    estStoppeeQuestion[reponse["code"]]=True
+    if reponse["estCorrec"]:
+        estCorrigeeQuestion[reponse["code"]]=True
+    emit('envoieCorrectionQuestion', {"correction" : reponse["estCorrec"], "code" : reponse["code"]}, broadcast=True)
+
+
+@socketio.on('EnvoieReponseS')
+def envoieReponseS(reponse):
+    archivage(current_user.login_user, reponse["bouton"], "sequence")
+    print("comm réussie", reponse["room"])
+    dicoReponsesSequences[reponse["room"]].append(reponse["bouton"])
+    emit('envoieDicoS', {"dicoReponsesSequences": dicoReponsesSequences, "dicoHostS" : dicoHostsS, "rep" : reponse["bouton"]}, broadcast=True)
+
+@socketio.on('nextQuestion')
+def nextQuestion(reponse):
+    dicoReponsesSequences[reponse["room"]]=[]
+    emit('nextQ', reponse["lien"], broadcast=True)
+
+@socketio.on('CorrectionSequence')
+def CorrectionSequence(reponse):
+    estStoppeeSequence[reponse["code"]]=True
+    if reponse["estCorrec"]:
+        estCorrigeeSequence[reponse["code"]]=True
+    emit('envoieCorrectionSequence', {"correction" : reponse["estCorrec"], "code" : reponse["code"]}, broadcast=True)
+
+@socketio.on('fourchetteQuestionsParTag')
+def fourchetteQuestionsParTag(dico):
+    print(dico)
+    totalPossibilités=1
+    for tag in dico["dictionnaireMinMax"]:
+        print(tag)
+        nbQuest=random.randint(int(dico["dictionnaireMinMax"][tag][0]),int(dico["dictionnaireMinMax"][tag][1]))
+        totalPossibilités=totalPossibilités*math.comb(int(dico["dictionnaireMinMax"][tag][2]), nbQuest)
+        print("Pour ", nbQuest, "questions de ", tag, " parmi ", int(dico["dictionnaireMinMax"][tag][2]))
+    print(totalPossibilités)
+    print("azdazdaz", dico)
+
+
+
+@socketio.on('connect')
+def handle_message():
+    print('CHACARONMACARON')
+    sto = 'You are connected'
+    emit('connected', sto)
+
+
 
