@@ -110,20 +110,25 @@ $(document).ready(function() {
       addMin=0
       encadreMax = Array.from(document.getElementsByClassName("encadrementMax")).filter(elem => elem.tagName === "INPUT");
       encadreMin = Array.from(document.getElementsByClassName("encadrementMin")).filter(elem => elem.tagName === "INPUT");
-      for(max in encadreMax){
-        addMax+=parseInt(encadreMax[max].value);
-      }
+      dictionnaireMinMax={}
       for(min in encadreMin){
         addMin+=parseInt(encadreMin[min].value);
+        dictionnaireMinMax[encadreMin[min].getAttribute("name")]=[encadreMin[min].value]        
+      }
+      for(max in encadreMax){
+        addMax+=parseInt(encadreMax[max].value);
+        dictionnaireMinMax[encadreMax[max].getAttribute("name")].push(encadreMax[max].value)
+        dictionnaireMinMax[encadreMax[max].getAttribute("name")].push(encadreMax[max].max)
+
       }
       if(addMax<document.getElementById("nbQuestions").value | addMin>document.getElementById("nbQuestions").value){
         document.getElementById("msgErreurFourchette").innerText="On ne peut pas produire ce nombre de sujets avec les fourchettes données"
         console.log("On ne peut pas produire ce nombre de sujets avec les fourchettes données")
       }
-      cpt=0
-      
-      socket.emit('nbQuestionParTag')
-
+      else{
+        console.log(dictionnaireMinMax)
+        socket.emit("fourchetteQuestionsParTag", {"dictionnaireMinMax":dictionnaireMinMax, "dicoQuestionsParTag":document.getElementById("questionsParTag").getAttribute("data-questionParTag")})
+      }
     })
 
 
