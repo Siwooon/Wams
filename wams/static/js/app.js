@@ -127,8 +127,8 @@ $(document).ready(function() {
       }
       else{
         console.log(dictionnaireMinMax)
-        console.log(document.getElementById("questionsParTag").innerText)
-        socket.emit("fourchetteQuestionsParTag", {'dictionnaireMinMax':dictionnaireMinMax, 'dicoQuestionsParTag':document.getElementById("questionsParTag").getAttribute("data-questionParTag")})
+        console.log(document.getElementById("questionsParTag").getAttribute("data-questionParTag"))
+        socket.emit("fourchetteQuestionsParTag", dictionnaireMinMax)
       }
     })
 
