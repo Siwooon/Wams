@@ -487,7 +487,7 @@ def fourchetteQuestionsParTag(dico):
         totalPossibilités=totalPossibilités*math.comb(int(dico["dictionnaireMinMax"][tag][2]), nbQuest)
         print("Pour ", nbQuest, "questions de ", tag, " parmi ", int(dico["dictionnaireMinMax"][tag][2]))
     print(totalPossibilités)
-    print("azdazdaz", dico["dicoQuestionsParTag"])
+    print("azdazdaz", dico)
 
 
 
