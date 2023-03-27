@@ -120,6 +120,10 @@ $(document).ready(function() {
         document.getElementById("msgErreurFourchette").innerText="On ne peut pas produire ce nombre de sujets avec les fourchettes données"
         console.log("On ne peut pas produire ce nombre de sujets avec les fourchettes données")
       }
+      cpt=0
+      
+      socket.emit('nbQuestionParTag')
+
     })
 
 

@@ -427,6 +427,20 @@ def controle():
             if etiquette.id == quest.Etiquette.split(",")[0]:
                 dicoQuestionsParTag1[etiquette.id].append(quest)
     print(dicoQuestionsParTag1)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     return render_template('controle.html', listeEtiquettes=listeEtiquettes, dicoQuestionsParTag1=dicoQuestionsParTag1)
 
 
