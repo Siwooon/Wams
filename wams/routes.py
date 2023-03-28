@@ -533,9 +533,18 @@ def fourchetteQuestionsParTag(dico):
     print(dicoComb)
     listes = [v for v in dicoComb.values() if isinstance(v, list) and len(v) > 0]
     produit = list(product(*listes))
-    print(produit)
-    
+    resultat = []
+    cptNbQuestions=0
+    for tuple in produit:
+        fusion = []
+        if cptNbQuestions<int(dico["nbSujets"]):
+            for liste in tuple:
+                fusion.extend(liste)
+            resultat.append(fusion)
+        cptNbQuestions+=1
 
+    print(resultat)    
+    
 
 @socketio.on('connect')
 def handle_message():
