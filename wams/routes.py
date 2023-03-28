@@ -15,7 +15,7 @@ from itertools import combinations, product, islice
 from wordcloud import WordCloud
 import re
 from collections import Counter
-
+import difflib
 
 globalTags=[] #étiquettes par défaut
 roomOuvertes={} #dictionnaire contenant toutes les diffusions de question avec la question associée
@@ -429,15 +429,25 @@ def poserQuestionOuv():
         socketio.emit("send_question", form.question_ouverte.data)
     return render_template("poserQuestionOuv.html",form = form)
 
+
 @app.route('/repondreQuestionOuv')
 def repondreQuestionOuv():
     return render_template('repondreQuestionOuv.html')
 
+
 reponses_clean = []
+degres_similitude = 0.5
+
 @socketio.on('send_rep')
 def sendRep(reponse):
     reponse_clean = reponse.strip().lower()
-    reponses_clean.append(reponse_clean)
+    best_match = difflib.get_close_matches(reponse_clean, reponses_clean, 1,degres_similitude)
+    if len(best_match) > 0:
+        # Si une correspondance est trouvée, on utilise la chaîne la plus similaire
+        reponse_clean = best_match[0]
+    else:
+        # Sinon, on ajoute la chaîne originale
+        reponses_clean.append(reponse_clean)
     nb_rep = Counter(reponses_clean)
     wc = WordCloud(width=800, height=400, background_color="rgba(255, 255, 255, 0)", mode="RGBA").generate_from_frequencies(nb_rep)
     wc.to_file('./wams/static/wordcloud.png')
