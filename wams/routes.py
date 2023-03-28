@@ -504,7 +504,6 @@ def CorrectionSequence(reponse):
 
 @socketio.on('fourchetteQuestionsParTag')
 def fourchetteQuestionsParTag(dico):
-    print(dico)
     totalPossibilités=1
     dicoQuestionsParTag1={}
     for etiquette in Etiquettes.query.all():
@@ -512,15 +511,22 @@ def fourchetteQuestionsParTag(dico):
         for quest in question.query.all():
             if etiquette.id == quest.Etiquette.split(",")[0]:
                 dicoQuestionsParTag1[etiquette.id].append(quest)
-    for tag in dico:
-        print(tag)
-        nbQuest=random.randint(int(dico[tag][0]),int(dico[tag][1]))
-        dicoQuestionsParTag1[tag].append(nbQuest)
-        totalPossibilités=totalPossibilités*math.comb(int(dico[tag][2]), nbQuest)
-        print("Pour ", nbQuest, "questions de ", tag, " parmi ", int(dico[tag][2]))
-    print(totalPossibilités)
-    print(dicoQuestionsParTag1)
-
+    dicoComb={}
+    for tag in dico["dictionnaireMinMax"]:
+        dicoComb[tag]=[]
+        nbQuest=random.randint(int(dico["dictionnaireMinMax"][tag][0]),int(dico["dictionnaireMinMax"][tag][1]))
+        totalPossibilités=totalPossibilités*math.comb(int(dico["dictionnaireMinMax"][tag][2]), nbQuest)
+        print("Pour ", nbQuest, "questions de ", tag, " parmi ", int(dico["dictionnaireMinMax"][tag][2]))
+        for comb in combinations(dicoQuestionsParTag1[tag], nbQuest):
+            dicoComb[tag]=list(comb)
+    combs=product(list(dicoComb.values()))
+    resultatFinal=[]
+    print(list(islice(combs, int(dico["nbQuestions"]))))
+    for comb in islice(combs, int(dico["nbQuestions"])):
+        print(comb)
+        resultatFinal.append(list(comb))
+    print(resultatFinal)
+    
 
 
 @socketio.on('connect')
