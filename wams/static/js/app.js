@@ -126,21 +126,11 @@ $(document).ready(function () {
       console.log("On ne peut pas produire ce nombre de sujets avec les fourchettes données")
     }
     else {
-      console.log(dictionnaireMinMax)
-      socket.emit("fourchetteQuestionsParTag", { "dictionnaireMinMax": dictionnaireMinMax, "dicoQuestionsParTag": document.getElementById("questionsParTag").getAttribute("data-questionParTag") })
+      console.log("ça envoie")
+      socket.emit("fourchetteQuestionsParTag", {"dictionnaireMinMax":dictionnaireMinMax, "nbQuestions":document.getElementById("nbQuestions").value})
     }
   })
-}
-      if (addMax < document.getElementById("nbQuestions").value | addMin > document.getElementById("nbQuestions").value) {
-  document.getElementById("msgErreurFourchette").innerText = "On ne peut pas produire ce nombre de sujets avec les fourchettes données"
-  console.log("On ne peut pas produire ce nombre de sujets avec les fourchettes données")
-}
-else {
-  console.log(dictionnaireMinMax)
-  console.log(document.getElementById("questionsParTag").getAttribute("data-questionParTag"))
-  socket.emit("fourchetteQuestionsParTag", dictionnaireMinMax)
-}
-    })
+
 
 
 
