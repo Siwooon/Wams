@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}
+<title>Poser question ouverte</title>
+<script>
+    socket.on('update_nuagemot', function () {
+        const wordcloudImg = document.getElementById('wordcloud');
+        //Ajout du time permet d'avoir l'img la plus récente
+        wordcloudImg.src = '../static/wordcloud.png?' + new Date().getTime();
+    });
+</script>
+{% endblock %}
+
+{% block content %}
+
+<form method="POST">
+    {{ form.hidden_tag() }}
+    {{ form.question_ouverte().label }}
+    {{ form.question_ouverte() }}
+    {{form.submit()}}
+    <img id="wordcloud" alt="wordcloud">
+</form>
+{% endblock %}

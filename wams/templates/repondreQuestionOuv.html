@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block title %}
+<title>Poser question ouverte</title>
+
+<title>Question Ouverte</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.min.js"></script>
+<script>
+    const socket = io.connect();
+    socket.on("send_question", function (question_ouverte) {
+        document.getElementById("question").innerHTML = question_ouverte
+    })
+    function envoiRep() {
+        const reponse_sent = document.getElementById('reponse');
+        console.log(reponse_sent.value)
+        socket.emit('send_rep', reponse_sent.value);
+        reponse_sent.value = '';
+    }
+
+    socket.on('update_nuagemot', function () {
+        const wordcloudImg = document.getElementById('wordcloud');
+        //Ajout du time permet d'avoir l'img la plus récente
+        wordcloudImg.src = '../static/wordcloud.png?' + new Date().getTime();
+    });
+</script>
+{% endblock %}
+
+{% block content %}
+<p id="question"></p>
+<input type="text" id="reponse">
+<br><br>
+<button onclick="envoiRep()">Submit</button>
+<br><br>
+<img id="wordcloud" alt="wordcloud">
+{% endblock %}

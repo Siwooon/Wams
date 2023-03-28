@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, TextAreaField
+from wtforms import StringField, PasswordField, SubmitField, TextAreaField, BooleanField
 from wtforms.validators import Length, EqualTo, Email, DataRequired, ValidationError
 from wams.db import user_info
 
@@ -12,7 +12,6 @@ class Form(FlaskForm):
     Réponse3 = TextAreaField(label='Réponse 3')
     Réponse4 = TextAreaField(label='Réponse 4')
     bonne_reponse = TextAreaField(label='bonne_reponse')
-
     submit = SubmitField(label='Envoyer')
 
 class FormInscription(FlaskForm):
@@ -42,3 +41,7 @@ class FormConnexion(FlaskForm):
     username = StringField(label="Username:", validators=[DataRequired()])
     password = PasswordField(label="Mot de passe:", validators=[Length(min=8), DataRequired()])
     submit = SubmitField(label="Confirmer")
+
+class FormPoserQuestionOuverte(FlaskForm):
+    question_ouverte = StringField(label='Question ouverte')
+    submit = SubmitField(label='Envoyer')

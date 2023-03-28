@@ -2,7 +2,7 @@ from wams import app, socketio
 from flask import render_template, redirect, url_for, jsonify, flash, request, json
 from wams.db import db
 from wams.db import question, user_info, Etiquettes, questionnaire, archive
-from wams.forms import Form, FormInscription, FormConnexion, FormChangerPassword
+from wams.forms import Form, FormInscription, FormConnexion, FormChangerPassword, FormPoserQuestionOuverte
 import os
 import csv
 import random, string
@@ -12,6 +12,10 @@ from flask_socketio import emit, send
 import markdown
 import math
 from itertools import combinations, product, islice
+from wordcloud import WordCloud
+import re
+from collections import Counter
+
 
 globalTags=[] #étiquettes par défaut
 roomOuvertes={} #dictionnaire contenant toutes les diffusions de question avec la question associée
@@ -75,7 +79,6 @@ def oneAnswer():
     isChecked = not(isChecked)
     return redirect(url_for('editeur'))
 
-
 @app.route('/editeur', methods=['GET', 'POST'])
 def editeur():
     for tag in Etiquettes.query.all():
@@ -92,8 +95,7 @@ def editeur():
         Réponse3 =form.Réponse3.data
         Réponse4 = form.Réponse4.data
         bonne_reponse = form.bonne_reponse.data
-        
-        
+
         listNewTags = Etiquette.split(",")
         for i in range(len(listNewTags)) :
             if not bool(Etiquettes.query.filter_by(id=listNewTags[i]).first()):
@@ -416,7 +418,30 @@ def creerAllComptes():
                         db.session.add(user_to_create)
                         db.session.commit()
         return render_template('creerAllComptes.html')
-    else: return "Vous n'êtes pas prof"
+    else:
+        return "Vous n'êtes pas prof"
+
+
+@app.route('/poserQuestionOuv', methods=["GET", "POST"])
+def poserQuestionOuv():
+    form = FormPoserQuestionOuverte()
+    if form.validate_on_submit():
+        socketio.emit("send_question", form.question_ouverte.data)
+    return render_template("poserQuestionOuv.html",form = form)
+
+@app.route('/repondreQuestionOuv')
+def repondreQuestionOuv():
+    return render_template('repondreQuestionOuv.html')
+
+reponses_clean = []
+@socketio.on('send_rep')
+def sendRep(reponse):
+    reponse_clean = reponse.strip().lower()
+    reponses_clean.append(reponse_clean)
+    nb_rep = Counter(reponses_clean)
+    wc = WordCloud(width=800, height=400, background_color="rgba(255, 255, 255, 0)", mode="RGBA").generate_from_frequencies(nb_rep)
+    wc.to_file('./wams/static/wordcloud.png')
+    emit('update_nuagemot', broadcast=True)
 
 @app.route('/controle', methods=["GET", "POST"])
 def controle():
@@ -496,6 +521,3 @@ def handle_message():
     print('CHACARONMACARON')
     sto = 'You are connected'
     emit('connected', sto)
-
-
-

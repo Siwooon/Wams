@@ -7,21 +7,22 @@
 {% block content %}
 
 <script>
-      MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']]
-        },
-        svg: {
-          fontCache: 'global'
-        }
-      };
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']]
+    },
+    svg: {
+      fontCache: 'global'
+    }
+  };
 </script>
-<script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 
 <script type="module">
   import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10.0.3-alpha.1/dist/mermaid.esm.min.mjs';
-  $("#Question").keydown(function(e) {
-    if(e.keyCode == "27"){
+  $("#Question").keydown(function (e) {
+    if (e.keyCode == "27") {
       mermaid.run();
     }
   })
@@ -31,7 +32,7 @@
     pos = str.indexOf(startStr) + startStr.length;
     return str.substring(pos, str.indexOf(endStr, pos));
   }
-  $(document).ready(function() {
+  $(document).ready(function () {
     const md = window.markdownit({
       html: true,
       typographer: true,
@@ -41,26 +42,26 @@
         if (lang && hljs.getLanguage(lang)) {
           try {
             return hljs.highlight(str, { language: lang }).value;
-          } catch (__) {}
+          } catch (__) { }
         }
         return '';
       }
     });
-      
+
     var socket = io();
-    $("#Question").keydown(function(e) {
+    $("#Question").keydown(function (e) {
       if ($(this).val().includes("\n```mermaid\n") || $(this).val().startsWith("```mermaid\n")) {
-        socket.emit("typing", data=getStringBetween("```mermaid\n", "\n```", $(this).val()));
+        socket.emit("typing", data = getStringBetween("```mermaid\n", "\n```", $(this).val()));
         socket.on("formatted", (arg) => {
-            if ($("#a").children(".mermaid").length < 1) {
-              $("#a").append('<pre class="mermaid">'+arg+'</pre>')
-              $(".language-mermaid").empty()
-            }
+          if ($("#a").children(".mermaid").length < 1) {
+            $("#a").append('<pre class="mermaid">' + arg + '</pre>')
+            $(".language-mermaid").empty()
+          }
         });
       }
     });
 
-    $("[name='Question']").on("input", function() {
+    $("[name='Question']").on("input", function () {
       var markdown = $(this).val();
       var mk = md.render(markdown);
       $("#a").html(mk);
@@ -70,105 +71,110 @@
 </script>
 
 {% if current_user.is_authenticated %}
-    <div id="divQuestions">
+<div id="divQuestions">
 
-      {% for question in question %}
-          <button data-id="{{ question.id }}" class="update-button">{{ question.Label }}</button>
-      {% endfor %}
+  {% for question in question %}
+  <button data-id="{{ question.id }}" class="update-button">{{ question.Label }}</button>
+  {% endfor %}
 
+</div>
+<div id="divGauche" class="left">
+
+  <form method="POST" id="myForm" style="width: 100%; height: auto;">
+    {{ form.hidden_tag()}}
+
+    {{form.bonne_reponse()}}
+
+    <br>
+
+    {{form.Question()}}
+
+    <br><br>
+    {{form.Label.label()}}
+    {{form.Label()}}
+    <br><br>
+    {{form.Etiquette.label()}}
+    {{form.Etiquette}}
+    <!--    affichage des 10 premiers tags, masque les prochains      -->
+    {% for tag in range(0, len9) %}
+    <button id="{{ globalTags[tag] }}" class="tagButton" type="button">{{ globalTags[tag] }}</button>
+    {% endfor %}
+    {% for tag in range(len9+1, len) %}
+    <button id="{{ globalTags[tag] }}" class="tagButton tagButtonPlus" type="button" style='display: none;'>{{
+      globalTags[tag] }}</button>
+    {% endfor %}
+    <button id="plus" type="button" class="plus">+</button>
+    <button id="moins" type="button" class="moins" style='display: none;'>-</button>
+    <input type="text" id="addTags" class="addTags" onkeydown="return (event.keyCode!=13);"
+      placeholder="Séparer par ',' pour plusieurs tags" style='display: none;' />
+    <button type="button" id="submitCustomTags" class="submitCustomTags" style='display: none;'>Ajouter
+      l'étiquette</button>
+    <br> <br>
+    <input type="checkbox" id="BoutonValNum" class="checkbox hidden"> <label id="switchBoutonValNum"
+      for="BoutonValNum">Réponse à valeur numérique</label> <label for="switchBoutonValNum">Réponse à valeur
+      numérique</label>
+    <br><br>
+    <div id="boutonValNum">
+      {{form.Réponse1.label()}}
+      {{form.Réponse1()}}
     </div>
-    <div id="divGauche" class="left">
-
-    <form method="POST" id="myForm" style="width: 100%; height: auto;">
-        {{ form.hidden_tag()}}
-
-        {{form.bonne_reponse()}}
-               
-        <br>
-
-        {{form.Question()}}
-        
-        <br><br>
-        {{form.Label.label()}}
-        {{form.Label()}}
-        <br><br>
-        {{form.Etiquette.label()}}
-        {{form.Etiquette}}
-        <!--    affichage des 10 premiers tags, masque les prochains      -->
-        {% for tag in range(0, len9) %}
-          <button id = "{{ globalTags[tag] }}" class = "tagButton" type = "button">{{ globalTags[tag] }}</button>
-        {% endfor %}
-        {% for tag in range(len9+1, len) %}
-          <button id = "{{ globalTags[tag] }}" class = "tagButton tagButtonPlus" type = "button" style = 'display: none;'>{{ globalTags[tag] }}</button>
-        {% endfor %}
-        <button id = "plus" type = "button" class = "plus">+</button>
-        <button id = "moins" type = "button" class = "moins" style = 'display: none;'>-</button>
-        <input type="text" id = "addTags" class = "addTags" onkeydown="return (event.keyCode!=13);" placeholder="Séparer par ',' pour plusieurs tags" style = 'display: none;'/>
-        <button type = "button" id = "submitCustomTags" class = "submitCustomTags" style = 'display: none;'>Ajouter l'étiquette</button> 
-        <br> <br>
-        <input type="checkbox" id = "BoutonValNum" class="checkbox hidden">  <label id="switchBoutonValNum" for="BoutonValNum">Réponse à valeur numérique</label> <label for="switchBoutonValNum">Réponse à valeur numérique</label>
-        <br><br>
-        <div id = "boutonValNum">
-          {{form.Réponse1.label()}}
-          {{form.Réponse1()}}
-        </div>
-        <br><br>
-        <div id="QCM">
-          {{form.Réponse2.label()}}
-          {{form.Réponse2()}}
-          <br><br>
-          {{form.Réponse3.label()}}
-          {{form.Réponse3()}}
-          <br><br>
-          {{form.Réponse4.label()}}
-          {{form.Réponse4()}}
-        </div>
-        <br><br>
-        {{form.submit()}}    
-
-        <button type="button" id="reset-button">Tout Effacer</button>
-
-    </form>
-    
-
-    <div id="pageQuestions" class="button-container"></div>
-        
-      <br> <br>
-      <input type="text" id="labelQuestionnaire" placeholder="Nom du Questionnaire">
+    <br><br>
+    <div id="QCM">
+      {{form.Réponse2.label()}}
+      {{form.Réponse2()}}
       <br><br>
-  
-      <div class="inline-block">
-        <button id="envoyerPageQuestions">Créer une nouvelle page de questions</button>
-
-        <div id="Deconnexion_button_div">
-          <form action="{{ url_for('deconnexion') }}" method="POST">
-            <button type="submit" id="Deconnexion_button">Déconnexion</button>
-          </form>
-        </div>
-      </div>
+      {{form.Réponse3.label()}}
+      {{form.Réponse3()}}
+      <br><br>
+      {{form.Réponse4.label()}}
+      {{form.Réponse4()}}
     </div>
+    <br><br>
+    {{form.submit()}}
 
-  <div id="divDroite" class="right">
+    <button type="button" id="reset-button">Tout Effacer</button>
 
-    <br>
-    <div id="visu">
-      <p id="a"></p>
-      </div>
+  </form>
+
+
+  <div id="pageQuestions" class="button-container"></div>
+
+  <br> <br>
+  <input type="text" id="labelQuestionnaire" placeholder="Nom du Questionnaire">
+  <br><br>
+
+  <div class="inline-block">
+    <button id="envoyerPageQuestions">Créer une nouvelle page de questions</button>
+
+    <div id="Deconnexion_button_div">
+      <form action="{{ url_for('deconnexion') }}" method="POST">
+        <button type="submit" id="Deconnexion_button">Déconnexion</button>
+      </form>
     </div>
-    <br>
-    <div id = boutonsDivDroite>
-      <button id="R1"></button> <input type="radio" id="BonneRéponse1" name="choisirReponse" class="radioReponse">
-      <br>
-      <button id="R2"></button> <input type="radio" id="BonneRéponse2" name="choisirReponse" class="radioReponse">
-      <br>
-      <button id="R3"></button> <input type="radio" id="BonneRéponse3" name="choisirReponse" class="radioReponse">
-      <br>
-      <button id="R4"></button> <input type="radio" id="BonneRéponse4" name="choisirReponse" class="radioReponse">
-      <br>
-      <br>
-    </div>
-    {% else %}
-    <p>Il faut être connecté pour accéder au créateur de questions !</p>
-    <a href="{{url_for('connexion')}}">Connexion</a>
-    {% endif %}
+  </div>
+</div>
+
+<div id="divDroite" class="right">
+
+  <br>
+  <div id="visu">
+    <p id="a"></p>
+  </div>
+</div>
+<br>
+<div id=boutonsDivDroite>
+  <button id="R1"></button> <input type="radio" id="BonneRéponse1" name="choisirReponse" class="radioReponse">
+  <br>
+  <button id="R2"></button> <input type="radio" id="BonneRéponse2" name="choisirReponse" class="radioReponse">
+  <br>
+  <button id="R3"></button> <input type="radio" id="BonneRéponse3" name="choisirReponse" class="radioReponse">
+  <br>
+  <button id="R4"></button> <input type="radio" id="BonneRéponse4" name="choisirReponse" class="radioReponse">
+  <br>
+  <br>
+</div>
+{% else %}
+<p>Il faut être connecté pour accéder au créateur de questions !</p>
+<a href="{{url_for('connexion')}}">Connexion</a>
+{% endif %}
 {% endblock %}
