@@ -506,13 +506,20 @@ def CorrectionSequence(reponse):
 def fourchetteQuestionsParTag(dico):
     print(dico)
     totalPossibilités=1
-    for tag in dico["dictionnaireMinMax"]:
+    dicoQuestionsParTag1={}
+    for etiquette in Etiquettes.query.all():
+        dicoQuestionsParTag1[etiquette.id]=[]
+        for quest in question.query.all():
+            if etiquette.id == quest.Etiquette.split(",")[0]:
+                dicoQuestionsParTag1[etiquette.id].append(quest)
+    for tag in dico:
         print(tag)
-        nbQuest=random.randint(int(dico["dictionnaireMinMax"][tag][0]),int(dico["dictionnaireMinMax"][tag][1]))
-        totalPossibilités=totalPossibilités*math.comb(int(dico["dictionnaireMinMax"][tag][2]), nbQuest)
-        print("Pour ", nbQuest, "questions de ", tag, " parmi ", int(dico["dictionnaireMinMax"][tag][2]))
+        nbQuest=random.randint(int(dico[tag][0]),int(dico[tag][1]))
+        dicoQuestionsParTag1[tag].append(nbQuest)
+        totalPossibilités=totalPossibilités*math.comb(int(dico[tag][2]), nbQuest)
+        print("Pour ", nbQuest, "questions de ", tag, " parmi ", int(dico[tag][2]))
     print(totalPossibilités)
-    print("azdazdaz", dico["dicoQuestionsParTag"])
+    print(dicoQuestionsParTag1)
 
 
 
