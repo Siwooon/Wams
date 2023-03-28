@@ -528,14 +528,12 @@ def fourchetteQuestionsParTag(dico):
         totalPossibilités=totalPossibilités*math.comb(int(dico["dictionnaireMinMax"][tag][2]), nbQuest)
         print("Pour ", nbQuest, "questions de ", tag, " parmi ", int(dico["dictionnaireMinMax"][tag][2]))
         for comb in combinations(dicoQuestionsParTag1[tag], nbQuest):
-            dicoComb[tag]=list(comb)
-    combs=product(list(dicoComb.values()))
-    resultatFinal=[]
-    print(list(islice(combs, int(dico["nbQuestions"]))))
-    for comb in islice(combs, int(dico["nbQuestions"])):
-        print(comb)
-        resultatFinal.append(list(comb))
-    print(resultatFinal)
+            if list(comb)!=[]:
+                dicoComb[tag].append(list(comb))
+    print(dicoComb)
+    listes = [v for v in dicoComb.values() if isinstance(v, list) and len(v) > 0]
+    produit = list(product(*listes))
+    print(produit)
     
 
 
