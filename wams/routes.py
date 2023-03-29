@@ -538,9 +538,10 @@ def fourchetteQuestionsParTag(dico):
     print(dicoComb)
     listes = [v for v in dicoComb.values() if isinstance(v, list) and len(v) > 0]
     produit = list(product(*listes))
+
     resultat = []
     cptNbQuestions=0
-    print(produit)
+    print("produit ", produit)
     for tuple in produit:
         fusion = []
         if cptNbQuestions<int(dico["nbSujets"]):
@@ -550,7 +551,17 @@ def fourchetteQuestionsParTag(dico):
             cptNbQuestions+=1
     print(int(dico["nbSujets"]))
     print(cptNbQuestions)
-    print(resultat)    
+    print(resultat)
+    newResult = []
+    if dico["shuffleQuestions"] :
+        for i in resultat:
+            random.shuffle(i)
+            newResult.append(i)
+
+    else : newResult = resultat
+    print(newResult)
+
+
     
 
 @socketio.on('connect')
