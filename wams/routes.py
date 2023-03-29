@@ -522,27 +522,34 @@ def fourchetteQuestionsParTag(dico):
             if etiquette.id == quest.Etiquette.split(",")[0]:
                 dicoQuestionsParTag1[etiquette.id].append(quest)
     dicoComb={}
-    for tag in dico["dictionnaireMinMax"]:
-        dicoComb[tag]=[]
-        nbQuest=random.randint(int(dico["dictionnaireMinMax"][tag][0]),int(dico["dictionnaireMinMax"][tag][1]))
-        totalPossibilités=totalPossibilités*math.comb(int(dico["dictionnaireMinMax"][tag][2]), nbQuest)
-        print("Pour ", nbQuest, "questions de ", tag, " parmi ", int(dico["dictionnaireMinMax"][tag][2]))
-        for comb in combinations(dicoQuestionsParTag1[tag], nbQuest):
-            if list(comb)!=[]:
-                dicoComb[tag].append(list(comb))
+    nbTotal=0
+    while nbTotal != int(dico["nbQuestions"]):
+        nbTotal=0
+        totalPossibilités=1
+        for tag in dico["dictionnaireMinMax"]:
+            dicoComb[tag]=[]
+            nbQuest=random.randint(int(dico["dictionnaireMinMax"][tag][0]),int(dico["dictionnaireMinMax"][tag][1]))
+            nbTotal+=nbQuest
+            totalPossibilités=totalPossibilités*math.comb(int(dico["dictionnaireMinMax"][tag][2]), nbQuest)
+            for comb in combinations(dicoQuestionsParTag1[tag], nbQuest):
+                if list(comb)!=[]:
+                    dicoComb[tag].append(list(comb))
+    print("possibilités max : ", totalPossibilités)
     print(dicoComb)
     listes = [v for v in dicoComb.values() if isinstance(v, list) and len(v) > 0]
     produit = list(product(*listes))
     resultat = []
     cptNbQuestions=0
+    print(produit)
     for tuple in produit:
         fusion = []
         if cptNbQuestions<int(dico["nbSujets"]):
             for liste in tuple:
                 fusion.extend(liste)
             resultat.append(fusion)
-        cptNbQuestions+=1
-
+            cptNbQuestions+=1
+    print(int(dico["nbSujets"]))
+    print(cptNbQuestions)
     print(resultat)    
     
 
