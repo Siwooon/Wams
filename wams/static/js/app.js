@@ -127,9 +127,9 @@ $(document).ready(function () {
     }
     else {
       console.log("ça envoie")
-      console.log(document.getElementById("shuffleQuestions").checked)
+      console.log(document.getElementById("BoutonControle").checked)
 
-      socket.emit("fourchetteQuestionsParTag", {"dictionnaireMinMax":dictionnaireMinMax, "nbQuestions":document.getElementById("nbQuestions").value, "nbSujets":document.getElementById("nbSujets").value, "shuffleQuestions":document.getElementById("shuffleQuestions").checked})
+      socket.emit("fourchetteQuestionsParTag", {"dictionnaireMinMax":dictionnaireMinMax, "nbQuestions":document.getElementById("nbQuestions").value, "nbSujets":document.getElementById("nbSujets").value, "shuffleQuestions":document.getElementById("BoutonControle").checked})
     }
   })
 
