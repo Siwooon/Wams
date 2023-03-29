@@ -536,12 +536,18 @@ def fourchetteQuestionsParTag(dico):
                     dicoComb[tag].append(list(comb))
     print("possibilités max : ", totalPossibilités)
     print(dicoComb)
+    newDicoComb={}
+    if not(dico["shuffleQuestions"]) :
+        for i in dicoComb:
+            random.shuffle(dicoComb[i])
+            newDicoComb[i] = dicoComb[i]
+        dicoComb=newDicoComb
     listes = [v for v in dicoComb.values() if isinstance(v, list) and len(v) > 0]
     produit = list(product(*listes))
+    print(produit)
 
     resultat = []
     cptNbQuestions=0
-    print("produit ", produit)
     for tuple in produit:
         fusion = []
         if cptNbQuestions<int(dico["nbSujets"]):
