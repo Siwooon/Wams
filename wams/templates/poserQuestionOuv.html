@@ -2,11 +2,16 @@
 {% block title %}
 <title>Poser question ouverte</title>
 <script>
+    const socket = io.connect();
     socket.on('update_nuagemot', function () {
         const wordcloudImg = document.getElementById('wordcloud');
-        //Ajout du time permet d'avoir l'img la plus récente
+        //Ajout du time permet d'avoir l'image la plus récente
         wordcloudImg.src = '../static/wordcloud.png?' + new Date().getTime();
     });
+
+    function genererNuageMots() {
+        socket.emit('generer_nuage_mots');
+    }
 </script>
 {% endblock %}
 
@@ -17,6 +22,8 @@
     {{ form.question_ouverte().label }}
     {{ form.question_ouverte() }}
     {{form.submit()}}
-    <img id="wordcloud" alt="wordcloud">
+    <button onclick="genererNuageMots()">Générer le nuage de mots</button>
+    <br /><br />
+    <img id="wordcloud">
 </form>
 {% endblock %}

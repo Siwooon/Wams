@@ -427,7 +427,7 @@ def poserQuestionOuv():
     form = FormPoserQuestionOuverte()
     if form.validate_on_submit():
         socketio.emit("send_question", form.question_ouverte.data)
-    return render_template("poserQuestionOuv.html",form = form)
+    return render_template("poserQuestionOuv.html", form=form)
 
 
 @app.route('/repondreQuestionOuv')
@@ -441,13 +441,20 @@ degres_similitude = 0.5
 @socketio.on('send_rep')
 def sendRep(reponse):
     reponse_clean = reponse.strip().lower()
-    best_match = difflib.get_close_matches(reponse_clean, reponses_clean, 1,degres_similitude)
+    prefixes = ["in", "a", "de"] #Liste des prefixes à vérifier
+    best_match = difflib.get_close_matches(reponse_clean, reponses_clean, 1, degres_similitude)
     if len(best_match) > 0:
-        # Si une correspondance est trouvée, on utilise la chaîne la plus similaire
-        reponse_clean = best_match[0]
+       for prefixe in prefixes:
+            if not reponse_clean.startswith(prefixe) and best_match[0].startswith(prefixe):
+                reponses_clean.append(reponse_clean) #Si les deux n'ont pas le même préfixes
+            else:
+                reponse_clean = best_match[0]
     else:
-        # Sinon, on ajoute la chaîne originale
         reponses_clean.append(reponse_clean)
+
+#Créer le nuage
+@socketio.on('generer_nuage_mots')
+def generer_nuage_mots():
     nb_rep = Counter(reponses_clean)
     wc = WordCloud(width=800, height=400, background_color="rgba(255, 255, 255, 0)", mode="RGBA").generate_from_frequencies(nb_rep)
     wc.to_file('./wams/static/wordcloud.png')
