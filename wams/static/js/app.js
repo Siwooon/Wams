@@ -128,8 +128,8 @@ $(document).ready(function () {
     else {
       console.log("ça envoie")
       console.log(document.getElementById("BoutonControle").checked)
-
-      socket.emit("fourchetteQuestionsParTag", {"dictionnaireMinMax":dictionnaireMinMax, "nbQuestions":document.getElementById("nbQuestions").value, "nbSujets":document.getElementById("nbSujets").value, "shuffleQuestions":document.getElementById("BoutonControle").checked})
+      console.log(document.getElementById("controleAnonyme").checked)
+      socket.emit("fourchetteQuestionsParTag", {"dictionnaireMinMax":dictionnaireMinMax, "nbQuestions":document.getElementById("nbQuestions").value, "nbSujets":document.getElementById("nbSujets").value, "shuffleQuestions":document.getElementById("BoutonControle").checked, "estAnonyme":document.getElementById("controleAnonyme").checked})
     }
   })
 
@@ -627,6 +627,11 @@ socket.on("nouveauParticipantQ", function (reponse) {
   if (document.getElementById("nbParticipantsQ") != null) {
     document.getElementById("nbParticipantsQ").innerText = "Nombre de participants : " + reponse[document.getElementById("stockCode").getAttribute("data-codeRoom")].length
   }
+})
+
+socket.on("resultatcontroles", function(estAnonyme) {
+  console.log("OK GOOD")
+  window.location.href = "/pdfcontrole/"+estAnonyme;
 })
 
 

@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+
+
+
+<!-- {{resultat}} -->
+{%for sujet in resultat%}
+<h1>E X A M E N </h1>
+{% if anonyme %}
+
+    <body>
+        <table>
+            {% for i in range(10) %}
+            <div>
+            
+            <tr>
+                <td>{{i}}</td>
+                {% for j in range(6) %}
+
+                <td></td>
+                {% endfor %}
+            </tr>
+
+            </div>
+            
+            {% endfor %}
+        </table>
+
+{% else %}
+<p>Nom : .........................  Prénom : ...........................  Numéro étudiant : ...........................</p>
+
+
+{% endif %}
+
+    {% for question in sujet %}
+        {% if question.Réponse2 == "" %}
+            
+            <h2>{{question.Label}}</h2>
+            <h3>{{question.Question}}</h3>
+            <textarea name="" id="" cols="50" rows="5"></textarea>
+        {% else %}
+
+            <h2>{{question.Label}}</h2>
+            <h3>{{question.Question}}</h3>
+            <label> <input type="checkbox"> {{question.Réponse1}}</label><br>
+            <label> <input type="checkbox"> {{question.Réponse2}}</label><br>         
+            <label> <input type="checkbox"> {{question.Réponse3}}</label><br>
+            <label> <input type="checkbox"> {{question.Réponse4}}</label><br>
+    
+
+
+{%endif%}
+{%endfor%}
+<DIV STYLE="page-break-before:always"></DIV>
+
+
+{%endfor%}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}

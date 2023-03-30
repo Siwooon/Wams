@@ -16,6 +16,7 @@ from wordcloud import WordCloud
 import re
 from collections import Counter
 import difflib
+from weasyprint import HTML
 
 globalTags=[] #étiquettes par défaut
 roomOuvertes={} #dictionnaire contenant toutes les diffusions de question avec la question associée
@@ -32,6 +33,7 @@ estStoppeeQuestion={} #pour savoir si une question est arrêtée quand un partic
 estCorrigeeQuestion={} #pour savoir si une question est corrigee
 estStoppeeSequence={} #pour séquence
 estCorrigeeSequence={}
+controles={}
 
 from sqlalchemy import create_engine, MetaData, Table
 from sqlalchemy.orm import sessionmaker
@@ -521,6 +523,7 @@ def CorrectionSequence(reponse):
 
 @socketio.on('fourchetteQuestionsParTag')
 def fourchetteQuestionsParTag(dico):
+    global newResult
     totalPossibilités=1
     dicoQuestionsParTag1={}
     for etiquette in Etiquettes.query.all():
@@ -573,8 +576,16 @@ def fourchetteQuestionsParTag(dico):
 
     else : newResult = resultat
     print(newResult)
+    controles[current_user.id]=newResult
+    emit('resultatcontroles', dico["estAnonyme"])
 
 
+@app.route('/pdfcontrole/<estAnonyme>')
+def pdfcontrole(estAnonyme):
+    anonyme=(estAnonyme=="true")
+    print(controles[current_user.id])
+    return render_template('pdfcontrole.html', resultat=controles[current_user.id], anonyme=anonyme)
+    
     
 
 @socketio.on('connect')
@@ -582,3 +593,7 @@ def handle_message():
     print('CHACARONMACARON')
     sto = 'You are connected'
     emit('connected', sto)
+
+def generate_pdf(html):
+    pdf = HTML(string=html).write_pdf()
+    return pdf
