@@ -137,7 +137,7 @@ label {
 	display: none;
 }
 
-#switchBoutonValNum, #switchBoutonControle {
+#switchBoutonControle {
     cursor: pointer;
 	text-indent: -9999px;
 	width: 40px;
@@ -148,7 +148,19 @@ label {
 	position:relative;
 }
 
-#switchBoutonValNum, #switchBoutonControle:after {
+#switchBoutonValNum {
+    cursor: pointer;
+	text-indent: -9999px;
+	width: 40px;
+	height: 20px;
+	background: #202224;
+	display: inline-block;
+	border-radius: 100px;
+	position:relative;
+
+}
+
+#switchBoutonValNum:after, #switchBoutonControle:after {
 	content: '';
 	position: absolute;
 	top: 5px;
@@ -160,8 +172,12 @@ label {
 	transition: 0.3s;
 }
 
-#BoutonValNum:checked + #switchBoutonValNum, #BoutonControle:checked + #switchBoutonControle {
+#BoutonControle:checked + #switchBoutonControle {
 	background: #4a2a7a;
+}
+
+#BoutonValNum:checked + #switchBoutonValNum {
+    background: #2b4a0f;
 }
 
 #BoutonValNum:checked + #switchBoutonValNum:after, #BoutonControle:checked + #switchBoutonControle:after {
