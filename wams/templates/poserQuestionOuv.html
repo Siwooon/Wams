@@ -1,29 +1,33 @@
 {% extends 'base.html' %}
 {% block title %}
 <title>Poser question ouverte</title>
-<script>
-    const socket = io.connect();
-    socket.on('update_nuagemot', function () {
-        const wordcloudImg = document.getElementById('wordcloud');
-        //Ajout du time permet d'avoir l'image la plus récente
-        wordcloudImg.src = '../static/wordcloud.png?' + new Date().getTime();
-    });
-
-    function genererNuageMots() {
-        socket.emit('generer_nuage_mots');
-    }
-</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.min.js"></script>
 {% endblock %}
 
 {% block content %}
+<script>
+    document
+    const socket = io.connect();
+
+    socket.on('update_nuagemot', function (sent_room) {
+        const room = document.getElementById('room').value;
+        console.log(room)
+        if (sent_room === room) {
+            document.getElementById('nuagemot').src = '../static/nuagemot-' + data["room"] + '.png?' + new Date().getTime();
+        } else { console.log("ECHEC") }
+    });
+
+</script>
 
 <form method="POST">
     {{ form.hidden_tag() }}
-    {{ form.question_ouverte().label }}
-    {{ form.question_ouverte() }}
-    {{form.submit()}}
-    <button onclick="genererNuageMots()">Générer le nuage de mots</button>
+    {{ form.question_ouverte(placeholder="Question") }}
     <br /><br />
-    <img id="wordcloud">
+    {{ form.nuage() }}
+    <br /><br />
+    {{ form.code_room(id="room", placeholder="Code") }}
+    <br /><br />
+    {{ form.submit() }}
 </form>
+<img id="nuagemot" />
 {% endblock %}

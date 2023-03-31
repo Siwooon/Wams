@@ -1,34 +1,40 @@
 {% extends 'base.html' %}
 {% block title %}
-<title>Poser question ouverte</title>
-
-<title>Question Ouverte</title>
+<title>Répondre Question Ouverte</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.min.js"></script>
-<script>
-    const socket = io.connect();
-    socket.on("send_question", function (question_ouverte) {
-        document.getElementById("question").innerHTML = question_ouverte
-    })
-    function envoiRep() {
-        const reponse_sent = document.getElementById('reponse');
-        console.log(reponse_sent.value)
-        socket.emit('send_rep', reponse_sent.value);
-        reponse_sent.value = '';
-    }
-
-    socket.on('update_nuagemot', function () {
-        const wordcloudImg = document.getElementById('wordcloud');
-        //Ajout du time permet d'avoir l'img la plus récente
-        wordcloudImg.src = '../static/wordcloud.png?' + new Date().getTime();
-    });
-</script>
 {% endblock %}
 
 {% block content %}
-<p id="question"></p>
-<input type="text" id="reponse">
-<br><br>
-<button onclick="envoiRep()">Submit</button>
-<br><br>
-<img id="wordcloud">
+<script>
+    const socket = io.connect();
+
+    socket.on('send_question2', function (data) {
+        const room = document.getElementById('room').value;
+        if (data['room'] === room) {
+            const question = data["question_ouverte"];
+            const questionElement = document.getElementById('question');
+            questionElement.innerHTML = question;
+        }
+    });
+
+    socket.on('update_nuagemot', function (data) {
+        const room = document.getElementById('room').value;
+        console.log("ROOM:" + room)
+        if (data['room'] === room) {
+            document.getElementById('nuagemot').src = '../static/nuagemot-' + data["room"] + '.png?' + new Date().getTime();
+        } else { console.log("ECHEC") }
+    });
+
+</script>
+<form method="POST">
+    <p id="question">Ici la question</p>
+    {{form.hidden_tag()}}
+    {{form.code_room(placeholder="Code room", id="room")}}
+    <br /><br />
+    {{ form.reponse(placeholder="Entrez la réponse") }}
+    <br /><br />
+    {{ form.submit() }}
+    <br /><br />
+    <img id="nuagemot">
+</form>
 {% endblock %}

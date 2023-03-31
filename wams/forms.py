@@ -42,6 +42,15 @@ class FormConnexion(FlaskForm):
     password = PasswordField(label="Mot de passe:", validators=[Length(min=8), DataRequired()])
     submit = SubmitField(label="Confirmer")
 
+
 class FormPoserQuestionOuverte(FlaskForm):
     question_ouverte = StringField(label='Question ouverte')
-    submit = SubmitField(label='Envoyer')
+    code_room = StringField(label="Code room")
+    submit = SubmitField(name="submit", label='Envoyer')
+    nuage = SubmitField(name="nuage")
+
+
+class FormRepondreQuestionOuverte(FlaskForm):
+    reponse = StringField(label='Réponse')
+    code_room = StringField(label="Code room")
+    submit = SubmitField(name="submit", label='Envoyer')

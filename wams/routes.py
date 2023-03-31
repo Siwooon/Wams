@@ -2,7 +2,7 @@ from wams import app, socketio
 from flask import render_template, redirect, url_for, jsonify, flash, request, json
 from wams.db import db
 from wams.db import question, user_info, Etiquettes, questionnaire, archive
-from wams.forms import Form, FormInscription, FormConnexion, FormChangerPassword, FormPoserQuestionOuverte
+from wams.forms import Form, FormInscription, FormConnexion, FormChangerPassword, FormPoserQuestionOuverte, FormRepondreQuestionOuverte
 import os
 import csv
 import random, string
@@ -15,7 +15,6 @@ from itertools import combinations, product, islice
 from wordcloud import WordCloud
 import re
 from collections import Counter
-import difflib
 from weasyprint import HTML
 
 globalTags=[] #étiquettes par défaut
@@ -423,44 +422,59 @@ def creerAllComptes():
     else:
         return "Vous n'êtes pas prof"
 
+degres_similitude = 0.3
+reponses_salles = {}
+
+
+@socketio.on('send_rep')
+@app.route('/repondreQuestionOuv', methods=["GET", "POST"])
+def repondreQuestionOuv():
+    form = FormRepondreQuestionOuverte()
+    if form.validate_on_submit():
+        reponse = form.reponse.data
+        room = form.code_room.data
+        if not room in reponses_salles:
+            reponses_salles[str(room)] = []
+        else:
+            reponse_clean = reponse.strip().lower()
+
+            prefixes = ["in", "a", "de"]  # Liste des prefixes à vérifier
+            best_match = difflib.get_close_matches(reponse_clean, reponses_salles[str(room)], 1, degres_similitude)
+            if len(best_match) > 0:
+                for prefixe in prefixes:
+                    if reponse_clean.startswith(prefixe) and not best_match[0].startswith(prefixe):
+                        # Si les deux n'ont pas le même préfixes
+                        reponses_salles[str(room)].append(reponse_clean)
+                    else:
+                        reponse_clean = best_match[0]
+            else:
+                reponses_salles[str(room)].append(reponse_clean)
+
+        print(f"Reponse de la salle {room} : {reponses_salles[str(room)]}")
+    return render_template("repondreQuestionOuv.html", form=form)
+
 
 @app.route('/poserQuestionOuv', methods=["GET", "POST"])
 def poserQuestionOuv():
     form = FormPoserQuestionOuverte()
     if form.validate_on_submit():
-        socketio.emit("send_question", form.question_ouverte.data)
+        if request.method == 'POST' and request.form.get('submit'):
+            print("ok")
+            question_ouverte = form.question_ouverte.data
+            room = form.code_room.data
+            socketio.emit('send_question2', {
+                          "question_ouverte": question_ouverte, "room": room})
+            print("Question envoyée: ", question_ouverte, room)
+        elif request.method == 'POST' and request.form.get('nuage'):
+            room = form.code_room.data
+            nb_rep = Counter(reponses_salles[str(room)])
+            wc = WordCloud(width=800, height=400, background_color="rgba(255, 255, 255, 0)",
+                           mode="RGBA").generate_from_frequencies(nb_rep)
+            wc.to_file('./wams/static/nuagemot-'+room+'.png')
+            socketio.emit('update_nuagemot', {"room": room})
+
     return render_template("poserQuestionOuv.html", form=form)
 
-
-@app.route('/repondreQuestionOuv')
-def repondreQuestionOuv():
-    return render_template('repondreQuestionOuv.html')
-
-
-reponses_clean = []
-degres_similitude = 0.5
-
-@socketio.on('send_rep')
-def sendRep(reponse):
-    reponse_clean = reponse.strip().lower()
-    prefixes = ["in", "a", "de"] #Liste des prefixes à vérifier
-    best_match = difflib.get_close_matches(reponse_clean, reponses_clean, 1, degres_similitude)
-    if len(best_match) > 0:
-       for prefixe in prefixes:
-            if not reponse_clean.startswith(prefixe) and best_match[0].startswith(prefixe):
-                reponses_clean.append(reponse_clean) #Si les deux n'ont pas le même préfixes
-            else:
-                reponse_clean = best_match[0]
-    else:
-        reponses_clean.append(reponse_clean)
-
-#Créer le nuage
-@socketio.on('generer_nuage_mots')
-def generer_nuage_mots():
-    nb_rep = Counter(reponses_clean)
-    wc = WordCloud(width=800, height=400, background_color="rgba(255, 255, 255, 0)", mode="RGBA").generate_from_frequencies(nb_rep)
-    wc.to_file('./wams/static/wordcloud.png')
-    emit('update_nuagemot', broadcast=True)
 
 @app.route('/controle', methods=["GET", "POST"])
 def controle():
