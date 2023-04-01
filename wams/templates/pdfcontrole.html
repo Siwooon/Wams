@@ -1,5 +1,75 @@
 {% extends 'base.html' %}
+{% block title %}
+<title>Contrôle</title>
+{% endblock %}
 {% block content %}
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.0.3-alpha.1/dist/mermaid.min.js"></script>
+<script>
+  mermaid.initialize({
+    startOnLoad: true
+  });
+</script>
+<script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+
+    $(document).ready(function() {
+    const md = window.markdownit({
+      html: true,
+      typographer: true,
+      linkify: true,
+      breaks: true,
+      highlight: function (str, lang) {
+        if (lang && hljs.getLanguage(lang)) {
+          try {
+            return hljs.highlight(str, { language: lang }).value;
+          } catch (__) {}
+        }
+        return ''; // use external default escaping
+      }
+    });
+    
+    var markdown = $(".markdown").html();
+    var mk = md.render(markdown);
+    $(".markdown").html(mk);
+    MathJax.typeset();
+  })
+</script>
+<script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+<script>
+  function htmlDecode(input) {
+    var doc = new DOMParser().parseFromString(input, "text/html");
+    return doc.documentElement.textContent;
+  }
+  var socket = io();
+  $(document).ready(function() {
+    $(".markdown").append('<pre class="mermaid">'+htmlDecode($(".language-mermaid").html().replace("&gt;", ">"))+'</pre>')
+    mermaid.run()
+    $(".language-mermaid").empty()
+  })
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -38,12 +108,14 @@
         {% if question.Réponse2 == "" %}
             
             <h2>{{question.Label}}</h2>
-            <h3>{{question.Question}}</h3>
+            <div class="markdown"> {{question.Question}} </div> <br> <br>
+
             <textarea name="" id="" cols="50" rows="5"></textarea>
         {% else %}
 
             <h2>{{question.Label}}</h2>
-            <h3>{{question.Question}}</h3>
+            {{question.Question}} <br> <br>
+
             <label> <input type="checkbox"> {{question.Réponse1}}</label><br>
             <label> <input type="checkbox"> {{question.Réponse2}}</label><br>         
             <label> <input type="checkbox"> {{question.Réponse3}}</label><br>
@@ -57,20 +129,6 @@
 
 
 {%endfor%}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

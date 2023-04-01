@@ -1,5 +1,7 @@
+import difflib
+import pdfkit
 from wams import app, socketio
-from flask import render_template, redirect, url_for, jsonify, flash, request, json
+from flask import render_template, redirect, url_for, jsonify, flash, request, json, make_response
 from wams.db import db
 from wams.db import question, user_info, Etiquettes, questionnaire, archive
 from wams.forms import Form, FormInscription, FormConnexion, FormChangerPassword, FormPoserQuestionOuverte, FormRepondreQuestionOuverte
@@ -15,7 +17,7 @@ from itertools import combinations, product, islice
 from wordcloud import WordCloud
 import re
 from collections import Counter
-from weasyprint import HTML
+
 
 globalTags=[] #étiquettes par défaut
 roomOuvertes={} #dictionnaire contenant toutes les diffusions de question avec la question associée
@@ -596,17 +598,22 @@ def fourchetteQuestionsParTag(dico):
 
 @app.route('/pdfcontrole/<estAnonyme>')
 def pdfcontrole(estAnonyme):
+    # anonyme=(estAnonyme=="true")
+    # print(controles[current_user.id])
+    # html = render_template('pdfcontrole.html', resultat=controles[current_user.id], anonyme=anonyme)
+    # pdf = generate_pdf(html)
+    # response = make_response(pdf)
+    # response.headers['Content-Type'] = 'application/pdf'
+    # response.headers['Content-Disposition'] = 'inline; filename=questionnaire.pdf'
+    # return response
+
+
     anonyme=(estAnonyme=="true")
     print(controles[current_user.id])
     return render_template('pdfcontrole.html', resultat=controles[current_user.id], anonyme=anonyme)
     
     
-
-@socketio.on('connect')
-def handle_message():
-    print('CHACARONMACARON')
-    sto = 'You are connected'
-    emit('connected', sto)
+from weasyprint import HTML
 
 def generate_pdf(html):
     pdf = HTML(string=html).write_pdf()
