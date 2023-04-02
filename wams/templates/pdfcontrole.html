@@ -15,11 +15,8 @@ td {
     
 }
 
-div.breakafter {
-    page-break-after: always;
-  }
 </style>
-
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
 <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 
 <script>
@@ -51,25 +48,43 @@ div.breakafter {
         };
 
         var md = window.markdownit({
-            html: true
-        });
+      html: true,
+      typographer: true,
+      linkify: true,
+      breaks: true,
+      highlight: function (str, lang) {
+        if (lang && hljs.getLanguage(lang)) {
+          try {
+            return hljs.highlight(str, { language: lang }).value;
+          } catch (__) {}
+        }
+        return ''; // use external default escaping
+      }
+    });
 
         $(".markdown").each(function(){
-            var sto = $(this).html();
+            var sto = $(this).text();
+
             var html = md.render(sto);
             $(this).html(html);
+
+            if (sto.indexOf('```mermaid') !== -1 && sto.indexOf('```') !== -1) {
+                $(this).html(sto.replace(/```mermaid[\s\S]*?```/g, ''));
+                $(this).append('<pre class="mermaid">')
+            }
         });
-
-
-
 
 
 
 
 
     }); 
+
 </script>
 
+<script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  </script>
 
 <!-- {{resultat}} -->
 {%for sujet in resultat%}
