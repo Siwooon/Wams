@@ -424,7 +424,7 @@ def creerAllComptes():
     else:
         return "Vous n'êtes pas prof"
 
-degres_similitude = 0.3
+degres_similitude = 0.5
 reponses_salles = {}
 
 
