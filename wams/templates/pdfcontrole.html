@@ -4,75 +4,71 @@
 {% endblock %}
 {% block content %}
 
-<script src="https://cdn.jsdelivr.net/npm/mermaid@10.0.3-alpha.1/dist/mermaid.min.js"></script>
-<script>
-  mermaid.initialize({
-    startOnLoad: true
-  });
-</script>
-<script>
-    MathJax = {
-      tex: {
-        inlineMath: [['$', '$'], ['\\(', '\\)']]
-      },
-      svg: {
-        fontCache: 'global'
-      }
-    };
-
-    $(document).ready(function() {
-    const md = window.markdownit({
-      html: true,
-      typographer: true,
-      linkify: true,
-      breaks: true,
-      highlight: function (str, lang) {
-        if (lang && hljs.getLanguage(lang)) {
-          try {
-            return hljs.highlight(str, { language: lang }).value;
-          } catch (__) {}
-        }
-        return ''; // use external default escaping
-      }
-    });
+<style>
+      table {
+    border-collapse: collapse;
+}
+td {
+    width: 20px;
+    height: 20px;
+    border: 1px solid black;
     
-    var markdown = $(".markdown").html();
-    var mk = md.render(markdown);
-    $(".markdown").html(mk);
-    MathJax.typeset();
-  })
-</script>
+}
+
+div.breakafter {
+    page-break-after: always;
+  }
+</style>
+
 <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 
 <script>
-  function htmlDecode(input) {
-    var doc = new DOMParser().parseFromString(input, "text/html");
-    return doc.documentElement.textContent;
-  }
-  var socket = io();
-  $(document).ready(function() {
-    $(".markdown").append('<pre class="mermaid">'+htmlDecode($(".language-mermaid").html().replace("&gt;", ">"))+'</pre>')
-    mermaid.run()
-    $(".language-mermaid").empty()
-  })
+
+
+    $(window).on('load', function(){
+        var html = document.documentElement.outerHTML;
+        console.log(html)
+        var socket = io();
+        socket.emit("convert", html)
+
+        socket.on('pdf', function (data) {
+            // Créer un objet Blob à partir des données binaires reçues
+            var blob = new Blob([data], {type: 'application/pdf'});
+            // Créer un lien URL pour afficher le contenu du PDF dans un nouvel onglet
+            var pdfUrl = URL.createObjectURL(blob);
+            window.open(pdfUrl);
+            });
+    })
+
+    $(document).ready(function(){
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+
+        var md = window.markdownit({
+            html: true
+        });
+
+        $(".markdown").each(function(){
+            var sto = $(this).html();
+            var html = md.render(sto);
+            $(this).html(html);
+        });
+
+
+
+
+
+
+
+
+    }); 
 </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 <!-- {{resultat}} -->
@@ -99,7 +95,8 @@
         </table>
 
 {% else %}
-<p>Nom : .........................  Prénom : ...........................  Numéro étudiant : ...........................</p>
+<p>Nom : .........................  Prénom : ...........................  </p>
+<p>Numéro étudiant : ...........................</p>
 
 
 {% endif %}
@@ -108,13 +105,15 @@
         {% if question.Réponse2 == "" %}
             
             <h2>{{question.Label}}</h2>
-            <div class="markdown"> {{question.Question}} </div> <br> <br>
+            <div >  <p class="markdown">{{question.Question}}</p> </div> <br> <br>
 
             <textarea name="" id="" cols="50" rows="5"></textarea>
         {% else %}
 
             <h2>{{question.Label}}</h2>
-            {{question.Question}} <br> <br>
+            <div >
+                 <p class="markdown">{{question.Question}}</p>
+            </div> <br> <br>
 
             <label> <input type="checkbox"> {{question.Réponse1}}</label><br>
             <label> <input type="checkbox"> {{question.Réponse2}}</label><br>         

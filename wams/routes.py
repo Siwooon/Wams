@@ -608,13 +608,21 @@ def pdfcontrole(estAnonyme):
     # return response
 
 
+
     anonyme=(estAnonyme=="true")
     print(controles[current_user.id])
     return render_template('pdfcontrole.html', resultat=controles[current_user.id], anonyme=anonyme)
     
-    
-from weasyprint import HTML
 
+from weasyprint import HTML
+@app.route('/pdf')
 def generate_pdf(html):
     pdf = HTML(string=html).write_pdf()
     return pdf
+
+
+@socketio.on("convert")
+def conversion(data):
+    print("CONVERSIOOOOOOOOON")
+    pdf = HTML(string=data).write_pdf()
+    emit('pdf', pdf)

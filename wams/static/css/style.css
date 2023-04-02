@@ -320,16 +320,3 @@ ______________________________________
     cursor: pointer;
   }
   
-  table {
-    border-collapse: collapse;
-}
-td {
-    width: 20px;
-    height: 20px;
-    border: 1px solid black;
-    background-color: grey;
-}
-
-div.breakafter {
-    page-break-after: always;
-  }
