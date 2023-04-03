@@ -5,140 +5,150 @@
 {% block content %}
 
 <style>
-    * {
-        font-family: sans-serif;
+    *{
+        font-family: sans-serif ;
     }
 
 
-    table {
-        border-collapse: collapse;
-    }
+      table {
+    border-collapse: collapse;
+}
+td {
+    width: 20px;
+    height: 20px;
+    border: 1px solid black;
+    
+}
 
-    td {
-        width: 20px;
-        height: 20px;
-        border: 1px solid black;
-
-    }
 </style>
 
-<script type="text/javascript" id="MathJax-script" async
-    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10.0.3-alpha.1/dist/mermaid.min.js"></script>
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.waitforimages/2.4.0/jquery.waitforimages.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js"></script>
-<script type="text/javascript" id="MathJax-script" async
-    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 <script>
-    mermaid.initialize({
-        startOnLoad: true
-    });
+  mermaid.initialize({
+    startOnLoad: true
+  });
 </script>
-
-
-
 <script>
-    MathJax = {
-        tex: {
-            inlineMath: [['$', '$'], ['\\(', '\\)']]
-        },
-        svg: {
-            fontCache: 'global'
-        }
-    };
-</script>
-<script type="text/javascript" id="MathJax-script" async
-    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
-<script>
-    $(document).ready(function () {
-        const md = window.markdownit({
-            html: true,
-            typographer: true,
-            linkify: true,
-            breaks: true,
-            highlight: function (str, lang) {
-                if (lang && hljs.getLanguage(lang)) {
-                    try {
-                        return hljs.highlight(str, { language: lang }).value;
-                    } catch (__) { }
-                }
-                return '';
+
+    $(document).ready(function(){
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            },
+            svg: {
+                fontCache: 'global'
             }
-        });
+        };
 
-        $(".markdown").each(function () {
+        var md = window.markdownit({
+      html: true,
+      typographer: true,
+      linkify: true,
+      breaks: true,
+      highlight: function (str, lang) {
+        if (lang && hljs.getLanguage(lang)) {
+          try {
+            return hljs.highlight(str, { language: lang }).value;
+          } catch (__) {}
+        }
+        return ''; // use external default escaping
+      }
+    });
+
+        $(".markdown").each(function(){
             var sto = $(this).text();
 
             var html = md.render(sto);
             $(this).html(html);
+            MathJax.typesetPromise().then(() => {
+              // modify the DOM here
+              MathJax.typesetPromise();
+            }).catch((err) => console.log(err.message));
+                    });
 
-        });
-
-    });
+                }); 
 
 </script>
 
 <script>
     function htmlDecode(input) {
-        var doc = new DOMParser().parseFromString(input, "text/html");
-        return doc.documentElement.textContent;
+      var doc = new DOMParser().parseFromString(input, "text/html");
+      return doc.documentElement.textContent;
     }
     var socket = io();
-    $(document).ready(function () {
+    $(document).ready(function() {
 
-        $(".language-mermaid").each(function () {
+        $(".language-mermaid").each(function(){
 
             sto = $(this).text()
+            
 
-
-            $(this).append('<pre class="mermaid">' + htmlDecode($(".language-mermaid").html().replace("&gt;", ">")) + '</pre>')
+            $(this).append('<pre class="mermaid">'+htmlDecode($(".language-mermaid").html().replace("&gt;", ">"))+'</pre>')
             mermaid.run()
 
             const code = document.querySelector('code');
             const children = code.childNodes;
 
             for (let i = 0; i < children.length; i++) {
-                const child = children[i];
-                if (child.nodeType === Node.TEXT_NODE) {
-                    code.removeChild(child);
-                }
+            const child = children[i];
+            if (child.nodeType === Node.TEXT_NODE) {
+                code.removeChild(child);
+            }
             }
         })
 
         var svg = document.querySelector('svg');
 
-        domtoimage.toPng(svg)
-            .then(function (dataUrl) {
-                var img = new Image();
-                img.src = dataUrl;
-                var imgDiv = document.createElement("div");
-                imgDiv.appendChild(img);
-                svg.parentNode.replaceChild(imgDiv, svg);
-            })
-            .catch(function (error) {
-                console.error('Erreur lors de la génération de l\'image :', error);
-            });
+// domtoimage.toPng(svg)
+//     .then(function (dataUrl) {
+//         var img = new Image();
+//         img.src = dataUrl;
+//         var imgDiv = document.createElement("div");
+//         imgDiv.appendChild(img);
+//         svg.parentNode.replaceChild(imgDiv, svg);
+//     })
+//     .catch(function (error) {
+//         console.error('Erreur lors de la génération de l\'image :', error);
+//     });
 
 
 
+        
 
 
 
-
-
+      
     })
+  </script>
+
+<script type="text/javascript">
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$']],
+      displayMath: [['$$', '$$']],
+      processEscapes: true,
+      processEnvironments: true,
+      tags: 'ams',
+      packages: ['base', 'ams']
+    }
+  };
+  MathJax.typeset();
 </script>
 
+  
 
 
 
 <script>
-    $(window).on('load', function () {
+    $(window).on('load', function(){
 
 
-
+        
 
         var html = document.documentElement.outerHTML;
 
@@ -147,13 +157,13 @@
 
         socket.on('pdf', function (data) {
             // Créer un objet Blob à partir des données binaires reçues
-            var blob = new Blob([data], { type: 'application/pdf' });
+            var blob = new Blob([data], {type: 'application/pdf'});
             // Créer un lien URL pour afficher le contenu du PDF dans un nouvel onglet
             var pdfUrl = URL.createObjectURL(blob);
             window.open(pdfUrl);
-        });
+            });
     })
-</script>
+  </script>
 
 
 
@@ -172,11 +182,11 @@
 <h1>E X A M E N </h1>
 {% if anonyme %}
 
-<body>
-    <table>
-        {% for i in range(10) %}
-        <div>
-
+    <body>
+        <table>
+            {% for i in range(10) %}
+            <div>
+            
             <tr>
                 <td>{{i}}</td>
                 {% for j in range(6) %}
@@ -185,49 +195,47 @@
                 {% endfor %}
             </tr>
 
-        </div>
+            </div>
+            
+            {% endfor %}
+        </table>
 
-        {% endfor %}
-    </table>
-
-    {% else %}
-    <p>Nom : ......................... Prénom : ........................... </p>
-    <p>Numéro étudiant : ...........................</p>
+{% else %}
+<p>Nom : .........................  Prénom : ...........................  </p>
+<p>Numéro étudiant : ...........................</p>
 
 
-    {% endif %}
+{% endif %}
 
     {% for question in sujet %}
-    {% if question.Réponse2 == "" %}
+        {% if question.Réponse2 == "" %}
+            
+            <h2>{{question.Label}}</h2>
+            <div >  <p class="markdown">{{question.Question}}</p> </div> <br> <br>
 
-    <h2>{{question.Label}}</h2>
-    <div>
-        <p class="markdown">{{question.Question}}</p>
-    </div> <br> <br>
+            <textarea name="" id="" cols="50" rows="5"></textarea>
+        {% else %}
 
-    <textarea name="" id="" cols="50" rows="5"></textarea>
-    {% else %}
+            <h2>{{question.Label}}</h2>
+            <div >
+                 <p class="markdown">{{question.Question}}</p>
+            </div> <br> <br>
 
-    <h2>{{question.Label}}</h2>
-    <div>
-        <p class="markdown">{{question.Question}}</p>
-    </div> <br> <br>
-
-    <label> <input type="checkbox"> {{question.Réponse1}}</label><br>
-    <label> <input type="checkbox"> {{question.Réponse2}}</label><br>
-    <label> <input type="checkbox"> {{question.Réponse3}}</label><br>
-    <label> <input type="checkbox"> {{question.Réponse4}}</label><br>
-
+            <label> <input type="checkbox"> {{question.Réponse1}}</label><br>
+            <label> <input type="checkbox"> {{question.Réponse2}}</label><br>         
+            <label> <input type="checkbox"> {{question.Réponse3}}</label><br>
+            <label> <input type="checkbox"> {{question.Réponse4}}</label><br>
+    
 
 
-    {%endif%}
-    {%endfor%}
-    <DIV STYLE="page-break-before:always"></DIV>
+{%endif%}
+{%endfor%}
+<DIV STYLE="page-break-before:always"></DIV>
 
 
-    {%endfor%}
+{%endfor%}
 
 
 
 
-    {% endblock %}
+{% endblock %}
