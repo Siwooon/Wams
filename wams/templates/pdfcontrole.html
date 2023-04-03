@@ -22,21 +22,15 @@
     }
 </style>
 
-<head>
-  <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
-
-  <script src="https://cdn.jsdelivr.net/npm/mermaid@10.0.3-alpha.1/dist/mermaid.min.js"></script>
-  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.waitforimages/2.4.0/jquery.waitforimages.min.js"></script>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js"></script>
-
-
-</head>
-
-
-
-
+<script type="text/javascript" id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.0.3-alpha.1/dist/mermaid.min.js"></script>
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.waitforimages/2.4.0/jquery.waitforimages.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js"></script>
+<script type="text/javascript" id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 <script>
     mermaid.initialize({
         startOnLoad: true
@@ -44,15 +38,21 @@
 </script>
 
 
+
 <script>
-    $(document).ready(function () {
-      MathJax = {
+    MathJax = {
         tex: {
             inlineMath: [['$', '$'], ['\\(', '\\)']]
         },
         svg: {
             fontCache: 'global'
-          }};
+        }
+    };
+</script>
+<script type="text/javascript" id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<script>
+    $(document).ready(function () {
         const md = window.markdownit({
             html: true,
             typographer: true,
@@ -75,8 +75,6 @@
             $(this).html(html);
 
         });
-
-        MathJax.typeset();
 
     });
 
@@ -111,6 +109,19 @@
 
         var svg = document.querySelector('svg');
 
+        domtoimage.toPng(svg)
+            .then(function (dataUrl) {
+                var img = new Image();
+                img.src = dataUrl;
+                var imgDiv = document.createElement("div");
+                imgDiv.appendChild(img);
+                svg.parentNode.replaceChild(imgDiv, svg);
+            })
+            .catch(function (error) {
+                console.error('Erreur lors de la génération de l\'image :', error);
+            });
+
+
 
 
 
@@ -119,7 +130,6 @@
 
     })
 </script>
-
 
 
 
@@ -144,6 +154,17 @@
         });
     })
 </script>
+
+
+
+
+
+
+
+
+
+
+
 
 
 
