@@ -447,8 +447,10 @@ def repondreQuestionOuv():
                     if reponse_clean.startswith(prefixe) and not best_match[0].startswith(prefixe):
                         # Si les deux n'ont pas le même préfixes
                         reponses_salles[str(room)].append(reponse_clean)
+                        break
                     else:
-                        reponse_clean = best_match[0]
+                        reponses_salles[str(room)].append(best_match[0])
+                        break
             else:
                 reponses_salles[str(room)].append(reponse_clean)
 
